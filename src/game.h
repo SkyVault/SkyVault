@@ -3,6 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include "skyvault.h"
+
+struct Time {
+    float dt, fps, timer;
+    long ticks;
+};
 
 struct Game {
     Game();
@@ -22,7 +28,11 @@ struct Game {
 private:
     bool running{false};
 
+    sf::Clock clock;
     std::shared_ptr<sf::RenderWindow> window;
+
+    float timer{0.0};
+    long ticks{0};
 };
 
 #endif//SKYVAULT_GAME_H

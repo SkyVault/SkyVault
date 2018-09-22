@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include "skyvault.h"
+#include "graphics/tiled_map.h"
 
 struct Time {
     float dt, fps, timer;
@@ -26,6 +27,8 @@ struct Game {
     inline bool Running() { return running; }
 
 private:
+    TiledMap map;
+
     bool running{false};
 
     sf::Clock clock;

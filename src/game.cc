@@ -15,14 +15,16 @@ void Game::LoadContent() {
     }
 
     Assets::It()->Add("tiles", texture);
+
+    map.loadFromFile("assets/maps/Dungeon_Room_2.tmx");
 }
 
 void Game::Update() {
     let dt = clock.restart().asSeconds();
-    var fps = 0;
+    var fps = 0.f;
 
     if (dt != 0.0) 
-        fps = 1 / dt;
+        fps = 1.f / dt;
 
     // This is what we pass by constant reference to each loop that requires it
     Time time = {
@@ -42,10 +44,11 @@ void Game::Update() {
 
 void Game::Render() {
     var sprite = sf::Sprite();
-    let texture = Assets::It()->Get<sf::Texture>("tiles");
-    sprite.setTexture(texture);
-    sprite.setPosition(100, 100);
-    window->draw(sprite);
+    //let texture = Assets::It()->Get<sf::Texture>("tiles");
+    //sprite.setTexture(texture);
+    //sprite.setPosition(100, 100);
+    //window->draw(sprite);
+    window->draw(map);
 }
 
 void Game::RunLoop() {

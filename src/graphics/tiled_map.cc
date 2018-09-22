@@ -60,7 +60,6 @@ bool TiledMap::loadFromFile(const std::string& path) {
             
             let text = std::string{data->GetText()};
             var it = text.begin();
-            var stream = std::stringstream();
 
             var* layer = new TiledLayer();
             layer->name = name;
@@ -70,17 +69,13 @@ bool TiledMap::loadFromFile(const std::string& path) {
             layer->vertices.setPrimitiveType(sf::Quads);
             layer->vertices.resize(width * height * 4);
 
-            while (it != text.end()) {
-                if (*it == ',' || *it == '\n') {
-                    let str = stream.str();
-                    if (str == "") {it++; continue;}
-                    layer->data[ptr++] = std::stoi(str); 
-                    stream.str(std::string());
-                } else {
-                    stream << *it;
-                }
+            var stream = std::stringstream(text);
 
-                ++it;
+            int i = 0;
+            while (stream >> i) {
+                layer->data[ptr++] = i;
+                if (stream.peek() == ',' || stream.peek() == '\n')
+                    stream.ignore();
             }
 
             for (auto i = 0; i < width; i++) {
@@ -100,8 +95,6 @@ bool TiledMap::loadFromFile(const std::string& path) {
                     // find its position in the tileset texture
                     int tu = tileNumber % (m_tileset.getSize().x / tilewidth);
                     int tv = tileNumber / (m_tileset.getSize().x / tilewidth);
-                    //tu = 1;
-                    //tv = 5;
 
                     // get a pointer to the current tile's quad
                     sf::Vertex* quad = &layer->vertices[(i + j * width) * 4];

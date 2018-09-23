@@ -80,6 +80,6 @@ public:
     }
 
 private:
-    std::map<std::string, sf::Texture> images;
-    std::map<std::string, sf::Font> fonts;
+    std::map<std::string, sf::Texture*> images;
+    std::map<std::string, sf::Font*> fonts;
 };

@@ -4,12 +4,9 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include "skyvault.h"
+#include "entities/entity_world.h"
 #include "graphics/tiled_map.h"
-
-struct Time {
-    float dt, fps, timer;
-    long ticks;
-};
+#include "skytime.h"
 
 struct Game {
     Game();
@@ -28,11 +25,12 @@ struct Game {
 
 private:
     TiledMap map;
+    std::unique_ptr<EntityWorld> world;
 
     bool running{false};
 
     sf::Clock clock;
-    std::shared_ptr<sf::RenderWindow> window;
+    std::unique_ptr<sf::RenderWindow> window;
 
     float timer{0.0};
     long ticks{0};

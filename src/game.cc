@@ -1,14 +1,22 @@
 #include "game.h"
 #include "graphics/assets.h"
+#include "entities/entity.h"
+#include "entities/components/body.h"
+#include "entities/components/renderable.h"
+#include "entities/filters/physics_filter.h"
+#include "entities/filters/render_filter.h"
+
 #include <iostream>
 #include <sstream>
 
-Game::Game() {}
+Game::Game() {
+    world = std::make_unique<EntityWorld>();
+}
 
 void Game::LoadContent() {
-    sf::Texture texture;
+    auto* texture = new sf::Texture();
 
-    if (!texture.loadFromFile("assets/images/dungeon_tiles.png")){
+    if (!texture->loadFromFile("assets/images/dungeon_tiles.png")){
         std::cout << "Could not load texture" << std::endl;
     } else {
         std::cout << "loaded texture" << std::endl;
@@ -16,7 +24,16 @@ void Game::LoadContent() {
 
     Assets::It()->Add("tiles", texture);
 
-    map.loadFromFile("assets/maps/Dungeon_Room_2.tmx");
+    world->Register<PhysicsFilter>();
+    world->Register<RenderFilter>();
+
+    var entity = world->Create();
+    entity->Add<Body>(sf::Vector2f(10, 10), sf::Vector2f(200, 100));
+    entity->Add<PhysicsBody>();
+    entity->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
+    //entity->Add<Renderable>(texture);
+
+    //map.loadFromFile("assets/maps/Dungeon_Room_2.tmx");
 }
 
 void Game::Update() {
@@ -27,7 +44,7 @@ void Game::Update() {
         fps = 1.f / dt;
 
     // This is what we pass by constant reference to each loop that requires it
-    Time time = {
+    SkyTime time = {
         dt,
         fps, 
         timer,
@@ -35,7 +52,7 @@ void Game::Update() {
     };
 
     // Update the whole game
-
+    world->Update(time);
     // 
 
     ticks++;
@@ -43,12 +60,12 @@ void Game::Update() {
 }
 
 void Game::Render() {
-    var sprite = sf::Sprite();
+    world->Render(window);
     //let texture = Assets::It()->Get<sf::Texture>("tiles");
     //sprite.setTexture(texture);
     //sprite.setPosition(100, 100);
     //window->draw(sprite);
-    window->draw(map);
+    //window->draw(map);
 }
 
 void Game::RunLoop() {
@@ -85,7 +102,7 @@ void Game::DestroyContent() {
 
 void Game::Run() {
     // Create and initialize the window
-    window = std::make_shared<sf::RenderWindow>(
+    window = std::make_unique<sf::RenderWindow>(
         sf::VideoMode(1280, 720),
         "DevWindow"
     );

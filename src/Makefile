@@ -8,7 +8,7 @@ SRC_EXT = cc
 # Path to the source directory, relative to the makefile
 SRC_PATH = .
 # Space-separated pkg-config libraries used by this project
-LIBS = sfml-all
+LIBS = sfml-all gl
 # General compiler flags
 COMPILE_FLAGS = -std=c++17 -Wall -Wextra -g
 # Additional release-specific flags

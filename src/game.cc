@@ -5,6 +5,12 @@
 #include "entities/components/renderable.h"
 #include "entities/filters/physics_filter.h"
 #include "entities/filters/render_filter.h"
+#include "skyvault.h"
+
+#ifdef EDITOR
+#include "imgui.h"
+#include "imgui-SFML.h"
+#endif
 
 #include <iostream>
 #include <sstream>
@@ -32,7 +38,11 @@ void Game::LoadContent() {
     entity->Add<PhysicsBody>();
     entity->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
 
-    //map.loadFromFile("assets/maps/Dungeon_Room_2.tmx");
+    map.loadFromFile("assets/maps/Dungeon_Room_2.tmx");
+
+#ifdef EDITOR
+    ImGui::SFML::Init(*window);
+#endif
 }
 
 void Game::Update() {
@@ -64,7 +74,7 @@ void Game::Render() {
     //sprite.setTexture(texture);
     //sprite.setPosition(100, 100);
     //window->draw(sprite);
-    //window->draw(map);
+    window->draw(map);
 }
 
 void Game::RunLoop() {
@@ -75,6 +85,9 @@ void Game::RunLoop() {
         
         sf::Event event;
         while (window->pollEvent(event)) {
+#ifdef EDITOR
+            ImGui::SFML::ProcessEvent(event);
+#endif
             switch (event.type) {
                 case sf::Event::Closed: {
                     running = false; 
@@ -90,6 +103,21 @@ void Game::RunLoop() {
 
         window->clear();
         Render();
+
+#ifdef EDITOR
+        ImGui::SFML::Update(*window, editorClock.restart());
+        ImGui::Begin("Sample window"); // begin window
+
+        if (ImGui::Button("Hello World")) {
+            printf("Hey!!\n");
+        }
+
+        ImGui::End();
+
+        // Render the editor
+        ImGui::SFML::Render(*window);
+#endif
+
         window->display();
     }
 

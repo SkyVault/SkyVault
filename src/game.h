@@ -30,6 +30,10 @@ private:
     bool running{false};
 
     sf::Clock clock;
+#ifdef EDITOR
+    sf::Clock editorClock;
+#endif
+
     std::unique_ptr<sf::RenderWindow> window;
 
     float timer{0.0};

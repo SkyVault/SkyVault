@@ -20,6 +20,16 @@ struct EntityWorld {
 
     void Update(const SkyTime& time);
     void Render(std::unique_ptr<sf::RenderWindow>& window);
+    
+    template<typename T>
+    Entity* GetFirstWith() {
+        for (auto& entity : entities) {
+            if (entity->Has<T>()) {
+                return entity.get();
+            }
+        }
+        return nullptr;
+    }
 
 private:
     std::vector<std::unique_ptr<Filter>> filters;

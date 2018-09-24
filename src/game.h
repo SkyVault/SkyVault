@@ -6,6 +6,7 @@
 #include "skyvault.h"
 #include "entities/entity_world.h"
 #include "graphics/tiled_map.h"
+#include "graphics/camera.h"
 #include "skytime.h"
 
 struct Game {
@@ -26,6 +27,7 @@ struct Game {
 private:
     TiledMap map;
     std::unique_ptr<EntityWorld> world;
+    std::shared_ptr<Camera> camera;
 
     bool running{false};
 

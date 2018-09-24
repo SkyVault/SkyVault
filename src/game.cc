@@ -30,6 +30,8 @@ void Game::LoadContent() {
         std::cout << "loaded texture" << std::endl;
     }
 
+    camera = std::make_shared<Camera>(window->getSize().x, window->getSize().y);
+
     Assets::It()->Add("tiles", texture);
 
     world->Register<PhysicsFilter>();
@@ -53,6 +55,11 @@ void Game::LoadContent() {
 void Game::Update(const SkyTime& time) {
     // Update the whole game
     world->Update(time);
+
+    auto p = world->GetFirstWith<Player>();
+    if (p == nullptr) return;
+
+    camera->View.setCenter(p->Get<Body>()->Center());
     // 
 }
 
@@ -104,6 +111,7 @@ void Game::RunLoop() {
         Update(time);
 
         window->clear();
+        window->setView(camera->View);
         Render();
 
 #ifdef EDITOR

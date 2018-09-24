@@ -29,6 +29,11 @@ struct Entity {
         auto* c = components[typeid(T)].get();
         return (T*)(c);
     }
+
+    template<typename T>
+    bool Has() {
+        return (components.find(typeid(T)) != components.end());
+    }
     
     std::vector<std::type_index>& GetMatchlist() { return matchlist; }
 

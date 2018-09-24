@@ -11,6 +11,27 @@ struct Body : public Component {
         Position(position), 
         Size(size){}
 
+    inline bool Contains(const Body& other) {
+        return 
+            Position.x + Size.x > other.Position.x &&
+            Position.x < other.Position.x + other.Size.x &&
+            Position.y + Size.y > other.Position.y &&
+            Position.y < other.Position.y + other.Size.y;
+    }
+
+    inline float Left() { return Position.x; }
+    inline float Right() { return Position.x + Size.x; }
+
+    inline float Top() { return Position.y; }
+    inline float Bottom() { return Position.y + Size.y; }
+
+    inline sf::Vector2f Center() {
+        return sf::Vector2f(
+            Position.x + Size.x / 2.f,
+            Position.y + Size.y / 2.f
+        );
+    }
+
     sf::Vector2f Position{sf::Vector2(0, 0)};
     sf::Vector2f Size{sf::Vector2(0, 0)};
 };

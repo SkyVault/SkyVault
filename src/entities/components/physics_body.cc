@@ -5,3 +5,8 @@ type(type)
 {
     
 }
+
+void PhysicsBody::Decelerate(float dt) {
+    float v = powf(Friction, dt);
+    Velocity = Velocity * v;
+}

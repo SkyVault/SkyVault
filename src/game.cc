@@ -28,10 +28,9 @@ void Game::LoadContent() {
     world->Register<RenderFilter>();
 
     var entity = world->Create();
-    entity->Add<Body>(sf::Vector2f(10, 10), sf::Vector2f(200, 100));
+    entity->Add<Body>(sf::Vector2f(10, 10), sf::Vector2f(100, 100));
     entity->Add<PhysicsBody>();
     entity->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
-    //entity->Add<Renderable>(texture);
 
     //map.loadFromFile("assets/maps/Dungeon_Room_2.tmx");
 }

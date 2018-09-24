@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include <cmath>
 
 #ifndef MACROSTR
 #define MACROSTR(k) #k
@@ -32,6 +33,9 @@ struct PhysicsBody : public Component {
     PhysicsBody(PhysicsTypes type=PhysicsTypes::PHYSICS_STATIC);
 
     sf::Vector2f Velocity;
+    float Friction{0.5f};
+
+    void Decelerate(float dt);
 
 private:
     PhysicsTypes type{PHYSICS_STATIC};

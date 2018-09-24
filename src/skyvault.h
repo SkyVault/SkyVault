@@ -9,4 +9,6 @@
 #define let const auto
 #define var auto
 
+#define EDITOR
+
 #endif//SKY_VAULT_H

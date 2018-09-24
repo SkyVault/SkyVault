@@ -21,6 +21,8 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
         body->Size
     );
 
+    physics->Decelerate(time.dt);
+
     body->Position = sf::Vector2f(xbody.Left(), ybody.Top());
 }
 

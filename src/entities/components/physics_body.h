@@ -33,7 +33,7 @@ struct PhysicsBody : public Component {
     PhysicsBody(PhysicsTypes type=PhysicsTypes::PHYSICS_STATIC);
 
     sf::Vector2f Velocity;
-    float Friction{0.5f};
+    float Friction{0.02f};
 
     void Decelerate(float dt);
 

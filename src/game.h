@@ -14,7 +14,7 @@ struct Game {
     void LoadContent();
     void DestroyContent();
 
-    void Update();
+    void Update(const SkyTime& time);
     void Render();
 
     void RunLoop();

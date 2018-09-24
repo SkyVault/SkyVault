@@ -3,8 +3,10 @@
 #include "entities/entity.h"
 #include "entities/components/body.h"
 #include "entities/components/renderable.h"
+#include "entities/components/player.h"
 #include "entities/filters/physics_filter.h"
 #include "entities/filters/render_filter.h"
+#include "entities/filters/player_filter.h"
 #include "skyvault.h"
 
 #ifdef EDITOR
@@ -32,40 +34,26 @@ void Game::LoadContent() {
 
     world->Register<PhysicsFilter>();
     world->Register<RenderFilter>();
+    world->Register<PlayerFilter>();
 
     var entity = world->Create();
     entity->Add<Body>(sf::Vector2f(10, 10), sf::Vector2f(100, 100));
     entity->Add<PhysicsBody>();
+    entity->Add<Player>();
     entity->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
 
     map.loadFromFile("assets/maps/Dungeon_Room_2.tmx");
+    map.setScale(2.0f, 2.0f);
 
 #ifdef EDITOR
     ImGui::SFML::Init(*window);
 #endif
 }
 
-void Game::Update() {
-    let dt = clock.restart().asSeconds();
-    var fps = 0.f;
-
-    if (dt != 0.0) 
-        fps = 1.f / dt;
-
-    // This is what we pass by constant reference to each loop that requires it
-    SkyTime time = {
-        dt,
-        fps, 
-        timer,
-        ticks
-    };
-
+void Game::Update(const SkyTime& time) {
     // Update the whole game
     world->Update(time);
     // 
-
-    ticks++;
-    timer += dt;
 }
 
 void Game::Render() {
@@ -99,7 +87,21 @@ void Game::RunLoop() {
             }
         }
 
-        Update();
+        let dt = clock.restart().asSeconds();
+        var fps = 0.f;
+
+        if (dt != 0.0) 
+            fps = 1.f / dt;
+
+        // This is what we pass by constant reference to each loop that requires it
+        SkyTime time = {
+            dt,
+            fps, 
+            timer,
+            ticks
+        };
+
+        Update(time);
 
         window->clear();
         Render();
@@ -112,6 +114,8 @@ void Game::RunLoop() {
             printf("Hey!!\n");
         }
 
+        ImGui::LabelText("Timing", "FPS: %f DT: %f", time.fps, time.dt);
+
         ImGui::End();
 
         // Render the editor
@@ -119,6 +123,9 @@ void Game::RunLoop() {
 #endif
 
         window->display();
+
+        ticks++;
+        timer += dt;
     }
 
 }

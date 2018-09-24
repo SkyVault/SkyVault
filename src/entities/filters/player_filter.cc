@@ -1,10 +1,32 @@
 #include "player_filter.h"
+#include "../components/physics_body.h"
+#include "../../skyvault.h"
 
 void PlayerFilter::Load(std::unique_ptr<Entity>& entity) {
 
 }
 
-void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& entity) {
+void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
+    //var body = self->Get<Body>();
+    var physics = self->Get<PhysicsBody>();
+
+    constexpr float speed{400.0f};
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        physics->Velocity.x -= speed * time.dt;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        physics->Velocity.x += speed * time.dt;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+        physics->Velocity.y -= speed * time.dt;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        physics->Velocity.y += speed * time.dt;
+    }
 
 }
 

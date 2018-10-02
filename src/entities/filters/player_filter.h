@@ -5,6 +5,7 @@
 #include "../components/body.h"
 #include "../components/renderable.h"
 #include "../components/player.h"
+#include "../../utilities/input.h"
 
 struct PlayerFilter : public Filter {
     PlayerFilter() : Filter({

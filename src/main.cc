@@ -1,9 +1,14 @@
 #include <iostream>
+#include <sol.hpp>
 #include "skyvault.h"
 #include "graphics/assets.h"
+#include "utilities/input.h"
 
 std::unique_ptr<Assets> Assets::instance;
 std::once_flag Assets::onceFlag;
+
+std::unique_ptr<Input> Input::instance;
+std::once_flag Input::onceFlag;
 
 #include "game.h"
 

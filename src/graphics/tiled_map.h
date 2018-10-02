@@ -23,6 +23,10 @@ struct TiledLayer {
     sf::VertexArray vertices;
 };
 
+struct TiledObject {
+
+};
+
 struct TiledMap : public sf::Drawable, public sf::Transformable {
     ~TiledMap() {
         for (auto* layer : layers)

@@ -12,19 +12,19 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
 
     constexpr float speed{400.0f};
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+    if (Input::It()->IsKeyDown(sf::Keyboard::Left)) {
         physics->Velocity.x -= speed * time.dt;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+    if (Input::It()->IsKeyDown(sf::Keyboard::Right)) {
         physics->Velocity.x += speed * time.dt;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+    if (Input::It()->IsKeyDown(sf::Keyboard::Up)) {
         physics->Velocity.y -= speed * time.dt;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+    if (Input::It()->IsKeyDown(sf::Keyboard::Down)) {
         physics->Velocity.y += speed * time.dt;
     }
 

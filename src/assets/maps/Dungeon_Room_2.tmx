@@ -1004,7 +1004,7 @@
    </properties>
   </object>
   <object id="90" name="Shulk" type="Shulk" x="240" y="488" width="16" height="16"/>
-  <object id="191" type="Player" x="264.5" y="456" width="16" height="16"/>
+  <object id="191" name="Player" type="Player" x="264.5" y="456" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="11" name="Billboards">
   <object id="93" name="Column" type="Billboard" x="112" y="320" width="16" height="48">

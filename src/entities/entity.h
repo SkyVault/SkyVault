@@ -11,6 +11,7 @@
 #include <vector>
 
 struct EntityWorld;
+
 struct Entity {
     friend EntityWorld;
 

@@ -7,12 +7,8 @@
 #include "entities/filters/physics_filter.h"
 #include "entities/filters/render_filter.h"
 #include "entities/filters/player_filter.h"
+#include "utilities/input.h"
 #include "skyvault.h"
-
-#ifdef EDITOR
-#include "imgui.h"
-#include "imgui-SFML.h"
-#endif
 
 #include <iostream>
 #include <sstream>
@@ -22,7 +18,36 @@ Game::Game() {
 }
 
 void Game::LoadContent() {
+    window->setKeyRepeatEnabled(false);
+
     auto* texture = new sf::Texture();
+
+    lua = std::make_shared<sol::state>();
+    lua->open_libraries(sol::lib::base);
+    Assets::It()->GiveLua(lua);
+    Assets::It()->LoadPrefabs();
+
+    lua->script("print(\"Initialized \" .. _VERSION)");
+
+    sol::table asset_data = lua->script_file("assets/data/asset_data.lua");
+    if (!asset_data) {
+        std::cout << "Failed to load the asset data script!\n";
+        exit(0);
+    }
+
+    sol::table textures_data = asset_data["textures"];
+    textures_data.for_each([&](sol::object const& key, sol::object const& value){
+        const auto skey = key.as<std::string>(); 
+        const auto spath = value.as<std::string>(); 
+
+        auto* texture = new sf::Texture();
+        if (!texture->loadFromFile(spath)) {
+            std::cout << "Failed to load texture: " << spath << std::endl;
+            delete texture;
+            return;
+        }
+        Assets::It()->Add(skey, texture);
+    });
 
     if (!texture->loadFromFile("assets/images/dungeon_tiles.png")){
         std::cout << "Could not load texture" << std::endl;
@@ -38,38 +63,53 @@ void Game::LoadContent() {
     world->Register<RenderFilter>();
     world->Register<PlayerFilter>();
 
-    var entity = world->Create();
-    entity->Add<Body>(sf::Vector2f(10, 10), sf::Vector2f(100, 100));
-    entity->Add<PhysicsBody>();
-    entity->Add<Player>();
-    entity->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
+    var player = world->Create();
+    player->Add<Body>(sf::Vector2f(400, 800), sf::Vector2f(20 * 2, 48 * 2));
+    player->Add<PhysicsBody>();
+    player->Add<Player>();
+    player->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
+
+    camera->View.zoom(0.8f);
 
     map.loadFromFile("assets/maps/Dungeon_Room_2.tmx");
     map.setScale(2.0f, 2.0f);
 
-#ifdef EDITOR
-    ImGui::SFML::Init(*window);
-#endif
+    editor = std::make_unique<Editor>();
+    editor->initUI(window, lua);
 }
 
 void Game::Update(const SkyTime& time) {
     // Update the whole game
+    sky.Update(window->getSize().x, window->getSize().y, time);
     world->Update(time);
 
     auto p = world->GetFirstWith<Player>();
     if (p == nullptr) return;
 
+    if (Input::It()->IsKeyPressed(sf::Keyboard::Enter)) {
+        std::cout << "Enter!" << std::endl;
+    }
+
+    if (Input::It()->IsKeyReleased(sf::Keyboard::Enter)) {
+        std::cout << "Released!" << std::endl;
+    }
+
+    //TODO(Dustin): Move this to the player filter
+    //TODO(Dustin): Camera smoothing
     camera->View.setCenter(p->Get<Body>()->Center());
-    // 
 }
 
 void Game::Render() {
+    window->setView(window->getDefaultView());
+    window->draw(sky);
+    window->setView(camera->View);
+
+    window->draw(map);
     world->Render(window);
     //let texture = Assets::It()->Get<sf::Texture>("tiles");
     //sprite.setTexture(texture);
     //sprite.setPosition(100, 100);
     //window->draw(sprite);
-    window->draw(map);
 }
 
 void Game::RunLoop() {
@@ -78,11 +118,14 @@ void Game::RunLoop() {
     while (running) {
         running = window->isOpen();
         
+        Input::It()->Update();
+
         sf::Event event;
         while (window->pollEvent(event)) {
-#ifdef EDITOR
-            ImGui::SFML::ProcessEvent(event);
-#endif
+
+            editor->processEvent(event);
+            Input::It()->HandleEvent(event);
+
             switch (event.type) {
                 case sf::Event::Closed: {
                     running = false; 
@@ -114,21 +157,7 @@ void Game::RunLoop() {
         window->setView(camera->View);
         Render();
 
-#ifdef EDITOR
-        ImGui::SFML::Update(*window, editorClock.restart());
-        ImGui::Begin("Sample window"); // begin window
-
-        if (ImGui::Button("Hello World")) {
-            printf("Hey!!\n");
-        }
-
-        ImGui::LabelText("Timing", "FPS: %f DT: %f", time.fps, time.dt);
-
-        ImGui::End();
-
-        // Render the editor
-        ImGui::SFML::Render(*window);
-#endif
+        editor->doUI(window, time);
 
         window->display();
 

@@ -1,42 +1,11 @@
+#ifndef SKYVAULT_ASSETS_H
+#define SKYVAULT_ASSETS_H
 #include <map>
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <type_traits>
-
-#if 0
-#include <mutex>
-
-class Singleton
-{
-private:
-	Singleton(const Singleton&) = delete;
-	Singleton & operator=(const Singleton&) = delete;
-	
-
-	static std::unique_ptr<Singleton> instance;
-	static std::once_flag onceFlag;
-public:
-	Singleton() = default;
-
-	static void NofityInit()
-	{
-		std::cout << "Initializing Singleton" << '\n';
-	}
-	static Singleton& Singleton::Instance()
-	{
-		std::call_once(Singleton::onceFlag,[] (){
-			NofityInit();
-			instance.reset(new Singleton); 
-		});
-
-		std::cout << "Getting  Singleton instance" << '\n';
-		return *(instance.get());
-	}
-};
-
-std::unique_ptr<Singleton> Singleton::instance;
-std::once_flag Singleton::onceFlag;
-#endif 
+#include <sol.hpp>
+#include <iostream>
 
 #include <mutex>
 
@@ -61,6 +30,12 @@ public:
         return instance.get();
     }
 
+    inline void GiveLua(std::shared_ptr<sol::state>& lua) {
+        this->lua = lua; 
+    }
+
+    void LoadPrefabs();
+
     template <typename T>
     void Add(const std::string& id, T& t) {
         if constexpr (std::is_same<T, sf::Texture>()) {
@@ -79,7 +54,21 @@ public:
         }
     }
 
+    sol::table GetPrefab(const std::string& name) {
+        if (entity_prefabs.find(name) == entity_prefabs.end()) {
+            std::cout << "Cannot find prefab: " << name << std::endl;
+            return sol::table{};
+        }
+        return entity_prefabs[name];
+    }
+
+    inline std::map<std::string, sol::table>& GetPrefabs() {return entity_prefabs;}
+
 private:
     std::map<std::string, sf::Texture*> images;
     std::map<std::string, sf::Font*> fonts;
+    std::map<std::string, sol::table> entity_prefabs;
+
+    std::shared_ptr<sol::state> lua;
 };
+#endif//SKYVAULT_ASSETS_H

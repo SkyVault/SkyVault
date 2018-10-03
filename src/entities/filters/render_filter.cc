@@ -32,3 +32,15 @@ void RenderFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique
 
     window->draw(ren->sprite);
 }
+
+
+void RenderAnimatedSpriteFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self){
+    var ren = self->Get<AnimatedSprite>();
+}
+
+void RenderAnimatedSpriteFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& self){
+    var ren = self->Get<AnimatedSprite>();
+    var body = self->Get<Body>();
+
+    window->draw(ren->GetSprite());
+}

@@ -12,3 +12,7 @@ Renderable::Renderable(const sf::Texture* texture, const sf::IntRect& region) {
     sprite.setTexture(*texture);
     sprite.setTextureRect(region);
 }
+
+AnimatedSprite::AnimatedSprite(const sf::Texture* texture, std::map<std::string, Animation>& animations) {
+
+}

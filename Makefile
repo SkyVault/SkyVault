@@ -1,8 +1,8 @@
 run:
-	cd src && make && clear && ./bin/release/SkyVault
+	./j2l && cd src && make && clear && ./bin/release/SkyVault
 
 build:
-	cd src && make
+	./j2l && cd src && make
 
 clean:
 	cd src && make clean

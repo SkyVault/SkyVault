@@ -1,0 +1,3 @@
+#!/bin/bash
+
+g++ -std=c++17 json_to_lua.cc -o j2l && echo "Success!"

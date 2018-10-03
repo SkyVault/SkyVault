@@ -29,3 +29,12 @@ void Assets::LoadPrefabs() {
     //}
 
 }
+
+void Assets::LoadAnimations() {
+    constexpr auto PrefabPath{"assets/data/animations/"};
+
+    for (auto file : crefile::iter_dir(PrefabPath)) {
+        
+    }
+
+}

@@ -35,10 +35,11 @@ public:
     }
 
     void LoadPrefabs();
+    void LoadAnimations();
 
     template <typename T>
     void Add(const std::string& id, T& t) {
-        if constexpr (std::is_same<T, sf::Texture>()) {
+        if constexpr (std::is_same<T, sf::Texture*>()) {
             images[id] = t;
         } else if constexpr (std::is_same<T, sf::Font>()) {
             fonts[id] = t;
@@ -46,13 +47,19 @@ public:
     }
 
     template <typename T>
-    T Get(const std::string& id) {
+    T* Get(const std::string& id) {
         if constexpr (std::is_same<T, sf::Texture>()) {
+            if (images.find(id) == images.end()) {
+                std::cout << "Cannot find texture: " << id << std::endl;
+                return nullptr;
+            }
             return images[id];
         } else if constexpr (std::is_same<T, sf::Font>()) {
             return fonts[id];
         }
     }
+
+    //sol::table GetAnimation
 
     sol::table GetPrefab(const std::string& name) {
         if (entity_prefabs.find(name) == entity_prefabs.end()) {
@@ -68,6 +75,7 @@ private:
     std::map<std::string, sf::Texture*> images;
     std::map<std::string, sf::Font*> fonts;
     std::map<std::string, sol::table> entity_prefabs;
+    std::map<std::string, sol::table> animations;
 
     std::shared_ptr<sol::state> lua;
 };

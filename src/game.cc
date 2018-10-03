@@ -26,6 +26,7 @@ void Game::LoadContent() {
     lua->open_libraries(sol::lib::base);
     Assets::It()->GiveLua(lua);
     Assets::It()->LoadPrefabs();
+    Assets::It()->LoadAnimations();
 
     lua->script("print(\"Initialized \" .. _VERSION)");
 
@@ -39,6 +40,8 @@ void Game::LoadContent() {
     textures_data.for_each([&](sol::object const& key, sol::object const& value){
         const auto skey = key.as<std::string>(); 
         const auto spath = value.as<std::string>(); 
+
+        std::cout << "---> " << skey << std::endl;
 
         auto* texture = new sf::Texture();
         if (!texture->loadFromFile(spath)) {
@@ -61,13 +64,25 @@ void Game::LoadContent() {
 
     world->Register<PhysicsFilter>();
     world->Register<RenderFilter>();
+    world->Register<RenderAnimatedSpriteFilter>();
     world->Register<PlayerFilter>();
 
-    var player = world->Create();
-    player->Add<Body>(sf::Vector2f(400, 800), sf::Vector2f(20 * 2, 48 * 2));
-    player->Add<PhysicsBody>();
-    player->Add<Player>();
-    player->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
+    {
+        var player = world->Create();
+        player->Add<Body>(sf::Vector2f(400, 800), sf::Vector2f(20 * 2, 48 * 2));
+        player->Add<PhysicsBody>();
+        player->Add<Player>();
+        player->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
+    }
+
+    {
+        var bird = world->Create();
+        bird->Add<Body>(sf::Vector2f(400 + 64, 800 + 64), sf::Vector2f(8*4, 8*4));
+        bird->Add<PhysicsBody>();
+        
+        const auto t = Assets::It()->Get<sf::Texture>("bird");
+        bird->Add<Renderable>(t, sf::IntRect(0, 0, 8, 8));
+    }
 
     camera->View.zoom(0.8f);
 

@@ -1,7 +1,11 @@
 #include "animation.h"
 
-float Animation::PercentDone() {
+Animation::Animation(std::vector<Frame> _frames) {
+  this->frames = _frames;
+}
 
+float Animation::PercentDone() {
+    return 100.0f * static_cast<float>(frames.size() / current_frame_index);
 }
 
 Animation::State Animation::GetState() { return state; }

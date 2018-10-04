@@ -1,6 +1,7 @@
 #ifndef SKYVAULT_RENDER_FILTER_H
 #define SKYVAULT_RENDER_FILTER_H
 
+#include <iostream>
 #include "../filter.h"
 #include "../components/body.h"
 #include "../components/renderable.h"

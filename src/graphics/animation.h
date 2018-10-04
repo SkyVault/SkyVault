@@ -5,6 +5,10 @@
 #include "frame.h"
 
 struct Animation {
+    Animation(){}
+    Animation(const Animation& a){}
+    Animation(std::vector<Frame> _frames);
+
     enum Playback {
         Forward,
         Backward,

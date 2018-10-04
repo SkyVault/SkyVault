@@ -8,6 +8,8 @@
 #include "entities/filters/render_filter.h"
 #include "entities/filters/player_filter.h"
 #include "utilities/input.h"
+#include "graphics/animation.h"
+#include "graphics/frame.h"
 #include "skyvault.h"
 
 #include <iostream>
@@ -76,6 +78,14 @@ void Game::LoadContent() {
     }
 
     {
+        Animation flight_anim(std::vector<Frame>{
+                Frame(0, 0, 8, 8), 
+                Frame(8, 0, 8, 8), 
+                Frame(16, 0, 8, 8), 
+                Frame(24, 0, 8, 8), 
+                Frame(32, 0, 8, 8)
+                });
+
         var bird = world->Create();
         bird->Add<Body>(sf::Vector2f(400 + 64, 800 + 64), sf::Vector2f(8*4, 8*4));
         bird->Add<PhysicsBody>();

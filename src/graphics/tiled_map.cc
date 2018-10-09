@@ -3,8 +3,12 @@
 #include <iostream>
 #include <sstream>
 
-bool TiledMap::loadFromFile(const std::string& path) {
+bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics) {
     using namespace tinyxml2;
+
+    if (physics == nullptr) {
+        std::cout << "TiledMap::loadFromFile:: PhysicsFilter is null" << std::endl;
+    }
 
     XMLDocument doc;
     if (doc.LoadFile(path.c_str()) != XML_SUCCESS){
@@ -59,7 +63,7 @@ bool TiledMap::loadFromFile(const std::string& path) {
             }
             
             let text = std::string{data->GetText()};
-            var it = text.begin();
+            //var it = text.begin();
 
             var* layer = new TiledLayer();
             layer->name = name;
@@ -117,10 +121,29 @@ bool TiledMap::loadFromFile(const std::string& path) {
 
         } else if (strcmp(name, "objectgroup") == 0) {
             // Handle tiled objects
+            auto* objectXml = child->FirstChildElement();
+            while (objectXml != nullptr) {
+                float ox{0.0f}, oy{0.0f}, owidth{0.0f}, oheight{0.0f};
+
+                objectXml->QueryFloatAttribute("x",         &ox);
+                objectXml->QueryFloatAttribute("y",         &oy);
+                objectXml->QueryFloatAttribute("width",     &owidth);
+                objectXml->QueryFloatAttribute("height",    &oheight);
+
+                if (objectXml->Attribute("type") == nullptr) {
+                    physics->AddSolid(ox, oy, owidth, oheight);
+
+                } else {
+                    const auto type = std::string{objectXml->Attribute("type")};
+
+                    //if (type == "") {
+                    //}
+
+                }
+                objectXml = objectXml->NextSiblingElement();
+            }
         }
         
-
-        std::cout << child->Value() << std::endl;
         child = child->NextSiblingElement();
     }
 

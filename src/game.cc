@@ -101,7 +101,9 @@ void Game::LoadContent() {
 
     camera->View.zoom(0.8f);
 
-    map.loadFromFile("assets/maps/Dungeon_Room_2.tmx");
+    auto* physics_filter = world->GetFilter<PhysicsFilter>();
+
+    map.loadFromFile("assets/maps/Dungeon_Room_2.tmx", physics_filter);
     map.setScale(2.0f, 2.0f);
 
     editor = std::make_unique<Editor>();

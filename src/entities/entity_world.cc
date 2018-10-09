@@ -9,7 +9,7 @@ Entity* EntityWorld::Create() {
 
 void EntityWorld::Update(const SkyTime& time) {
     for (auto& e : entities) {
-        for (auto& f : filters) {
+        for (auto& [key, f] : filters) {
             if (f->Matches(e->GetMatchlist())) {
                 if (!e->loaded) 
                     f->Load(e);
@@ -26,7 +26,7 @@ void EntityWorld::Update(const SkyTime& time) {
 
 void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
     for (auto& e : entities) {
-        for (auto& f : filters) {
+        for (auto& [key, f] : filters) {
             if (f->Matches(e->GetMatchlist())) {
                 f->Render(window, e);
             }

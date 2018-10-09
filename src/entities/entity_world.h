@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <typeindex>
 
 #include "entity.h"
 #include "filter.h"
@@ -15,7 +16,13 @@ struct EntityWorld {
 
     template <typename T, typename... Args>
     void Register(Args&&... args) {
-        filters.push_back(std::make_unique<T>(std::forward<Args>(args)...)); 
+        filters[typeid(T)] = (std::make_unique<T>(std::forward<Args>(args)...)); 
+    }
+
+    template <typename T>
+    T* GetFilter() {
+        // This returns a raw pointer that shouldn't be stored anywhere, or freed
+        return (T*)filters[typeid(T)].get();
     }
 
     void Update(const SkyTime& time);
@@ -32,7 +39,7 @@ struct EntityWorld {
     }
 
 private:
-    std::vector<std::unique_ptr<Filter>> filters;
+    std::map<std::type_index, std::unique_ptr<Filter>> filters;
     std::vector<std::unique_ptr<Entity>> entities;
 };
 

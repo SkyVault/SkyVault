@@ -1,6 +1,14 @@
 #include "physics_filter.h"
 #include "../../skyvault.h"
 
+void PhysicsFilter::AddSolid(float x, float y, float width, float height) {
+    solids.push_back(std::make_unique<Solid>(x, y, width, height));
+}
+
+void PhysicsFilter::ClearSolids(){
+    solids.clear();
+}
+
 void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
     var physics = self->Get<PhysicsBody>();
     var body = self->Get<Body>();

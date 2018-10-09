@@ -69,8 +69,6 @@ void RenderAnimatedSpriteFilter::Render(std::unique_ptr<sf::RenderWindow>& windo
         let scale_x = body->Size.x / imwidth;
         let scale_y = body->Size.y / imheight;
 
-        ////printf("sx: %f sy: %f\n", imwidth, imheight);
-
         ren->GetSprite().setScale(sf::Vector2f(scale_x, scale_y));
     } else {
         ren->GetSprite().setScale(sf::Vector2f(1, 1));

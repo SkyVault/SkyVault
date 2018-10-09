@@ -6,13 +6,9 @@
 #include <vector>
 #include <memory>
 
-struct Solid {
-    float x; 
-    float y;
-    float width;
-    float height;
+struct Solid : public Body{
     Solid(float x, float y, float width, float height):
-        x(x), y(y), width(width), height(height) {}
+        Body(sf::Vector2f(x, y), sf::Vector2f(width, height)){}
 };
 
 struct PhysicsFilter : public Filter {

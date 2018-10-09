@@ -99,7 +99,7 @@ void Game::LoadContent() {
                 });
     }
 
-    camera->View.zoom(0.4f);
+    camera->View.zoom(0.25f);
 
     auto* physics_filter = world->GetFilter<PhysicsFilter>();
 

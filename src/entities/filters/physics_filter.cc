@@ -29,6 +29,16 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
         body->Size
     );
 
+    for (auto& solid : solids) {
+        if (xbody.Contains(*solid)) {
+            xbody = *body;
+        }
+
+        if (ybody.Contains(*solid)) {
+            ybody = *body;
+        }
+    }
+
     physics->Decelerate(time.dt);
 
     body->Position = sf::Vector2f(xbody.Left(), ybody.Top());
@@ -38,8 +48,8 @@ void PhysicsFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::uniqu
     sf::RectangleShape shape;
     shape.setOutlineThickness(1);
     for (auto& solid: solids) {
-        shape.setPosition(solid->x, solid->y);
-        shape.setSize(sf::Vector2f(solid->width, solid->height));
+        shape.setPosition(solid->Position);
+        shape.setSize(sf::Vector2f(solid->Size));
         shape.setFillColor(sf::Color::Transparent);
         shape.setOutlineColor(sf::Color::Red);
         window->draw(shape);

@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 
 struct RenderFilter;
+struct RenderAnimatedSpriteFilter;
 
 struct Renderable : public Component {
     friend RenderFilter;
@@ -20,20 +21,22 @@ struct Renderable : public Component {
     sf::Color Color{sf::Color::White};
 
     inline sf::Sprite& GetSprite() { return sprite; }
-private:
+protected:
     sf::Sprite sprite;
 };
 
 struct AnimatedSprite : public Renderable {
-    friend RenderFilter;
+    friend RenderAnimatedSpriteFilter;
 
-    AnimatedSprite(const sf::Texture* texture, std::map<std::string, Animation>& animations);
+    AnimatedSprite(const sf::Texture* texture, const std::map<std::string, Animation>& animations);
 
     inline Animation& GetCurrentAnimation() {
         return animations[current_animation];
     }
    
 private:
+    float timer{0.0f};
+
     std::string current_animation{""};
     std::map<std::string, Animation> animations;
 };

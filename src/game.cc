@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <map>
 
 Game::Game() {
     world = std::make_unique<EntityWorld>();
@@ -87,11 +88,15 @@ void Game::LoadContent() {
                 });
 
         var bird = world->Create();
+        var t = Assets::It()->Get<sf::Texture>("bird");
+
         bird->Add<Body>(sf::Vector2f(400 + 64, 800 + 64), sf::Vector2f(8*4, 8*4));
         bird->Add<PhysicsBody>();
         
-        const auto t = Assets::It()->Get<sf::Texture>("bird");
-        bird->Add<Renderable>(t, sf::IntRect(0, 0, 8, 8));
+        //bird->Add<Renderable>(t, sf::IntRect(0, 0, 8, 8));
+        bird->Add<AnimatedSprite>(t, std::map<std::string, Animation>{
+                {"flight", flight_anim} 
+                });
     }
 
     camera->View.zoom(0.8f);
@@ -202,6 +207,8 @@ void Game::Run() {
         sf::VideoMode(1280, 720),
         "DevWindow"
     );
+
+    window->setPosition(sf::Vector2i(40, 80));
 
     LoadContent();
 

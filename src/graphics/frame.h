@@ -12,6 +12,10 @@ struct Frame {
 
     Frame(){}
 
+    inline sf::IntRect GetRect(){
+        return sf::IntRect(x, y, width, height);
+    }
+
     float duration{100.0f};
 
     int x{0}, y{0}, width{0}, height{0};

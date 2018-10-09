@@ -1,7 +1,9 @@
 #include "animation.h"
+#include <iostream>
 
 Animation::Animation(std::vector<Frame> _frames) {
-  this->frames = _frames;
+  for (const auto f: _frames)
+      this->frames.push_back(f);
 }
 
 float Animation::PercentDone() {
@@ -22,5 +24,8 @@ Frame Animation::GetCurrentFrame() {
 
 void Animation::Next() {
     current_frame_index++;
-    current_frame_index %= frames.size();
+    if (frames.size() != 0)
+        current_frame_index %= (int)frames.size();
+    else
+        current_frame_index = 0;
 }

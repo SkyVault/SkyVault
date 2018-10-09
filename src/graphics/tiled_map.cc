@@ -132,7 +132,6 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics) {
 
                 if (objectXml->Attribute("type") == nullptr) {
                     physics->AddSolid(ox, oy, owidth, oheight);
-
                 } else {
                     const auto type = std::string{objectXml->Attribute("type")};
 

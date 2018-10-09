@@ -72,7 +72,7 @@ void Game::LoadContent() {
 
     {
         var player = world->Create();
-        player->Add<Body>(sf::Vector2f(400, 800), sf::Vector2f(20 * 2, 48 * 2));
+        player->Add<Body>(sf::Vector2f(200, 400), sf::Vector2f(20, 48));
         player->Add<PhysicsBody>();
         player->Add<Player>();
         player->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
@@ -99,12 +99,12 @@ void Game::LoadContent() {
                 });
     }
 
-    camera->View.zoom(0.8f);
+    camera->View.zoom(0.4f);
 
     auto* physics_filter = world->GetFilter<PhysicsFilter>();
 
     map.loadFromFile("assets/maps/Dungeon_Room_2.tmx", physics_filter);
-    map.setScale(2.0f, 2.0f);
+    map.setScale(1.0f, 1.0f);
 
     editor = std::make_unique<Editor>();
     editor->initUI(window, lua);

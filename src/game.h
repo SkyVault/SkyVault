@@ -28,8 +28,8 @@ struct Game {
     void Run();
 
     inline bool Running() { return running; }
-
 private:
+
     TiledMap map;
     std::unique_ptr<EntityWorld> world;
     std::shared_ptr<Camera> camera;

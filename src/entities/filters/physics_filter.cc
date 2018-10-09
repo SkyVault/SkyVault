@@ -35,5 +35,13 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
 }
 
 void PhysicsFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& self) {
-
+    sf::RectangleShape shape;
+    shape.setOutlineThickness(1);
+    for (auto& solid: solids) {
+        shape.setPosition(solid->x, solid->y);
+        shape.setSize(sf::Vector2f(solid->width, solid->height));
+        shape.setFillColor(sf::Color::Transparent);
+        shape.setOutlineColor(sf::Color::Red);
+        window->draw(shape);
+    }
 }

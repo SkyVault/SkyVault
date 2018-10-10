@@ -2,8 +2,12 @@
 #include <sol.hpp>
 #include "skyvault.h"
 #include "game.h"
+#include "graphics/art.h"
 #include "graphics/assets.h"
 #include "utilities/input.h"
+
+std::unique_ptr<Art> Art::instance;
+std::once_flag Art::onceFlag;
 
 std::unique_ptr<Assets> Assets::instance;
 std::once_flag Assets::onceFlag;

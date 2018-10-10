@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "../filter.h"
+#include "../../graphics/art.h"
 #include "../components/body.h"
 #include "../components/renderable.h"
 

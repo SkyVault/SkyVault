@@ -32,4 +32,6 @@
 *.app
 
 tags
-src/callgrind*
+*callgrind*
+*.svg
+*vgcore*

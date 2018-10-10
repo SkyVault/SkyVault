@@ -10,6 +10,7 @@
 #include "graphics/tiled_map.h"
 #include "graphics/camera.h"
 #include "graphics/sky.h"
+#include "graphics/art.h"
 #include "skytime.h"
 
 #include "editor/editor.h"

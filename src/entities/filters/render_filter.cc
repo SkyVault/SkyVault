@@ -30,7 +30,7 @@ void RenderFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique
         ren->sprite.setScale(sf::Vector2f(1, 1));
     }
 
-    window->draw(ren->sprite);
+    Art::It()->Draw(ren->GetSprite(), body->Position.y);
 }
 
 
@@ -75,5 +75,6 @@ void RenderAnimatedSpriteFilter::Render(std::unique_ptr<sf::RenderWindow>& windo
         ren->GetSprite().setScale(sf::Vector2f(1, 1));
     }
 
-    window->draw(ren->GetSprite());
+    Art::It()->Draw(ren->GetSprite(), body->Position.y);
+    //window->draw(ren->GetSprite());
 }

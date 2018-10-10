@@ -72,10 +72,18 @@ void Game::LoadContent() {
 
     {
         var player = world->Create();
-        player->Add<Body>(sf::Vector2f(200, 400), sf::Vector2f(20, 48));
+        player->Add<Body>(sf::Vector2f(200, 400+16), sf::Vector2f(20, 40));
         player->Add<PhysicsBody>();
         player->Add<Player>();
         player->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
+    }
+
+    {
+        var player = world->Create();
+        player->Add<Body>(sf::Vector2f(200, 400), sf::Vector2f(20, 40));
+        player->Add<PhysicsBody>();
+        player->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
+        player->Get<Renderable>()->Color = sf::Color::Red;
     }
 
     {
@@ -138,10 +146,7 @@ void Game::Render() {
 
     window->draw(map);
     world->Render(window);
-    //let texture = Assets::It()->Get<sf::Texture>("tiles");
-    //sprite.setTexture(texture);
-    //sprite.setPosition(100, 100);
-    //window->draw(sprite);
+    Art::It()->Flush(window);
 }
 
 void Game::RunLoop() {

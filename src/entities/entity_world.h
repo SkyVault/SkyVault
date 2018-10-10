@@ -17,6 +17,7 @@ struct EntityWorld {
     template <typename T, typename... Args>
     void Register(Args&&... args) {
         filters[typeid(T)] = (std::make_unique<T>(std::forward<Args>(args)...)); 
+        filters[typeid(T)]->World = this;
     }
 
     template <typename T>
@@ -37,6 +38,8 @@ struct EntityWorld {
         }
         return nullptr;
     }
+
+    inline std::vector<std::unique_ptr<Entity>>& GetEntities() { return entities; }
 
 private:
     std::map<std::type_index, std::unique_ptr<Filter>> filters;

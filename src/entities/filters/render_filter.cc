@@ -57,7 +57,8 @@ void RenderAnimatedSpriteFilter::Render(std::unique_ptr<sf::RenderWindow>& windo
     ren->GetSprite().setColor(ren->Color);
     ren->GetSprite().setPosition(body->Position);
 
-    ren->GetSprite().setTextureRect(ren->GetCurrentAnimation().GetCurrentFrame().GetRect());
+    const auto frame = ren->GetCurrentAnimation().GetCurrentFrame().GetRect();
+    ren->GetSprite().setTextureRect(frame);
 
     if (ren->GetSprite().getTexture() != nullptr) {
         let rect = ren->GetSprite().getTextureRect();

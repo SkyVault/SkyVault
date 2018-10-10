@@ -26,8 +26,7 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
 
     if (Input::It()->IsKeyDown(sf::Keyboard::Down)) {
         physics->Velocity.y += speed * time.dt;
-    }
-
+    } 
 }
 
 void PlayerFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) {

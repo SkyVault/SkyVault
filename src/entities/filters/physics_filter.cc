@@ -44,7 +44,9 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
     body->Position = sf::Vector2f(xbody.Left(), ybody.Top());
 }
 
-void PhysicsFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& self) {
+void PhysicsFilter::PostRender(std::unique_ptr<sf::RenderWindow>& window) {
+    if (!IsDebug()) return;
+
     sf::RectangleShape shape;
     shape.setOutlineThickness(1);
     for (auto& solid: solids) {

@@ -10,7 +10,11 @@
 #include "entity.h"
 #include "../skytime.h"
 
+struct EntityWorld;
+
 struct Filter {
+    friend EntityWorld;
+
     Filter(const std::initializer_list<std::type_index> ids) {
         for (const auto t : ids) {
             filter.push_back(t);
@@ -30,8 +34,14 @@ struct Filter {
     virtual void Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) {}
     virtual void Destroy(std::unique_ptr<Entity>& entity) {}
 
+    virtual void PostRender(std::unique_ptr<sf::RenderWindow>& window) {}
+
+protected:
+    EntityWorld* World{nullptr};
+
 private:
     std::vector<std::type_index> filter;
+
 };
 
 #endif//SKYVAULT_FILTER_H

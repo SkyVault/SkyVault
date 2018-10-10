@@ -31,7 +31,7 @@ struct Game {
 private:
 
     TiledMap map;
-    std::unique_ptr<EntityWorld> world;
+    std::shared_ptr<EntityWorld> world;
     std::shared_ptr<Camera> camera;
     std::shared_ptr<sol::state> lua;
 

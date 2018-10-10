@@ -14,7 +14,7 @@ struct Solid : public Body{
 struct PhysicsFilter : public Filter {
     PhysicsFilter() : Filter({typeid(Body), typeid(PhysicsBody)}) {}
     void Update(const SkyTime& time, std::unique_ptr<Entity>& entity) override;
-    void Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) override;
+    void PostRender(std::unique_ptr<sf::RenderWindow>& window) override;
 
     void AddSolid(float x, float y, float width, float height);
     void ClearSolids();

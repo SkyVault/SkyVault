@@ -32,4 +32,8 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
             }
         }
     }
+
+    for (auto& [key, f] : filters) {
+        f->PostRender(window);
+    }
 }

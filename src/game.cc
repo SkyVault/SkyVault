@@ -17,7 +17,7 @@
 #include <map>
 
 Game::Game() {
-    world = std::make_unique<EntityWorld>();
+    world = std::make_shared<EntityWorld>();
 }
 
 void Game::LoadContent() {
@@ -87,19 +87,23 @@ void Game::LoadContent() {
                 Frame(32, 0, 8, 8)
                 });
 
-        var bird = world->Create();
-        var t = Assets::It()->Get<sf::Texture>("bird");
+        //for (auto i = 0; i < 80; i++) {
+            //for (auto j = 0; j < 80; j++) {
+                //var bird = world->Create();
+                //var t = Assets::It()->Get<sf::Texture>("bird");
 
-        bird->Add<Body>(sf::Vector2f(400 + 64, 800 + 64), sf::Vector2f(8*4, 8*4));
-        bird->Add<PhysicsBody>();
-        
-        //bird->Add<Renderable>(t, sf::IntRect(0, 0, 8, 8));
-        bird->Add<AnimatedSprite>(t, std::map<std::string, Animation>{
-                {"flight", flight_anim} 
-                });
+                //bird->Add<Body>(sf::Vector2f(12 * i, 12 * j), sf::Vector2f(8*2, 8*2));
+                //bird->Add<PhysicsBody>();
+                
+                ////bird->Add<Renderable>(t, sf::IntRect(0, 0, 8, 8));
+                //bird->Add<AnimatedSprite>(t, std::map<std::string, Animation>{
+                        //{"flight", flight_anim} 
+                        //});
+            //}
+        //}
     }
 
-    camera->View.zoom(0.25f);
+    camera->View.zoom(0.5f);
 
     auto* physics_filter = world->GetFilter<PhysicsFilter>();
 
@@ -118,12 +122,8 @@ void Game::Update(const SkyTime& time) {
     auto p = world->GetFirstWith<Player>();
     if (p == nullptr) return;
 
-    if (Input::It()->IsKeyPressed(sf::Keyboard::Enter)) {
-        std::cout << "Enter!" << std::endl;
-    }
-
-    if (Input::It()->IsKeyReleased(sf::Keyboard::Enter)) {
-        std::cout << "Released!" << std::endl;
+    if (Input::It()->IsKeyPressed(sf::Keyboard::Q)) {
+        ToggleDebug();
     }
 
     //TODO(Dustin): Move this to the player filter
@@ -189,7 +189,7 @@ void Game::RunLoop() {
         window->setView(camera->View);
         Render();
 
-        editor->doUI(window, time);
+        editor->doUI(window, time, world);
 
         window->display();
 

@@ -12,7 +12,7 @@ void Editor::processEvent(sf::Event& event) {
     ImGui::SFML::ProcessEvent(event);
 }
 
-void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time) {
+void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time, std::shared_ptr<EntityWorld>& world) {
     ImGui::SFML::Update(*window, editorClock.restart());
     ImGui::Begin("Sample window"); // begin window
     ImGui::LabelText("Timing", "FPS: %f DT: %f", time.fps, time.dt);
@@ -31,9 +31,54 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
     ImGui::End();
 
     doInGameTerminal();
+    doEntityInspector(world);
 
     // Render the editor
     ImGui::SFML::Render(*window);
+}
+
+void Editor::doEntityInspector(std::shared_ptr<EntityWorld>& world) {
+    ImGui::Begin("Entity Inspector");
+    ImGui::BeginGroup();
+
+    const auto& entities = world->GetEntities();
+
+    for(auto& entity : entities) {
+        ImGui::Spacing();
+
+        auto str = "entity id: " + std::to_string(entity->GetUUID());
+        if (ImGui::CollapsingHeader(str.c_str())){
+            auto& components = entity->GetComponentNames();
+
+            if (entity->Has<Body>()) {
+        
+                auto body = entity->Get<Body>();
+                const auto& btn_label = std::string{"Goto"};
+                if (ImGui::Button(btn_label.c_str())) {
+                    auto player = world->GetFirstWith<Player>();
+                    if (player) {
+                        player->Get<Body>()->Position = body->Position;
+                    }
+                }
+
+                float p[] = {body->Position.x, body->Position.y};
+                ImGui::DragFloat2(std::string{"Position##"+entity->GetUUID()}.c_str(), p);
+                body->Position.x = p[0];
+                body->Position.y = p[1];
+            }
+
+            for (auto& m : components) {
+                auto name = std::string{m};
+                auto it = name.begin();
+                while(*it >= '0' && *it <= '9' && it != name.end())
+                    it++;
+                ImGui::BulletText(std::string(it, name.end()).c_str());
+            }
+        }
+    }
+
+    ImGui::EndGroup();
+    ImGui::End();
 }
 
 void Editor::doInGameTerminal() {

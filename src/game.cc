@@ -75,10 +75,10 @@ void Game::LoadContent() {
 
     {
         var player = world->Create();
-        player->Add<Body>(sf::Vector2f(500, 400+16), sf::Vector2f(20, 40));
+        player->Add<Body>(sf::Vector2f(500, 400+16), sf::Vector2f(16, 16));
         player->Add<PhysicsBody>();
         player->Add<Player>();
-        player->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
+        player->Add<Renderable>(Assets::It()->Get<sf::Texture>("tes"), sf::IntRect(0, 0, 8*2, 16*2), sf::Vector2f(0, -8*2));
     }
 
     {

@@ -17,7 +17,9 @@ struct Renderable : public Component {
     Renderable();
     Renderable(const sf::Texture* texture);
     Renderable(const sf::Texture* texture, const sf::IntRect& region);
+    Renderable(const sf::Texture* texture, const sf::IntRect& region, sf::Vector2f offset);
     
+    sf::Vector2f Offset{sf::Vector2f(0, 0)};
     sf::Color Color{sf::Color::White};
 
     inline sf::Sprite& GetSprite() { return sprite; }

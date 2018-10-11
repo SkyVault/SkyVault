@@ -13,6 +13,12 @@ Renderable::Renderable(const sf::Texture* texture, const sf::IntRect& region) {
     sprite.setTextureRect(region);
 }
 
+Renderable::Renderable(const sf::Texture* texture, const sf::IntRect& region, sf::Vector2f offset):
+    Renderable(texture, region)
+{
+    Offset = offset;
+}
+
 AnimatedSprite::AnimatedSprite(const sf::Texture* texture, const std::map<std::string, Animation>& animations):
     animations(animations)
 {

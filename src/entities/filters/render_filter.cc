@@ -11,24 +11,24 @@ void RenderFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique
     var body = self->Get<Body>();
     
     ren->sprite.setColor(ren->Color);
-    ren->sprite.setPosition(body->Position);
+    ren->sprite.setPosition(body->Position + ren->Offset);
 
-    if (ren->sprite.getTexture() != nullptr) {
-        let rect = ren->sprite.getTextureRect();
+    //if (ren->sprite.getTexture() != nullptr) {
+        //let rect = ren->sprite.getTextureRect();
 
-        //printf("%d %d %d %d\n", rect.left, rect.top, rect.width, rect.height);
-        let imwidth = static_cast<float>(rect.width);
-        let imheight = static_cast<float>(rect.height);
+        ////printf("%d %d %d %d\n", rect.left, rect.top, rect.width, rect.height);
+        ////let imwidth = static_cast<float>(rect.width);
+        ////let imheight = static_cast<float>(rect.height);
 
-        let scale_x = body->Size.x / imwidth;
-        let scale_y = body->Size.y / imheight;
+        ////let scale_x = body->Size.x / imwidth;
+        ////let scale_y = body->Size.y / imheight;
 
-        ////printf("sx: %f sy: %f\n", imwidth, imheight);
+        //////printf("sx: %f sy: %f\n", imwidth, imheight);
 
-        ren->sprite.setScale(sf::Vector2f(scale_x, scale_y));
-    } else {
-        ren->sprite.setScale(sf::Vector2f(1, 1));
-    }
+        ////ren->sprite.setScale(sf::Vector2f(scale_x, scale_y));
+    //} else {
+        //ren->sprite.setScale(sf::Vector2f(1, 1));
+    //}
 
     Art::It()->Draw(ren->GetSprite(), body->Position.y);
 }
@@ -55,7 +55,7 @@ void RenderAnimatedSpriteFilter::Render(std::unique_ptr<sf::RenderWindow>& windo
     var body = self->Get<Body>();
     
     ren->GetSprite().setColor(ren->Color);
-    ren->GetSprite().setPosition(body->Position);
+    ren->GetSprite().setPosition(body->Position + ren->Offset);
 
     const auto frame = ren->GetCurrentAnimation().GetCurrentFrame().GetRect();
     ren->GetSprite().setTextureRect(frame);

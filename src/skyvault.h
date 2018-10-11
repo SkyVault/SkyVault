@@ -23,7 +23,7 @@ enum GameStates {
     QUITTING
 };
 
-global bool is_debugging {true};
+global bool is_debugging {false};
 
 static bool IsDebug() { return is_debugging; }
 static void ToggleDebug() { is_debugging = !is_debugging; }

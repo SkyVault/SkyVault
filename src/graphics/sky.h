@@ -8,6 +8,8 @@
 struct CloudState {
     sf::Vector2f Position;
     sf::Vector2f Scale;
+
+    float y{0.0f};
     float WindScale{0.0f};
 };
 

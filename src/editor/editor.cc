@@ -9,7 +9,7 @@ void Editor::initUI(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<s
     this->lua->set_function("print", [](const char *  y){ std::cout << y << std::endl; });
     this->lua->set_function("noclip", [](){
         GameState::It()->ToggleNoClip(); 
-        std::cout << "Toggled No clip to (" << (GameState::It()->IsNoClip() ? "true" : "false") << ")";
+        std::cout << "Toggled No clip to (" << (GameState::It()->IsNoClip() ? "true" : "false") << ")\n";
     });
 }
 
@@ -168,6 +168,8 @@ void Editor::doInGameTerminal() {
                 "[ERROR]:: " + std::string{err.what()});
         }
 
+        command_history.push_back(command);
+
         std::string sentence{output.str()};
         std::stringstream ss(sentence);        
         std::string to;
@@ -176,8 +178,6 @@ void Editor::doInGameTerminal() {
         }
 
         std::cout.rdbuf(pre);
-
-        command_history.push_back(command);
 
         memset(buff, 0, sizeof(buff));
         

@@ -35,7 +35,29 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
         for (auto& [name, table] : prefabs) {
             ImGui::Text("[%-18s]", name.c_str());
             ImGui::SameLine();
-            ImGui::Button("spawn");
+
+            // NOTE(Dustin): This is just a test
+            if (ImGui::Button("spawn")) {
+                if (name == "Bird"){
+                    Animation flight_anim(std::vector<Frame>{
+                        Frame(0, 0, 8, 8), 
+                        Frame(8, 0, 8, 8), 
+                        Frame(16, 0, 8, 8), 
+                        Frame(24, 0, 8, 8), 
+                        Frame(32, 0, 8, 8)
+                    });
+                    var bird = world->Create();
+                    var t = Assets::It()->Get<sf::Texture>("bird");
+
+                    bird->Add<Body>(cursor, sf::Vector2f(8*2, 8*2));
+                    bird->Add<PhysicsBody>();
+                    
+                    //bird->Add<Renderable>(t, sf::IntRect(0, 0, 8, 8));
+                    bird->Add<AnimatedSprite>(t, std::map<std::string, Animation>{
+                            {"flight", flight_anim} 
+                            });
+                }
+            }
         }
 
         ImGui::End();
@@ -46,6 +68,9 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
 
     // Render the editor
     ImGui::SFML::Render(*window);
+
+    if (GameState::It()->FullEditor())
+        Draw(window);
 }
 
 void Editor::doEntityInspector(std::shared_ptr<EntityWorld>& world) {
@@ -155,4 +180,50 @@ void Editor::doInGameTerminal() {
     if (reclaim_focus) ImGui::SetKeyboardFocusHere(-1);
 
     ImGui::End();
+}
+
+void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window) {
+     //const auto view = camera->View;
+
+    // get the current mouse position in the window
+    sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
+
+    // convert it to world coordinates
+    sf::Vector2f worldPos = window->mapPixelToCoords(pixelPos);
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Middle))
+        cursor = worldPos;
+    
+    constexpr float radius{4.0f};
+    sf::CircleShape circle;
+    circle.setPosition(cursor - sf::Vector2f(radius, radius));
+    circle.setRadius(radius);
+    circle.setFillColor(sf::Color::Transparent);
+    circle.setOutlineColor(sf::Color::White);
+    circle.setOutlineThickness(1);
+
+    window->draw(circle);
+
+    constexpr auto offset = radius * 0.5;
+
+    // Top
+    sf::RectangleShape line;
+    line.setPosition(cursor - sf::Vector2f(0.5, radius + (offset)) - sf::Vector2f(0, radius));
+    line.setSize(sf::Vector2f(1, radius*2));
+    window->draw(line);
+
+    // Bottom
+    line.setPosition(cursor - sf::Vector2f(0.5, -1.0 * radius - (offset)) - sf::Vector2f(0, radius));
+    line.setSize(sf::Vector2f(1, radius*2));
+    window->draw(line);
+
+    // Right
+    line.setPosition(cursor - sf::Vector2f(-1.0 * radius - (offset), 0.5) - sf::Vector2f(radius, 0));
+    line.setSize(sf::Vector2f(radius*2, 1));
+    window->draw(line);
+
+    // Left
+    line.setPosition(cursor - sf::Vector2f(radius + (offset), 0.5) - sf::Vector2f(radius, 0));
+    line.setSize(sf::Vector2f(radius*2, 1));
+    window->draw(line);
 }

@@ -45,8 +45,6 @@ void Game::LoadContent() {
         const auto skey = key.as<std::string>(); 
         const auto spath = value.as<std::string>(); 
 
-        std::cout << "---> " << skey << std::endl;
-
         auto* texture = new sf::Texture();
         if (!texture->loadFromFile(spath)) {
             std::cout << "Failed to load texture: " << spath << std::endl;
@@ -83,7 +81,7 @@ void Game::LoadContent() {
         player->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
     }
 
-    for (int i = 0; i < 1000; i++){
+    {
         var other = world->Create();
         other->Add<Body>(sf::Vector2f(200, 400), sf::Vector2f(20, 40));
         other->Add<PhysicsBody>();

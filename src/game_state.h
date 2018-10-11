@@ -30,6 +30,6 @@ public:
 
 private:
     bool debugging{false};
-    bool fullEditor{false};
+    bool fullEditor{true};
 };
 #endif//SKYVAULT_GAMESTATE_H

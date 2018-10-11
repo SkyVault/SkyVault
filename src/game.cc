@@ -27,7 +27,19 @@ void Game::LoadContent() {
     auto* texture = new sf::Texture();
 
     lua = std::make_shared<sol::state>();
-    lua->open_libraries(sol::lib::base);
+
+    lua->open_libraries
+        ( sol::lib::base
+        , sol::lib::math
+        , sol::lib::string
+        , sol::lib::table
+        , sol::lib::package // require
+        );
+
+    //Load serpent -- (table serializer)
+    sol::table serpent = lua->script_file("assets/scripts/serpent.lua");
+    lua->set("serpent", serpent);
+
     Assets::It()->GiveLua(lua);
     Assets::It()->LoadPrefabs();
     Assets::It()->LoadAnimations();

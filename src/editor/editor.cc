@@ -55,7 +55,7 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
                     
                     //bird->Add<Renderable>(t, sf::IntRect(0, 0, 8, 8));
                     bird->Add<AnimatedSprite>(t, std::map<std::string, Animation>{
-                            {"flight", *Assets::It()->GetAnimation("Bird")} 
+                            {"flight", *Assets::It()->GetAnimation("bird")} 
                             });
                 }
             }

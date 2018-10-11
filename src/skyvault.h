@@ -6,6 +6,8 @@
 #define VERSION_MINOR "1"
 #define SKYVAULT_VERSION VERSION_MAJOR "." VERSION_REVISION "." VERSION_MINOR
 
+#include <random>
+
 #define let const auto
 #define var auto
 #define global static
@@ -25,5 +27,22 @@ global bool is_debugging {true};
 
 static bool IsDebug() { return is_debugging; }
 static void ToggleDebug() { is_debugging = !is_debugging; }
+
+inline int rand_int(int min, int max) {
+    static std::mt19937 rng;
+    static bool first{true};
+
+    if (first){
+        rng.seed(std::random_device()());
+        first = false;
+    }
+
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(1,6); // distribution in range [1, 6]
+    return dist6(rng);
+}
+
+inline float rand_float() {
+    return rand() / (RAND_MAX + 1.);
+}
 
 #endif//SKY_VAULT_H

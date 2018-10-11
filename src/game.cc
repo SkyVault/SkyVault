@@ -65,6 +65,9 @@ void Game::LoadContent() {
 
     Assets::It()->Add("tiles", texture);
 
+    // Load the sky
+    sky.Load(window->getSize().x, window->getSize().y);
+
     world->Register<PhysicsFilter>();
     world->Register<RenderFilter>();
     world->Register<RenderAnimatedSpriteFilter>();
@@ -140,6 +143,14 @@ void Game::Update(const SkyTime& time) {
 
     if (Input::It()->IsKeyPressed(sf::Keyboard::Q)) {
         ToggleDebug();
+    }
+
+    // James paul gee - 
+    if (sf::Joystick::isConnected(0)) {
+    }
+
+    if (sf::Joystick::isButtonPressed(0, 0)) {
+        std::cout << "Here" << std::endl;
     }
 
     //TODO(Dustin): Move this to the player filter
@@ -223,7 +234,7 @@ void Game::Run() {
         "DevWindow"
     );
 
-    window->setPosition(sf::Vector2i(40, 80));
+    window->setPosition(sf::Vector2i(400, 80));
 
     LoadContent();
 

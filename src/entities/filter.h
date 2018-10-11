@@ -29,6 +29,7 @@ struct Filter {
         return true;
     }
 
+    virtual void PreLoad() {}
     virtual void Load(std::unique_ptr<Entity>& entity) {}
     virtual void Update(const SkyTime& time, std::unique_ptr<Entity>& entity) {}
     virtual void Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) {}

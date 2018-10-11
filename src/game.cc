@@ -7,6 +7,7 @@
 #include "entities/filters/physics_filter.h"
 #include "entities/filters/render_filter.h"
 #include "entities/filters/player_filter.h"
+#include "entities/filters/interaction_filter.h"
 #include "utilities/input.h"
 #include "graphics/animation.h"
 #include "graphics/frame.h"
@@ -72,6 +73,7 @@ void Game::LoadContent() {
     world->Register<RenderFilter>();
     world->Register<RenderAnimatedSpriteFilter>();
     world->Register<PlayerFilter>();
+    world->Register<InteractionFilter>();
 
     {
         var player = world->Create();
@@ -81,7 +83,7 @@ void Game::LoadContent() {
         player->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
     }
 
-    {
+    for (int i = 0; i < 1000; i++){
         var other = world->Create();
         other->Add<Body>(sf::Vector2f(200, 400), sf::Vector2f(20, 40));
         other->Add<PhysicsBody>();

@@ -6,6 +6,9 @@
 #define VERSION_MINOR "1"
 #define SKYVAULT_VERSION VERSION_MAJOR "." VERSION_REVISION "." VERSION_MINOR
 
+// Size of a map in tiles, used mainly for entity interactions
+#define MAP_SIZE 256
+
 #include <random>
 
 #define let const auto
@@ -23,7 +26,7 @@ enum GameStates {
     QUITTING
 };
 
-global bool is_debugging {false};
+global bool is_debugging {true};
 
 static bool IsDebug() { return is_debugging; }
 static void ToggleDebug() { is_debugging = !is_debugging; }
@@ -42,7 +45,7 @@ inline int rand_int(int min, int max) {
 }
 
 inline float rand_float() {
-    return rand() / (RAND_MAX + 1.);
+    return rand() / (RAND_MAX + 1.f);
 }
 
 #endif//SKY_VAULT_H

@@ -8,6 +8,10 @@ Entity* EntityWorld::Create() {
 }
 
 void EntityWorld::Update(const SkyTime& time) {
+    for (auto& [key, filter] : filters) {
+        filter->PreLoad();
+    }
+
     for (auto& e : entities) {
         for (auto& [key, f] : filters) {
             if (f->Matches(e->GetMatchlist())) {

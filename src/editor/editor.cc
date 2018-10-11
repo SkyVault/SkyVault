@@ -47,13 +47,6 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
             // NOTE(Dustin): This is just a test
             if (ImGui::Button("spawn")) {
                 if (name == "Bird"){
-                    Animation flight_anim(std::vector<Frame>{
-                        Frame(0, 0, 8, 8), 
-                        Frame(8, 0, 8, 8), 
-                        Frame(16, 0, 8, 8), 
-                        Frame(24, 0, 8, 8), 
-                        Frame(32, 0, 8, 8)
-                    });
                     var bird = world->Create();
                     var t = Assets::It()->Get<sf::Texture>("bird");
 
@@ -62,7 +55,7 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
                     
                     //bird->Add<Renderable>(t, sf::IntRect(0, 0, 8, 8));
                     bird->Add<AnimatedSprite>(t, std::map<std::string, Animation>{
-                            {"flight", flight_anim} 
+                            {"flight", *Assets::It()->GetAnimation("Bird")} 
                             });
                 }
             }

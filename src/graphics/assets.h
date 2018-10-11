@@ -6,8 +6,9 @@
 #include <type_traits>
 #include <sol.hpp>
 #include <iostream>
-
 #include <mutex>
+
+#include "animation.h"
 
 struct Assets {
 private:
@@ -59,7 +60,13 @@ public:
         }
     }
 
-    //sol::table GetAnimation
+    Animation* GetAnimation(const std::string& name) {
+        if (animations.find(name) == animations.end()) {
+            std::cout << "Cannot find animation: " << name << std::endl;
+            return nullptr;
+        }
+        return animations[name];
+    }
 
     sol::table GetPrefab(const std::string& name) {
         if (entity_prefabs.find(name) == entity_prefabs.end()) {
@@ -75,7 +82,7 @@ private:
     std::map<std::string, sf::Texture*> images;
     std::map<std::string, sf::Font*> fonts;
     std::map<std::string, sol::table> entity_prefabs;
-    std::map<std::string, sol::table> animations;
+    std::map<std::string, Animation*> animations;
 
     std::shared_ptr<sol::state> lua;
 };

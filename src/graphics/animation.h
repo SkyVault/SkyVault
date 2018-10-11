@@ -29,6 +29,10 @@ struct Animation {
     Frame GetCurrentFrame();
     void Next();
 
+    inline void SetPlayback(Animation::Playback playback) {
+        this->playback = playback;
+    }
+
 private:
     State state{Playing};
     Playback playback{Forward};

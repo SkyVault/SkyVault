@@ -1,4 +1,5 @@
 #include "interaction_filter.h"
+#include "../../game_state.h"
 
 void InteractionFilter::PreLoad(){
     std::fill(grid.begin(), grid.end(), nullptr);
@@ -21,7 +22,7 @@ void InteractionFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& ent
 }
 
 void InteractionFilter::PostRender(std::unique_ptr<sf::RenderWindow>& window) {
-    if (IsDebug() == false) return;
+    if (GameState::It()->IsDebug() == false) return;
 
     constexpr float grid_square{8.0f};
 

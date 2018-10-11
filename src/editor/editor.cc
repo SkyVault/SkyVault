@@ -1,4 +1,5 @@
 #include "editor.h"
+#include "../game_state.h"
 #include <string.h>
 #include <sstream>
 
@@ -14,24 +15,34 @@ void Editor::processEvent(sf::Event& event) {
 
 void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time, std::shared_ptr<EntityWorld>& world) {
     ImGui::SFML::Update(*window, editorClock.restart());
-    ImGui::Begin("Sample window"); // begin window
+    ImGui::Begin("Sky Vault"); // begin window
     ImGui::LabelText("Timing", "FPS: %f DT: %f", time.fps, time.dt);
-    ImGui::End();
-
-    // Entity prefab window
-    ImGui::Begin("Entity Prefabs"); // begin window
-
-    const auto prefabs = Assets::It()->GetPrefabs();
-    for (auto& [name, table] : prefabs) {
-        ImGui::Text("[%-18s]", name.c_str());
-        ImGui::SameLine();
-        ImGui::Button("spawn");
+    if (ImGui::Button("Toggle Debug View")) {
+        GameState::It()->ToggleDebug();
     }
-
+    ImGui::SameLine();
+    if (ImGui::Button("Toggle Full Editor")) {
+        GameState::It()->ToggleFullEditor();
+    }
     ImGui::End();
 
-    doInGameTerminal();
-    doEntityInspector(world);
+    if (GameState::It()->FullEditor()){
+
+        // Entity prefab window
+        ImGui::Begin("Entity Prefabs"); // begin window
+
+        const auto prefabs = Assets::It()->GetPrefabs();
+        for (auto& [name, table] : prefabs) {
+            ImGui::Text("[%-18s]", name.c_str());
+            ImGui::SameLine();
+            ImGui::Button("spawn");
+        }
+
+        ImGui::End();
+
+        doInGameTerminal();
+        doEntityInspector(world);
+    }
 
     // Render the editor
     ImGui::SFML::Render(*window);

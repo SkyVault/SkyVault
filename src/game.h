@@ -5,6 +5,8 @@
 #include <memory>
 #include <sol.hpp>
 #include <string>
+#include <mutex>
+
 #include "skyvault.h"
 #include "entities/entity_world.h"
 #include "graphics/tiled_map.h"
@@ -14,6 +16,7 @@
 #include "skytime.h"
 
 #include "editor/editor.h"
+#include "game_state.h"
 
 struct Game {
     Game();
@@ -39,6 +42,7 @@ private:
     Sky sky;
 
     bool running{false};
+    bool debugging{false};
 
     sf::Clock clock;
     std::unique_ptr<Editor> editor;

@@ -143,10 +143,6 @@ void Game::Update(const SkyTime& time) {
     auto p = world->GetFirstWith<Player>();
     if (p == nullptr) return;
 
-    if (Input::It()->IsKeyPressed(sf::Keyboard::Q)) {
-        ToggleDebug();
-    }
-
     // James paul gee - 
     if (sf::Joystick::isConnected(0)) {
     }

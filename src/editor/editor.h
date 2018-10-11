@@ -8,6 +8,7 @@
 #include "../entities/entity_world.h"
 #include "../entities/components/body.h"
 #include "../entities/components/player.h"
+#include "../skyvault.h"
 
 #include <memory>
 #include <SFML/Graphics.hpp>

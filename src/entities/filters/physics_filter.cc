@@ -1,4 +1,5 @@
 #include "physics_filter.h"
+#include "../../game_state.h"
 #include "../../skyvault.h"
 
 void PhysicsFilter::AddSolid(float x, float y, float width, float height) {
@@ -47,7 +48,7 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
 }
 
 void PhysicsFilter::PostRender(std::unique_ptr<sf::RenderWindow>& window) {
-    if (!IsDebug()) return;
+    if (!GameState::It()->IsDebug()) return;
 
     sf::RectangleShape shape;
     shape.setOutlineThickness(1);

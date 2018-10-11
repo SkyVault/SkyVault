@@ -5,6 +5,10 @@
 #include "graphics/art.h"
 #include "graphics/assets.h"
 #include "utilities/input.h"
+#include "game_state.h"
+
+std::unique_ptr<GameState> GameState::instance;
+std::once_flag GameState::onceFlag;
 
 std::unique_ptr<Art> Art::instance;
 std::once_flag Art::onceFlag;

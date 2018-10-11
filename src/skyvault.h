@@ -26,10 +26,10 @@ enum GameStates {
     QUITTING
 };
 
-global bool is_debugging {true};
+//static bool is_debugging {true};
 
-static bool IsDebug() { return is_debugging; }
-static void ToggleDebug() { is_debugging = !is_debugging; }
+//inline bool IsDebug() { return is_debugging; }
+//inline void ToggleDebug() { is_debugging = !is_debugging; }
 
 inline int rand_int(int min, int max) {
     static std::mt19937 rng;

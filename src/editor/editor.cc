@@ -7,6 +7,10 @@ void Editor::initUI(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<s
     ImGui::SFML::Init(*window);
     this->lua = lua;
     this->lua->set_function("print", [](const char *  y){ std::cout << y << std::endl; });
+    this->lua->set_function("noclip", [](){
+        GameState::It()->ToggleNoClip(); 
+        std::cout << "Toggled No clip to (" << (GameState::It()->IsNoClip() ? "true" : "false") << ")";
+    });
 }
 
 void Editor::processEvent(sf::Event& event) {
@@ -23,6 +27,10 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
     ImGui::SameLine();
     if (ImGui::Button("Toggle Full Editor")) {
         GameState::It()->ToggleFullEditor();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Toggle No Clip")) {
+        GameState::It()->ToggleNoClip();
     }
     ImGui::End();
 

@@ -75,7 +75,7 @@ void Game::LoadContent() {
 
     {
         var player = world->Create();
-        player->Add<Body>(sf::Vector2f(200, 400+16), sf::Vector2f(20, 40));
+        player->Add<Body>(sf::Vector2f(500, 400+16), sf::Vector2f(20, 40));
         player->Add<PhysicsBody>();
         player->Add<Player>();
         player->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
@@ -83,7 +83,7 @@ void Game::LoadContent() {
 
     {
         var other = world->Create();
-        other->Add<Body>(sf::Vector2f(200, 400), sf::Vector2f(20, 40));
+        other->Add<Body>(sf::Vector2f(500, 400), sf::Vector2f(20, 40));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
         other->Get<Renderable>()->Color = sf::Color::Red;
@@ -91,7 +91,7 @@ void Game::LoadContent() {
 
     {
         var other = world->Create();
-        other->Add<Body>(sf::Vector2f(200+32, 400+32), sf::Vector2f(20, 40));
+        other->Add<Body>(sf::Vector2f(500+32, 400+32), sf::Vector2f(20, 40));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
         other->Get<Renderable>()->Color = sf::Color::Green;

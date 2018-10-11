@@ -169,3 +169,4 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         target.draw(layer->vertices, states);
     }
 }
+

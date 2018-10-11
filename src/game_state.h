@@ -28,8 +28,12 @@ public:
     inline void ToggleFullEditor() { fullEditor = !fullEditor; }
     inline bool FullEditor(){return fullEditor;}
 
+    inline void ToggleNoClip() { noClip = !noClip; }
+    inline bool IsNoClip(){return noClip;}
+
 private:
     bool debugging{false};
     bool fullEditor{true};
+    bool noClip{false};
 };
 #endif//SKYVAULT_GAMESTATE_H

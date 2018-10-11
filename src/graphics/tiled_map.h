@@ -43,6 +43,7 @@ struct TiledMap : public sf::Drawable, public sf::Transformable {
 
 private:
     std::vector<TiledLayer*> layers;
+    std::vector<TiledLayer*> foreground_layers;
     std::vector<Tileset> tilesets;
 
     int width{0}, height{0};

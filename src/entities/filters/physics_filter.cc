@@ -30,17 +30,17 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
         body->Size
     );
 
-#if 0
-    for (auto& solid : solids) {
-        if (xbody.Contains(*solid)) {
-            xbody = *body;
-        }
+    if (!GameState::It()->IsNoClip()) {
+        for (auto& solid : solids) {
+            if (xbody.Contains(*solid)) {
+                xbody = *body;
+            }
 
-        if (ybody.Contains(*solid)) {
-            ybody = *body;
+            if (ybody.Contains(*solid)) {
+                ybody = *body;
+            }
         }
     }
-#endif
 
     physics->Decelerate(time.dt);
 

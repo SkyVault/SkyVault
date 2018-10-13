@@ -1,5 +1,5 @@
-#define MIN_HEIGHT 4.0
-#define MAX_HEIGHT 8.5
+#define MIN_HEIGHT 2.0
+#define MAX_HEIGHT 4.5
 #define WIND vec2(0.2, 0.1)
 
 vec3 sundir = normalize(vec3(1.0,0.75,1.0));
@@ -126,8 +126,8 @@ void main() {
     float dist = planeIntersect(ro, rd, MIN_HEIGHT);
     
     //float sun = clamp(dot(sundir, rd), 0.0, 1.0);
-	//vec3 col = mix(vec3(0.78,0.78,0.7), vec3(0.3,0.4,0.5), p.y * 0.5 + 0.5);
-	//col += 0.5*vec3(1.0,0.5,0.1)*pow(sun, 32.0);
+    //vec3 col = mix(vec3(0.78,0.78,0.7), vec3(0.3,0.4,0.5), p.y * 0.5 + 0.5);
+    //col += 0.5*vec3(1.0,0.5,0.1)*pow(sun, 32.0);
     
     float sun = clamp(dot(sundir, rd), 0.0, 1.0);
     vec3 col = mix(vec3(0.78,0.78,0.7), vec3(0.1,0.2,0.8), p.y * 0.5 + 0.5);

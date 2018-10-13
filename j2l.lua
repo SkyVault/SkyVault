@@ -1,3 +1,10 @@
+--[[
+-- This script converts the outputted aseprite json animation files
+-- to Lua tables that the game engine can load.
+--
+-- It uses hardcoded paths, so that should be refactored at some point
+--]]
+
 local json = require "src/assets/scripts/json"
 local serpent = require "src/assets/scripts/serpent"
 

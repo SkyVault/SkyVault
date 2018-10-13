@@ -29,9 +29,9 @@ void Sky::Update(int width, int height, const SkyTime& time) {
     background.setSize(sf::Vector2f(width, height));
     //background.setFillColor(sf::Color(0.0, 0.2*255, 0.5*255, 255));
     //noise.setScale(1280/255.0, 720/255.0);
-    //shader.setUniform("iTime", time.timer);
-    //shader.setUniform("iChannel0", noiseTexture);
-    //shader.setUniform("iMouse", sf::Mouse::getPosition());
+    shader.setUniform("iTime", time.timer);
+    shader.setUniform("iChannel0", noiseTexture);
+    shader.setUniform("iMouse", sf::Mouse::getPosition());
 
     int i = 0;
     for(auto& cloud : cloudStates) {

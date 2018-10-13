@@ -33,7 +33,7 @@ public:
 
 private:
     bool debugging{false};
-    bool fullEditor{true};
+    bool fullEditor{false};
     bool noClip{false};
 };
 #endif//SKYVAULT_GAMESTATE_H

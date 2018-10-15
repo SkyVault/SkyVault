@@ -13,11 +13,11 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
 
     constexpr float speed{400.0f};
     
-    switch(player->CurrentState) {
+    switch(player->State.CurrentState()) {
     case Player::State::DASHING: {
         physics->Friction = 0.002f;
         if (player->DashTimer <= 0.0f)  {
-            player->CurrentState = Player::State::MOVING;
+            player->State.SetState(Player::State::MOVING);
             physics->Friction = player->PreFriction;
         }
         player->DashTimer -= time.dt;
@@ -42,10 +42,6 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
 
             if (Input::It()->IsKeyPressed(sf::Keyboard::LShift)) {
                 if (player->DashTimer <= 0.0f) {
-                    float sign = 1;
-                    if (physics->Velocity.x < 0.0f || physics->Velocity.y < 0.0f)
-                        sign = -1;
-
                     auto v = physics->Velocity;
                     float len = sqrtf((v.x*v.x) + (v.y*v.y));
                     if (len == 0.0f) len = 1.f;
@@ -55,7 +51,7 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
                     player->DashTimer = player->MaxDashTime;
                     physics->Velocity = norm * 400.0f;
                     player->PreFriction = physics->Friction;
-                    player->CurrentState = Player::State::DASHING;
+                    player->State.SetState(Player::State::DASHING);
                 }
                 break;
             }
@@ -65,6 +61,7 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
     default:
         break;
     }
+    player->State.Tick();
 }
 
 void PlayerFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) {

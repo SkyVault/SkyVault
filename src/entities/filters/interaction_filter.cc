@@ -32,14 +32,14 @@ void InteractionFilter::PostRender(std::unique_ptr<sf::RenderWindow>& window) {
         for (int x = 0; x < MAP_SIZE; x++) {
             if (grid[x + y * MAP_SIZE] != nullptr) {
                 shape.setSize(sf::Vector2f(grid_square, grid_square)); 
-                shape.setFillColor(sf::Color(255, 0, 0, 50));
+                shape.setFillColor(sf::Color(255, 0, 0, 25));
                 shape.setPosition(sf::Vector2f(x * grid_square, y * grid_square));
                 window->draw(shape);
             }
         }
     }
 
-    shape.setFillColor(sf::Color(255, 255, 255, 50));
+    shape.setFillColor(sf::Color(255, 255, 255, 25));
     for (int x = 0; x < MAP_SIZE; x++) {
         shape.setPosition(sf::Vector2f(x * grid_square, 0));
         shape.setSize(sf::Vector2f(1, MAP_SIZE * grid_square));

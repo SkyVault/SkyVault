@@ -95,18 +95,16 @@ void Game::LoadContent() {
 
     {
         var other = world->Create();
-        other->Add<Body>(sf::Vector2f(500, 400), sf::Vector2f(20, 40));
+        other->Add<Body>(sf::Vector2f(500, 400), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
-        other->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
-        other->Get<Renderable>()->Color = sf::Color::Red;
+        other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(0, 16, 32, 32), sf::Vector2f(0, -16));
     }
 
     {
         var other = world->Create();
-        other->Add<Body>(sf::Vector2f(500+32, 400+32), sf::Vector2f(20, 40));
+        other->Add<Body>(sf::Vector2f(500+32, 400-64), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
-        other->Add<Renderable>(texture, sf::IntRect(0, 0, 8, 8));
-        other->Get<Renderable>()->Color = sf::Color::Green;
+        other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(64, 16, 32, 32), sf::Vector2f(0, -16));
     }
 
     {

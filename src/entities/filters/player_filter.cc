@@ -24,40 +24,28 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
         break;
     }
     case Player::State::MOVING: {
-            if (Input::It()->IsKeyDown(sf::Keyboard::Left)) {
-                physics->Velocity.x -= speed * time.dt;
+        auto axis = Input::It()->GetMovementAxis();
+
+        physics->Velocity.x += speed * time.dt * axis.x;
+        physics->Velocity.y += speed * time.dt * axis.y;
+
+        if (Input::It()->IsKeyPressed(sf::Keyboard::LShift)) {
+            if (player->DashTimer <= 0.0f) {
+                auto v = physics->Velocity;
+                float len = sqrtf((v.x*v.x) + (v.y*v.y));
+                if (len == 0.0f) len = 1.f;
+
+                sf::Vector2f norm = v / len;
+
+                player->DashTimer = player->MaxDashTime;
+                physics->Velocity = norm * 400.0f;
+                player->PreFriction = physics->Friction;
+                player->State.SetState(Player::State::DASHING);
             }
-
-            if (Input::It()->IsKeyDown(sf::Keyboard::Right)) {
-                physics->Velocity.x += speed * time.dt;
-            }
-
-            if (Input::It()->IsKeyDown(sf::Keyboard::Up)) {
-                physics->Velocity.y -= speed * time.dt;
-            }
-
-            if (Input::It()->IsKeyDown(sf::Keyboard::Down)) {
-                physics->Velocity.y += speed * time.dt;
-            } 
-
-            if (Input::It()->IsKeyPressed(sf::Keyboard::LShift)) {
-                if (player->DashTimer <= 0.0f) {
-                    auto v = physics->Velocity;
-                    float len = sqrtf((v.x*v.x) + (v.y*v.y));
-                    if (len == 0.0f) len = 1.f;
-
-                    sf::Vector2f norm = v / len;
-
-                    player->DashTimer = player->MaxDashTime;
-                    physics->Velocity = norm * 400.0f;
-                    player->PreFriction = physics->Friction;
-                    player->State.SetState(Player::State::DASHING);
-                }
-                break;
-            }
-
-            break;
         }
+
+        break;
+    }
     default:
         break;
     }

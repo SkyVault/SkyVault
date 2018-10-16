@@ -80,6 +80,9 @@ public:
     bool IsKeyUp(int key);
 
     sf::Vector2f GetMovementAxis() {
+        // NOTE(Dustin): This can be done much more efficiently
+        // but I dont know if its worth it at the moment.
+        
         auto left = IsKeyDown(sf::Keyboard::Left);
         auto right = IsKeyDown(sf::Keyboard::Right);
         auto up = IsKeyDown(sf::Keyboard::Up);

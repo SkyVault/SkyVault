@@ -11,6 +11,7 @@
 #include "utilities/input.h"
 #include "graphics/animation.h"
 #include "graphics/frame.h"
+#include "layers/menu_layer.h"
 #include "skyvault.h"
 
 #include <iostream>
@@ -22,6 +23,13 @@ Game::Game() {
 }
 
 void Game::LoadContent() {
+    Atlas = { "Water", "Water", "Water", "Water", "Water"
+            , "Water", "Water", "Water", "Water", "Water"
+            , "Water", "Water", "Map",   "Water", "Water"
+            , "Water", "Water", "Water", "Water", "Water"
+            , "Water", "Water", "Water", "Water", "Water"
+            };
+
     window->setKeyRepeatEnabled(false);
 
     auto* texture = new sf::Texture();
@@ -43,6 +51,7 @@ void Game::LoadContent() {
     Assets::It()->GiveLua(lua);
     Assets::It()->LoadPrefabs();
     Assets::It()->LoadAnimations();
+    //Assets::It()->LoadTextures();
 
     lua->script("print(\"Initialized \" .. _VERSION)");
 
@@ -52,6 +61,7 @@ void Game::LoadContent() {
         exit(0);
     }
 
+    //TODO(Dustin): Refactor into the assets singleton
     sol::table textures_data = asset_data["textures"];
     textures_data.for_each([&](sol::object const& key, sol::object const& value){
         const auto skey = key.as<std::string>(); 
@@ -72,12 +82,18 @@ void Game::LoadContent() {
         std::cout << "loaded texture" << std::endl;
     }
 
+    //TODO(Dustin): Refactor into the assets singleton
+    auto* font = new sf::Font();
+    if (!font->loadFromFile("assets/fonts/arcade.ttf")){
+        std::cout << "Failed to load the arcade font\n";
+    }
+    const_cast<sf::Texture&>(font->getTexture(42)).setSmooth(false);
+
+    Assets::It()->Add("arcade", font);
+
     camera = std::make_shared<Camera>(window->getSize().x, window->getSize().y);
 
     Assets::It()->Add("tiles", texture);
-
-    // Load the sky
-    sky.Load(window->getSize().x, window->getSize().y);
 
     world->Register<PhysicsFilter>();
     world->Register<RenderFilter>();
@@ -85,59 +101,9 @@ void Game::LoadContent() {
     world->Register<PlayerFilter>();
     world->Register<InteractionFilter>();
 
-    {
-        var player = world->Create();
-        player->Add<Body>(sf::Vector2f(500, 400+16), sf::Vector2f(16, 16));
-        player->Add<PhysicsBody>();
-        player->Add<Player>();
-        player->Add<Renderable>(Assets::It()->Get<sf::Texture>("tes"), sf::IntRect(0, 0, 8*2, 16*2), sf::Vector2f(0, -8*2));
-    }
-
-    {
-        var other = world->Create();
-        other->Add<Body>(sf::Vector2f(500, 400), sf::Vector2f(32,16));
-        other->Add<PhysicsBody>();
-        other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(0, 16, 32, 32), sf::Vector2f(0, -16));
-    }
-
-    {
-        var other = world->Create();
-        other->Add<Body>(sf::Vector2f(500+32, 400-64), sf::Vector2f(32,16));
-        other->Add<PhysicsBody>();
-        other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(64, 16, 32, 32), sf::Vector2f(0, -16));
-    }
-
-    {
-        Animation flight_anim(std::vector<Frame>{
-                Frame(0, 0, 8, 8), 
-                Frame(8, 0, 8, 8), 
-                Frame(16, 0, 8, 8), 
-                Frame(24, 0, 8, 8), 
-                Frame(32, 0, 8, 8)
-                });
-
-        //for (auto i = 0; i < 80; i++) {
-            //for (auto j = 0; j < 80; j++) {
-                //var bird = world->Create();
-                //var t = Assets::It()->Get<sf::Texture>("bird");
-
-                //bird->Add<Body>(sf::Vector2f(12 * i, 12 * j), sf::Vector2f(8*2, 8*2));
-                //bird->Add<PhysicsBody>();
-                
-                ////bird->Add<Renderable>(t, sf::IntRect(0, 0, 8, 8));
-                //bird->Add<AnimatedSprite>(t, std::map<std::string, Animation>{
-                        //{"flight", flight_anim} 
-                        //});
-            //}
-        //}
-    }
+    GameState::It()->PushLayer(new MenuLayer(world, camera, lua));
 
     camera->View.zoom(0.5f);
-
-    auto* physics_filter = world->GetFilter<PhysicsFilter>();
-
-    map.loadFromFile("assets/maps/Dungeon_Room_2.tmx", physics_filter);
-    map.setScale(1.0f, 1.0f);
 
     editor = std::make_unique<Editor>();
     editor->initUI(window, lua);
@@ -145,13 +111,12 @@ void Game::LoadContent() {
 
 void Game::Update(const SkyTime& time) {
     // Update the whole game
-    sky.Update(window->getSize().x, window->getSize().y, time);
     world->Update(time);
+    GameState::It()->Update(time);
 
     auto p = world->GetFirstWith<Player>();
     if (p == nullptr) return;
 
-    // James paul gee - 
     if (sf::Joystick::isConnected(0)) {
     }
 
@@ -166,11 +131,10 @@ void Game::Update(const SkyTime& time) {
 
 void Game::Render() {
     window->setView(window->getDefaultView());
-    window->draw(sky);
     window->setView(camera->View);
 
-    window->draw(map);
     world->Render(window);
+    GameState::It()->Render(window);
     Art::It()->Flush(window);
 }
 
@@ -225,8 +189,7 @@ void Game::RunLoop() {
 
         ticks++;
         timer += dt;
-    }
-
+    } 
 }
 
 void Game::DestroyContent() {

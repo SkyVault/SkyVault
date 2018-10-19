@@ -20,7 +20,7 @@ struct Tileset {
 
 struct TiledLayer {
     std::string name{""};
-    std::vector<unsigned int> data;
+    std::vector<unsigned short> data;
     sf::VertexArray vertices;
 };
 

@@ -40,10 +40,13 @@ public:
 
     template <typename T>
     void Add(const std::string& id, T& t) {
+        //TODO(Dustin): Handle tables and other types
         if constexpr (std::is_same<T, sf::Texture*>()) {
             images[id] = t;
-        } else if constexpr (std::is_same<T, sf::Font>()) {
+        } else if constexpr (std::is_same<T, sf::Font*>()) {
             fonts[id] = t;
+        } else {
+            std::cout << "Assets::Add:: Added unsupported type of asset" << std::endl;
         }
     }
 

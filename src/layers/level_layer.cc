@@ -67,7 +67,11 @@ void LevelLayer::Render(std::unique_ptr<sf::RenderWindow>& window){
         if (map_tile == "Water") {
             //
         } else {
-            window->draw(sky);
+            // Unproject the sky
+            window->setView(window->getDefaultView());
+                window->draw(sky);
+            window->setView(camera->View);
+
             window->draw(map); 
         }
         //std::cout << map_tile << std::endl;

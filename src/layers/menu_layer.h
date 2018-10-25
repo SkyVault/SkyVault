@@ -11,12 +11,13 @@ struct MenuLayer : public Layer {
     inline MenuLayer( 
         const std::shared_ptr<EntityWorld>& world,
         const std::shared_ptr<Camera>& camera,
-        const std::shared_ptr<sol::state>& lua):
+        const std::shared_ptr<sol::state>& lua,
+        const std::shared_ptr<Sky>& sky):
 
     world(std::move(world)),
     camera(std::move(camera)),
-    lua(std::move(lua))
-
+    lua(std::move(lua)),
+    sky(std::move(sky))
     {
 
     }
@@ -30,6 +31,7 @@ private:
     std::shared_ptr<EntityWorld> world;
     std::shared_ptr<Camera> camera;
     std::shared_ptr<sol::state> lua;
+    std::shared_ptr<Sky> sky;
 };
 
 #endif//SKYVAULT_MENU_LAYER_H

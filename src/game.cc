@@ -27,6 +27,7 @@ void Game::LoadContent() {
     auto* texture = new sf::Texture();
 
     lua = std::make_shared<sol::state>();
+    sky = std::make_shared<Sky>();
 
     lua->open_libraries
         ( sol::lib::base
@@ -92,7 +93,7 @@ void Game::LoadContent() {
     world->Register<RenderAnimatedSpriteFilter>();
     world->Register<PlayerFilter>();
 
-    GameState::It()->PushLayer(new MenuLayer(world, camera, lua));
+    GameState::It()->PushLayer(new MenuLayer(world, camera, lua, sky));
 
     camera->View.zoom(0.5f);
 
@@ -174,7 +175,7 @@ void Game::RunLoop() {
         window->setView(camera->View);
         Render();
 
-        editor->doUI(window, time, world);
+        editor->doUI(window, time, world, sky);
 
         window->display();
 

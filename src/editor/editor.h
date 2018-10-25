@@ -7,6 +7,7 @@
 #include "../graphics/assets.h"
 #include "../graphics/camera.h"
 #include "../graphics/animation.h"
+#include "../graphics/sky.h"
 #include "../entities/entity_world.h"
 #include "../entities/components/body.h"
 #include "../entities/components/player.h"
@@ -24,7 +25,7 @@
 struct Editor {
     void initUI(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<sol::state>& lua);
     void processEvent(sf::Event& event);
-    void doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time, std::shared_ptr<EntityWorld>& world);
+    void doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time, std::shared_ptr<EntityWorld>& world, std::shared_ptr<Sky>& sky);
     void doEntityInspector(std::shared_ptr<EntityWorld>& world);
     void Draw(std::unique_ptr<sf::RenderWindow> &window);
 

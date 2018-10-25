@@ -11,7 +11,8 @@ void MenuLayer::Update(const SkyTime& time){
    GameState::It()->PushLayer(new LevelLayer(
        world,
        camera,
-       lua
+       lua,
+       sky
        ));
 }
 

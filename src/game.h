@@ -14,6 +14,7 @@
 #include "graphics/tiled_map.h"
 #include "graphics/camera.h"
 #include "graphics/art.h"
+#include "graphics/sky.h"
 #include "skytime.h"
 
 #include "editor/editor.h"
@@ -43,8 +44,9 @@ private:
 
     sf::Clock clock;
     std::unique_ptr<Editor> editor;
-
     std::unique_ptr<sf::RenderWindow> window;
+
+    std::shared_ptr<Sky> sky;
 
     float timer{0.0};
     long ticks{0};

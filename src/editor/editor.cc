@@ -17,7 +17,7 @@ void Editor::processEvent(sf::Event& event) {
     ImGui::SFML::ProcessEvent(event);
 }
 
-void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time, std::shared_ptr<EntityWorld>& world) {
+void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time, std::shared_ptr<EntityWorld>& world, std::shared_ptr<Sky>& sky) {
     ImGui::SFML::Update(*window, editorClock.restart());
     ImGui::Begin("Sky Vault"); // begin window
     ImGui::LabelText("Timing", "FPS: %f DT: %f", time.fps, time.dt);

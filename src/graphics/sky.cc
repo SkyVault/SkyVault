@@ -33,6 +33,10 @@ void Sky::Update(int width, int height, const SkyTime& time) {
     shader.setUniform("iChannel0", noiseTexture);
     shader.setUniform("iMouse", sf::Mouse::getPosition());
 
+    shader.setUniform("Suncolor", Suncolor);
+    shader.setUniform("Highsky", Highsky);
+    shader.setUniform("Lowsky", Lowsky);
+
     int i = 0;
     for(auto& cloud : cloudStates) {
         cloud.Position.x += time.dt * 10.0f * cloud.WindScale;

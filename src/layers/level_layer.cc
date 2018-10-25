@@ -13,7 +13,7 @@ void LevelLayer::Load(){
     
     // Load the sky
     auto [x, y] = GameState::It()->GetWindowSize();
-    sky.Load(x, y);
+    sky->Load(x, y);
 
     auto* physics_filter = world->GetFilter<PhysicsFilter>();
     map.loadFromFile("assets/maps/Dungeon_Room_2.tmx", physics_filter);
@@ -43,7 +43,7 @@ void LevelLayer::Load(){
 }
 void LevelLayer::Update(const SkyTime& time){
     auto [x, y] = GameState::It()->GetWindowSize();
-    sky.Update(x, y, time);
+    sky->Update(x, y, time);
 
     auto player = world->GetFirstWith<Player>();
     if (player == nullptr) {
@@ -69,7 +69,7 @@ void LevelLayer::Render(std::unique_ptr<sf::RenderWindow>& window){
         } else {
             // Unproject the sky
             window->setView(window->getDefaultView());
-                window->draw(sky);
+                window->draw(*sky);
             window->setView(camera->View);
 
             window->draw(map); 

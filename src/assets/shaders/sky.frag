@@ -97,6 +97,14 @@ mat3 setCamera(vec3 ro, vec3 ta, float cr)
     return mat3( cu, cv, cw );
 }
 
+//uniform vec3 Suncolor = vec3(1.0, 0.7 ,0.3);
+//uniform vec3 Highsky = vec3(0.1,0.2,0.8);
+//uniform vec3 Lowsky = vec3(0.78,0.78,0.7);
+
+uniform vec3 Suncolor;
+uniform vec3 Highsky;
+uniform vec3 Lowsky;
+
 void main() {
     //Pass this in as a uniform
     vec2 iResolution = vec2(1280, 720);
@@ -128,10 +136,10 @@ void main() {
     //float sun = clamp(dot(sundir, rd), 0.0, 1.0);
     //vec3 col = mix(vec3(0.78,0.78,0.7), vec3(0.3,0.4,0.5), p.y * 0.5 + 0.5);
     //col += 0.5*vec3(1.0,0.5,0.1)*pow(sun, 32.0);
-    
+
     float sun = clamp(dot(sundir, rd), 0.0, 1.0);
-    vec3 col = mix(vec3(0.78,0.78,0.7), vec3(0.1,0.2,0.8), p.y * 0.5 + 0.5);
-    col += 0.5*vec3(1.0, 0.7 ,0.3)*pow(sun, 32.0);
+    vec3 col = mix(Lowsky, Highsky, p.y * 0.5 + 0.5);
+    col += 0.5*Suncolor*pow(sun, 32.0);
     
     // Uncomment for clouds kindof
     //if (dist > 0.0) {

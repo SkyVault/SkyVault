@@ -24,11 +24,13 @@ struct LevelLayer: public Layer {
     inline LevelLayer( 
         const std::shared_ptr<EntityWorld>& world,
         const std::shared_ptr<Camera>& camera,
-        const std::shared_ptr<sol::state>& lua):
+        const std::shared_ptr<sol::state>& lua,
+        const std::shared_ptr<Sky>& sky):
 
     world(std::move(world)),
     camera(std::move(camera)),
-    lua(std::move(lua))
+    lua(std::move(lua)),
+    sky(std::move(sky))
 
     {
 
@@ -50,7 +52,7 @@ private:
     sf::Vector2i globalPosition;
 
     TiledMap map;
-    Sky sky;
+    std::shared_ptr<Sky> sky;
 };
 
 #endif//SKYVAULT_LEVEL_LAYER_H

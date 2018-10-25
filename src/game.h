@@ -48,9 +48,6 @@ private:
 
     float timer{0.0};
     long ticks{0};
-
-    const int AtlasSize{5};
-    std::vector<std::string> Atlas;
 };
 
 #endif//SKYVAULT_GAME_H

@@ -23,13 +23,6 @@ Game::Game() {
 }
 
 void Game::LoadContent() {
-    Atlas = { "Water", "Water", "Water", "Water", "Water"
-            , "Water", "Water", "Water", "Water", "Water"
-            , "Water", "Water", "Map",   "Water", "Water"
-            , "Water", "Water", "Water", "Water", "Water"
-            , "Water", "Water", "Water", "Water", "Water"
-            };
-
     window->setKeyRepeatEnabled(false);
 
     auto* texture = new sf::Texture();

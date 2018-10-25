@@ -3,16 +3,16 @@
 
 void MenuLayer::Load(){
     std::cout << "Menu Loaded" << std::endl; 
+   //if (Input::It()->IsKeyPressed(sf::Keyboard::Enter)) {  
+   //}
 }
 
 void MenuLayer::Update(const SkyTime& time){
-   if (Input::It()->IsKeyPressed(sf::Keyboard::Enter)) {  
-       GameState::It()->PushLayer(new LevelLayer(
-           world,
-           camera,
-           lua
-           ));
-   }
+   GameState::It()->PushLayer(new LevelLayer(
+       world,
+       camera,
+       lua
+       ));
 }
 
 void MenuLayer::Render(std::unique_ptr<sf::RenderWindow>& window){

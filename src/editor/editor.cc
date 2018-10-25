@@ -146,7 +146,8 @@ void Editor::doInGameTerminal() {
     ImGui::EndChild();
 
     ImGui::Separator();
-    if (ImGui::InputText("Input", buff, IM_ARRAYSIZE(buff),  ImGuiInputTextFlags_EnterReturnsTrue|ImGuiInputTextFlags_CallbackCompletion|ImGuiInputTextFlags_CallbackHistory)) {
+
+    if (ImGui::InputText("Input", buff, IM_ARRAYSIZE(buff),  ImGuiInputTextFlags_EnterReturnsTrue|ImGuiInputTextFlags_CallbackCompletion|ImGuiInputTextFlags_CallbackHistory, [](auto a){return 0;})) {
         std::string command{buff};
 
         const auto pre = std::cout.rdbuf();

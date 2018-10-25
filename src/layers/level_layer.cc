@@ -3,6 +3,13 @@
 
 void LevelLayer::Load(){
     std::cout << "Level Loaded" << std::endl; 
+
+    Atlas = { "Water", "Water", "Water", "Water", "Water"
+            , "Water", "Water", "Water", "Water", "Water"
+            , "Water", "Water", "Water",   "Water", "Water"
+            , "Water", "Water", "Water", "Water", "Water"
+            , "Water", "Water", "Water", "Water", "Water"
+            };
     
     // Load the sky
     auto [x, y] = GameState::It()->GetWindowSize();
@@ -37,11 +44,35 @@ void LevelLayer::Load(){
 void LevelLayer::Update(const SkyTime& time){
     auto [x, y] = GameState::It()->GetWindowSize();
     sky.Update(x, y, time);
+
+    auto player = world->GetFirstWith<Player>();
+    if (player == nullptr) {
+        return;
+    }
+
+    auto body = player->Get<Body>();
+    const auto xx = static_cast<int>(((body->Position.x + (MAP_SIZE_PIXELS * 2)) / static_cast<float>(MAP_SIZE_PIXELS)));
+    const auto yy = static_cast<int>(((body->Position.y + (MAP_SIZE_PIXELS * 2)) / static_cast<float>(MAP_SIZE_PIXELS))); 
+
+    globalPosition = sf::Vector2i(xx, yy);
+
 }
 
 void LevelLayer::Render(std::unique_ptr<sf::RenderWindow>& window){
-    window->draw(sky);
-    window->draw(map);
+    const auto [xx, yy] = globalPosition;
+
+    if (xx >= 0 && yy >= 0){
+        const auto map_tile = Atlas[xx + yy * AtlasSize];
+
+        if (map_tile == "Water") {
+            //
+        } else {
+            window->draw(sky);
+            window->draw(map); 
+        }
+        //std::cout << map_tile << std::endl;
+
+    }
 }
 
 void LevelLayer::Destroy(){

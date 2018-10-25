@@ -27,6 +27,7 @@ struct Editor {
     void doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time, std::shared_ptr<EntityWorld>& world);
     void doEntityInspector(std::shared_ptr<EntityWorld>& world);
     void Draw(std::unique_ptr<sf::RenderWindow> &window);
+
 private:
     std::shared_ptr<sol::state> lua;
 

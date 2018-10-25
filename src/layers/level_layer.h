@@ -44,6 +44,11 @@ private:
     std::shared_ptr<Camera> camera;
     std::shared_ptr<sol::state> lua;
 
+    const int AtlasSize{5};
+    std::vector<std::string> Atlas;
+
+    sf::Vector2i globalPosition;
+
     TiledMap map;
     Sky sky;
 };

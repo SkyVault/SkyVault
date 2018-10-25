@@ -40,8 +40,8 @@ public:
     inline void PushLayer(Layer* layer) {
         if (layer_stack.size() > 0)
             layer_stack[layer_stack.size()-1]->Destroy();
-        layer->Load();
         layer_stack.insert(layer_stack.begin(), layer);
+        layer->Load();
     }
 
     //NOTE(Dustin): We dont destroy or create any memory

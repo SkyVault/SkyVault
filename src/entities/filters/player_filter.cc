@@ -11,7 +11,7 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
     var player = self->Get<Player>();
     var physics = self->Get<PhysicsBody>();
 
-    constexpr float speed{400.0f};
+    constexpr float speed{900.0f};
     
     switch(player->State.CurrentState()) {
     case Player::State::DASHING: {

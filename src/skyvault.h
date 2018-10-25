@@ -8,6 +8,8 @@
 
 // Size of a map in tiles, used mainly for entity interactions
 #define MAP_SIZE 256
+#define TILE_SIZE 8
+#define MAP_SIZE_PIXELS (TILE_SIZE * MAP_SIZE)
 
 #include <random>
 

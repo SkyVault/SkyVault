@@ -6,7 +6,7 @@ void LevelLayer::Load(){
 
     Atlas = { "Water", "Water", "Water", "Water", "Water"
             , "Water", "Water", "Water", "Water", "Water"
-            , "Water", "Water", "Water",   "Water", "Water"
+            , "Water", "Water", "Map", "Water", "Water"
             , "Water", "Water", "Water", "Water", "Water"
             , "Water", "Water", "Water", "Water", "Water"
             };

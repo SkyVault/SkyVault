@@ -9,6 +9,7 @@
 #include "entity.h"
 #include "filter.h"
 #include "../skytime.h"
+#include "../skyvault.h"
 
 struct EntityWorld {
 
@@ -44,6 +45,9 @@ struct EntityWorld {
 private:
     std::map<std::type_index, std::unique_ptr<Filter>> filters;
     std::vector<std::unique_ptr<Entity>> entities;
+
+    // Interaction grid
+    std::array<Entity*, MAP_SIZE*MAP_SIZE> grid;
 };
 
 #endif//SKYVAULT_ENTITY_WORLD_H

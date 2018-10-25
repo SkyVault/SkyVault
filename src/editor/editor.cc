@@ -22,6 +22,7 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
     ImGui::Begin("Sky Vault"); // begin window
     ImGui::LabelText("Timing", "FPS: %f DT: %f", time.fps, time.dt);
     if (ImGui::Button("Toggle Debug View")) {
+        std::cout << "Toggling Debug" << std::endl;
         GameState::It()->ToggleDebug();
     }
     ImGui::SameLine();

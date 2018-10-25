@@ -7,7 +7,6 @@
 #include "entities/filters/physics_filter.h"
 #include "entities/filters/render_filter.h"
 #include "entities/filters/player_filter.h"
-#include "entities/filters/interaction_filter.h"
 #include "utilities/input.h"
 #include "graphics/animation.h"
 #include "graphics/frame.h"
@@ -92,7 +91,6 @@ void Game::LoadContent() {
     world->Register<RenderFilter>();
     world->Register<RenderAnimatedSpriteFilter>();
     world->Register<PlayerFilter>();
-    world->Register<InteractionFilter>();
 
     GameState::It()->PushLayer(new MenuLayer(world, camera, lua));
 

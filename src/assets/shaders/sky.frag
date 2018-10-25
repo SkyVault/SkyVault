@@ -139,7 +139,7 @@ void main() {
 
     float sun = clamp(dot(sundir, rd), 0.0, 1.0);
     vec3 col = mix(Lowsky, Highsky, p.y * 0.5 + 0.5);
-    col += 0.5*Suncolor*pow(sun, 32.0);
+    col += 1.5*Suncolor*pow(sun, 48.0);
     
     // Uncomment for clouds kindof
     //if (dist > 0.0) {

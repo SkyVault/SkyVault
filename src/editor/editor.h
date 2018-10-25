@@ -33,6 +33,8 @@ private:
     std::shared_ptr<sol::state> lua;
 
     void doInGameTerminal();
+    void doColors(std::shared_ptr<Sky>& sky);
+
     std::vector<std::string> command_history;
     sf::Clock editorClock;
 

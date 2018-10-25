@@ -64,6 +64,7 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
 
         ImGui::End();
 
+        doColors(sky);
         doInGameTerminal();
         doEntityInspector(world);
     }
@@ -229,4 +230,21 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window) {
     line.setPosition(cursor - sf::Vector2f(radius + (offset), 0.5) - sf::Vector2f(radius, 0));
     line.setSize(sf::Vector2f(radius*2, 1));
     window->draw(line);
+}
+
+void Editor::doColors(std::shared_ptr<Sky>& sky) {
+    ImGui::Begin("Colors");
+
+    constexpr bool hdr = false;
+    constexpr bool drag_and_drop = false;
+    constexpr bool options_menu = false;
+    constexpr int misc_flags = 0;
+
+    if (ImGui::BeginMenu("Sky")) {
+        ImGui::ColorEdit3("Sun Color##1", (float*)&sky->Suncolor, misc_flags);
+        ImGui::ColorEdit3("High Color##2", (float*)&sky->Highsky, misc_flags);
+        ImGui::ColorEdit3("Low Color##3", (float*)&sky->Lowsky, misc_flags);
+    }
+
+    ImGui::End();
 }

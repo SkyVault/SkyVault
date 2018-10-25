@@ -20,7 +20,7 @@ struct Sky : public sf::Drawable, public sf::Transformable {
     void Update(int width, int height, const SkyTime& time);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-    sf::Vector3f Suncolor{sf::Vector3f(1.0, 0.7 ,0.3)};
+    sf::Vector3f Suncolor{sf::Vector3f(1.0, 150.0 / 255.0, 0.0)};
     sf::Vector3f Highsky{sf::Vector3f(0.1,0.2,0.8)};
     sf::Vector3f Lowsky{sf::Vector3f(0.78,0.78,0.7)};
 

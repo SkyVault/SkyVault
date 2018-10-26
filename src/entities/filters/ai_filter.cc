@@ -24,7 +24,7 @@ void AIFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& entity) {
             );
 
             // MOVE
-            constexpr float speed{10.0f};
+            constexpr float speed{20.0f};
 
             physics->Velocity = sf::Vector2f(cosf(dir), sinf(dir)) * speed;
             break;

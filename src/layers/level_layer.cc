@@ -32,13 +32,6 @@ void LevelLayer::Load(){
         other->Add<Body>(sf::Vector2f(500 + 100, 400), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(0, 16, 32, 32), sf::Vector2f(0, -16));
-    }
-
-    {
-        var other = world->Create();
-        other->Add<Body>(sf::Vector2f(500+32, 400-64), sf::Vector2f(32,16));
-        other->Add<PhysicsBody>();
-        other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(64, 16, 32, 32), sf::Vector2f(0, -16));
         other->Add<AI>([](const auto time, std::unique_ptr<Entity>& e){
             auto ai = e->Get<AI>();
 
@@ -53,7 +46,7 @@ void LevelLayer::Load(){
             case AI::States::WAIT: {
                 if (ai->WaitIsDone()) {
                     auto dir = (ai->Flags["movingLeft"] ? -1 : 1);
-                    ai->MoveRelative(sf::Vector2f(25 * dir, 0));
+                    ai->MoveRelative(sf::Vector2f(80 * dir, 0));
                 }
                 break;
             }
@@ -67,6 +60,13 @@ void LevelLayer::Load(){
             default: break; 
             }
         });
+    }
+
+    {
+        var other = world->Create();
+        other->Add<Body>(sf::Vector2f(500+32, 400-64), sf::Vector2f(32,16));
+        other->Add<PhysicsBody>();
+        other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(64, 16, 32, 32), sf::Vector2f(0, -16));
     }
 }
 void LevelLayer::Update(const SkyTime& time){

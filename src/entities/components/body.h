@@ -2,6 +2,8 @@
 #define SKYVAULT_BODY_H
 
 #include "../component.h"
+
+#include <cmath>
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -30,6 +32,12 @@ struct Body : public Component {
             Position.x + Size.x / 2.f,
             Position.y + Size.y / 2.f
         );
+    }
+
+    inline float Distance(const Body& other) {
+        const auto a = Position;
+        const auto b = other.Position;
+        return sqrtf(powf((b.x - a.x), 2) + powf((b.y - a.y), 2));
     }
 
     sf::Vector2f Position{sf::Vector2(0, 0)};

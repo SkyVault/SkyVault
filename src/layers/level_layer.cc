@@ -29,35 +29,38 @@ void LevelLayer::Load(){
 
     {
         var other = world->Create();
-        other->Add<Body>(sf::Vector2f(500 + 100, 400), sf::Vector2f(32,16));
+        other->Add<Body>(sf::Vector2f(500 + 32, 400 - 32), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(0, 16, 32, 32), sf::Vector2f(0, -16));
-        other->Add<AI>([](const auto time, std::unique_ptr<Entity>& e){
-            auto ai = e->Get<AI>();
+        //other->Add<AI>([](const auto time, std::unique_ptr<Entity>& e){
+            //auto ai = e->Get<AI>();
 
-            if (ai->DoFirst()) {
-                ai->Flags["movingLeft"] = true;
-                ai->Wait(2.0f);
-                return;
-            }
+            //if (ai->DoFirst()) {
+                //ai->Flags["movingLeft"] = true;
+                //ai->Wait(2.0f);
+                //return;
+            //}
 
-            switch (ai->CurrentState) {
-            case AI::States::WAIT: {
-                if (ai->WaitIsDone()) {
-                    auto dir = (ai->Flags["movingLeft"] ? -1 : 1);
-                    ai->MoveRelative(sf::Vector2f(80 * dir, 0));
-                }
-                break;
-            }
-            case AI::States::MOVE_RELATIVE: {
-                if (ai->ReachedTarget()){
-                    ai->Wait(2.0f);
-                    ai->Flags["movingLeft"] = !ai->Flags["movingLeft"];
-                }
-                break;
-            }
-            default: break; 
-            }
+            //switch (ai->CurrentState) {
+            //case AI::States::WAIT: {
+                //if (ai->WaitIsDone()) {
+                    //auto dir = (ai->Flags["movingLeft"] ? -1 : 1);
+                    //ai->MoveRelative(sf::Vector2f(80 * dir, 0));
+                //}
+                //break;
+            //}
+            //case AI::States::MOVE_RELATIVE: {
+                //if (ai->ReachedTarget()){
+                    //ai->Wait(2.0f);
+                    //ai->Flags["movingLeft"] = !ai->Flags["movingLeft"];
+                //}
+                //break;
+            //}
+            //default: break; 
+            //}
+        //});
+        other->Add<Interaction>([](){
+            std::cout << "Orc\n";
         });
     }
 
@@ -66,6 +69,9 @@ void LevelLayer::Load(){
         other->Add<Body>(sf::Vector2f(500+32, 400-64), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(64, 16, 32, 32), sf::Vector2f(0, -16));
+        other->Add<Interaction>([](){
+            std::cout << "Skelly\n";
+        });
     }
 }
 void LevelLayer::Update(const SkyTime& time){

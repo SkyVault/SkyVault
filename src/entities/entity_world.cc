@@ -1,7 +1,14 @@
 #include "entity_world.h"
-#include "../skyvault.h"
+
+#include <tuple>
+#include <algorithm>
+
+#include "components/player.h"
 #include "components/body.h"
+#include "components/interaction.h"
+
 #include "../game_state.h"
+#include "../skyvault.h"
 
 Entity* EntityWorld::Create() {
     var entity = new Entity();
@@ -17,6 +24,11 @@ void EntityWorld::Update(const SkyTime& time) {
         filter->PreLoad();
     }
 
+    const auto player = GetFirstWith<Player>();
+    constexpr auto margin{10.0f};
+
+    std::vector<std::tuple<float, Interaction*>> potential_interactions;
+
     for (auto& e : entities) {
         for (auto& [key, f] : filters) {
             if (f->Matches(e->GetMatchlist())) {
@@ -27,6 +39,15 @@ void EntityWorld::Update(const SkyTime& time) {
         }
 
         e->loaded = true;
+
+        if (player && e->Has<Interaction>() && e->Has<Body>()) {
+            const auto player_body = player->Get<Body>();
+            const auto obody = e->Get<Body>();
+            const auto distance = obody->Distance(*player_body);
+            if (distance < (obody->Size.x + margin)){
+                potential_interactions.push_back({distance, e->Get<Interaction>()});
+            }
+        }
 
         // If the entity has a body, place him in the interaction grid
         if (e->Has<Body>()) {
@@ -41,6 +62,20 @@ void EntityWorld::Update(const SkyTime& time) {
             for (int yy = gy; yy <= gy2; yy++)
                 for (int xx = gx; xx <= gx2; xx++)
                     this->grid[xx+yy*MAP_SIZE] = e.get(); // Use an int identifier
+        }
+    }
+
+    if (potential_interactions.size() > 0) {
+        if (potential_interactions.size() > 1) {
+            std::sort(potential_interactions.begin(), potential_interactions.end(), [](auto a, auto b) {
+                return std::get<0>(a) < std::get<0>(b);
+            });
+        }
+        
+        const auto winner = std::get<1>(potential_interactions[0]);
+
+        if (Input::It()->IsKeyPressed(sf::Keyboard::Z)) {
+            winner->onInteractionWithPlayer();
         }
     }
 }

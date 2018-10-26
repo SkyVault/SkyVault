@@ -1,6 +1,8 @@
 #ifndef SKYVAULT_ENTITY_WORLD_H
 #define SKYVAULT_ENTITY_WORLD_H
 
+#include "../utilities/input.h"
+
 #include <memory>
 #include <vector>
 #include <SFML/Graphics.hpp>

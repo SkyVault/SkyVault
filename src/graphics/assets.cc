@@ -6,8 +6,6 @@ void Assets::LoadPrefabs() {
     constexpr auto PrefabPath{"assets/prefabs/"};
 
     for (auto file : crefile::iter_dir(PrefabPath)) {
-        std::cout << file.name() << "\n";
-
         const sol::table table = lua->script_file(crefile::join(PrefabPath, file.name()));
 
         table.for_each([&](sol::object const& key, sol::object const& value) {
@@ -28,6 +26,22 @@ void Assets::LoadPrefabs() {
         //std::cout << p << std::endl; 
     //}
 
+}
+
+void Assets::LoadDialogs() {
+    constexpr auto DialogPath{"assets/data/dialog/"};
+
+    for (auto file : crefile::iter_dir(DialogPath)) {
+        const sol::table table = lua->script_file(crefile::join(DialogPath, file.name()));
+
+        table.for_each([&](sol::object const& key, sol::object const& value) {
+            const auto skey = key.as<std::string>();
+            std::cout << skey << std::endl;
+
+            const auto entPrefab = value.as<sol::table>();
+            dialogs[skey] = entPrefab;
+        });
+    }
 }
 
 void Assets::LoadAnimations() {

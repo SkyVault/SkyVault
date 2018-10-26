@@ -44,6 +44,7 @@ void Game::LoadContent() {
 
     Assets::It()->GiveLua(lua);
     Assets::It()->LoadPrefabs();
+    Assets::It()->LoadDialogs();
     Assets::It()->LoadAnimations();
     //Assets::It()->LoadTextures();
 

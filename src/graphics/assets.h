@@ -37,6 +37,7 @@ public:
 
     void LoadPrefabs();
     void LoadAnimations();
+    void LoadDialogs();
 
     template <typename T>
     void Add(const std::string& id, T& t) {
@@ -84,7 +85,10 @@ public:
 private:
     std::map<std::string, sf::Texture*> images;
     std::map<std::string, sf::Font*> fonts;
-    std::map<std::string, sol::table> entity_prefabs;
+
+    std::map<std::string, sol::table> entity_prefabs,
+                                      dialogs;
+
     std::map<std::string, Animation*> animations;
 
     std::shared_ptr<sol::state> lua;

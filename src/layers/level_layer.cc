@@ -38,7 +38,6 @@ void LevelLayer::Load(){
             if (ai->DoFirst()) {
                 ai->Flags["movingLeft"] = true;
                 ai->Wait(2.0f);
-                std::cout << "HERE" << std::endl;
                 return;
             }
 

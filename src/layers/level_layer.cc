@@ -21,7 +21,7 @@ void LevelLayer::Load(){
 
     {
         var player = world->Create();
-        player->Add<Body>(sf::Vector2f(500, 400+16), sf::Vector2f(16, 16));
+        player->Add<Body>(sf::Vector2f(500, 400), sf::Vector2f(16, 16));
         player->Add<PhysicsBody>();
         player->Add<Player>();
         player->Add<Renderable>(Assets::It()->Get<sf::Texture>("tes"), sf::IntRect(0, 0, 8*2, 16*2), sf::Vector2f(0, -8*2));
@@ -29,7 +29,7 @@ void LevelLayer::Load(){
 
     {
         var other = world->Create();
-        other->Add<Body>(sf::Vector2f(500, 400), sf::Vector2f(32,16));
+        other->Add<Body>(sf::Vector2f(500 + 100, 400), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(0, 16, 32, 32), sf::Vector2f(0, -16));
     }
@@ -39,6 +39,34 @@ void LevelLayer::Load(){
         other->Add<Body>(sf::Vector2f(500+32, 400-64), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(64, 16, 32, 32), sf::Vector2f(0, -16));
+        other->Add<AI>([](const auto time, std::unique_ptr<Entity>& e){
+            auto ai = e->Get<AI>();
+
+            if (ai->DoFirst()) {
+                ai->Flags["movingLeft"] = true;
+                ai->Wait(2.0f);
+                std::cout << "HERE" << std::endl;
+                return;
+            }
+
+            switch (ai->CurrentState) {
+            case AI::States::WAIT: {
+                if (ai->WaitIsDone()) {
+                    auto dir = (ai->Flags["movingLeft"] ? -1 : 1);
+                    ai->MoveRelative(sf::Vector2f(25 * dir, 0));
+                }
+                break;
+            }
+            case AI::States::MOVE_RELATIVE: {
+                if (ai->ReachedTarget()){
+                    ai->Wait(2.0f);
+                    ai->Flags["movingLeft"] = !ai->Flags["movingLeft"];
+                }
+                break;
+            }
+            default: break; 
+            }
+        });
     }
 }
 void LevelLayer::Update(const SkyTime& time){
@@ -54,8 +82,7 @@ void LevelLayer::Update(const SkyTime& time){
     const auto xx = static_cast<int>(((body->Position.x + (MAP_SIZE_PIXELS * 2)) / static_cast<float>(MAP_SIZE_PIXELS)));
     const auto yy = static_cast<int>(((body->Position.y + (MAP_SIZE_PIXELS * 2)) / static_cast<float>(MAP_SIZE_PIXELS))); 
 
-    globalPosition = sf::Vector2i(xx, yy);
-
+    globalPosition = sf::Vector2i(xx, yy); 
 }
 
 void LevelLayer::Render(std::unique_ptr<sf::RenderWindow>& window){

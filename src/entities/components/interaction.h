@@ -7,6 +7,7 @@
 struct Interaction : public Component {
     Interaction(std::function<void()> onInteractionWithPlayer) : onInteractionWithPlayer(onInteractionWithPlayer) {}
     std::function<void()> onInteractionWithPlayer;
+    bool Hot{false};
 };
 
 #endif//SKYVAULT_INTERACTION_H 

@@ -12,6 +12,7 @@ void MenuLayer::Update(const SkyTime& time){
        world,
        camera,
        lua,
+       gui,
        sky
        ));
 }

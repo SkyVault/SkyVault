@@ -65,12 +65,15 @@ void LevelLayer::Load(){
     }
 
     {
+        const auto& _gui = gui;
         var other = world->Create();
         other->Add<Body>(sf::Vector2f(500+32, 400-64), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(64, 16, 32, 32), sf::Vector2f(0, -16));
-        other->Add<Interaction>([](){
+        other->Add<Interaction>([_gui](){
             std::cout << "Skelly\n";
+
+            _gui->DoDialog(Assets::It()->GetDialog("preQuest"));
         });
     }
 }

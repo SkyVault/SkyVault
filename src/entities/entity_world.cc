@@ -5,6 +5,7 @@
 
 #include "components/player.h"
 #include "components/body.h"
+#include "components/physics_body.h"
 #include "components/interaction.h"
 
 #include "../game_state.h"
@@ -34,13 +35,18 @@ void EntityWorld::Update(const SkyTime& time) {
             if (f->Matches(e->GetMatchlist())) {
                 if (!e->loaded) f->Load(e);
                 if (e->remove) f->Destroy(e);
-                else f->Update(time, e);
+                else {
+                    if (GameState::It()->CurrentState == GameState::States::PLAYING_STATE)
+                        f->Update(time, e);   
+                    f->ConstantUpdate(time, e);   
+                }
             }
         }
 
         e->loaded = true;
 
         if (player && e->Has<Interaction>() && e->Has<Body>()) {
+            e->Get<Interaction>()->Hot = false;
             const auto player_body = player->Get<Body>();
             const auto obody = e->Get<Body>();
             const auto distance = obody->Distance(*player_body);
@@ -73,8 +79,12 @@ void EntityWorld::Update(const SkyTime& time) {
         }
         
         const auto winner = std::get<1>(potential_interactions[0]);
+        winner->Hot = true;
 
         if (Input::It()->IsKeyPressed(sf::Keyboard::Z)) {
+            // Set the players velocity to zero, avoids sliding past entity
+
+            player->Get<PhysicsBody>()->Velocity = sf::Vector2f(0, 0);
             winner->onInteractionWithPlayer();
         }
     }
@@ -85,6 +95,17 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
         for (auto& [key, f] : filters) {
             if (f->Matches(e->GetMatchlist())) {
                 f->Render(window, e);
+            }
+        }
+
+        if (e->Has<Interaction>() && e->Has<Body>()) {
+            // Draw the interaction shape
+            if (e->Get<Interaction>()->Hot){
+                const auto body = e->Get<Body>();
+                sf::RectangleShape shape(sf::Vector2f(16, 16));
+                shape.setPosition(e->Get<Body>()->Position - sf::Vector2f(16, body->Size.y));
+                shape.setFillColor(sf::Color::Red);
+                window->draw(shape);
             }
         }
     }

@@ -19,6 +19,7 @@
 #include "../graphics/sky.h"
 #include "../graphics/art.h"
 #include "../graphics/assets.h"
+#include "../graphics/gui.h"
 #include "../skytime.h"
 #include "../game_state.h"
 
@@ -27,13 +28,15 @@ struct LevelLayer: public Layer {
         const std::shared_ptr<EntityWorld>& world,
         const std::shared_ptr<Camera>& camera,
         const std::shared_ptr<sol::state>& lua,
-        const std::shared_ptr<Sky>& sky):
+        const std::shared_ptr<GUI>& gui,
+        const std::shared_ptr<Sky>& sky
+        ):
 
     world(std::move(world)),
     camera(std::move(camera)),
     lua(std::move(lua)),
-    sky(std::move(sky))
-
+    gui(std::move(gui)),
+    sky(std::move(sky)) 
     {
 
     }
@@ -47,6 +50,7 @@ private:
     std::shared_ptr<EntityWorld> world;
     std::shared_ptr<Camera> camera;
     std::shared_ptr<sol::state> lua;
+    std::shared_ptr<GUI> gui;
 
     const int AtlasSize{5};
     std::vector<std::string> Atlas;

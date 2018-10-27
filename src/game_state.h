@@ -20,6 +20,29 @@ class GameState {
     GameState() { }
 
 public:
+
+#ifndef MACROSTR
+#define MACROSTR(k) #k
+#endif
+
+#define X_GAME_STATES\
+	X(PLAYING_STATE)\
+	X(PAUSED_STATE)\
+	X(DIALOG_STATE)\
+    X(CUTSCENE_STATE)
+
+    enum States {
+#define X(Enum) Enum,
+     X_GAME_STATES
+#undef X
+    };
+
+    const std::vector<std::string> StatesNames {
+#define X(String) MACROSTR(String),
+        X_GAME_STATES
+#undef X
+    };
+
     static auto* It() {
         std::call_once(GameState::onceFlag, [] () {
             instance.reset(new GameState());     
@@ -68,6 +91,8 @@ public:
     }
 
     inline sf::Vector2u GetWindowSize() { return window_size; }
+
+    States CurrentState {PLAYING_STATE};
 
 private:
     bool debugging{false};

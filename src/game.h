@@ -15,6 +15,7 @@
 #include "graphics/camera.h"
 #include "graphics/art.h"
 #include "graphics/sky.h"
+#include "graphics/gui.h"
 #include "skytime.h"
 
 #include "editor/editor.h"
@@ -38,6 +39,7 @@ private:
     std::shared_ptr<EntityWorld> world;
     std::shared_ptr<Camera> camera;
     std::shared_ptr<sol::state> lua;
+    std::shared_ptr<GUI> gui;
 
     bool running{false};
     bool debugging{false};

@@ -20,6 +20,7 @@
 
 Game::Game() {
     world = std::make_shared<EntityWorld>();
+    gui = std::make_shared<GUI>();
 }
 
 void Game::LoadContent() {
@@ -96,7 +97,7 @@ void Game::LoadContent() {
     world->Register<PlayerFilter>();
     world->Register<AIFilter>();
 
-    GameState::It()->PushLayer(new MenuLayer(world, camera, lua, sky));
+    GameState::It()->PushLayer(new MenuLayer(world, camera, lua, gui, sky));
 
     camera->View.zoom(0.5f);
 
@@ -107,6 +108,7 @@ void Game::LoadContent() {
 void Game::Update(const SkyTime& time) {
     // Update the whole game
     world->Update(time);
+    gui->Update(time);
     GameState::It()->Update(time);
 
     auto p = world->GetFirstWith<Player>();
@@ -125,12 +127,15 @@ void Game::Update(const SkyTime& time) {
 }
 
 void Game::Render() {
-    window->setView(window->getDefaultView());
     window->setView(camera->View);
+    {
+        GameState::It()->Render(window);
+        world->Render(window);
+        Art::It()->Flush(window);
+    }
+    window->setView(window->getDefaultView());
 
-    GameState::It()->Render(window);
-    world->Render(window);
-    Art::It()->Flush(window);
+    gui->Render(window);
 }
 
 void Game::RunLoop() {

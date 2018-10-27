@@ -1,3 +1,7 @@
+--[[
+-- NOTE(Dustin): Instead of having a startQuest thing, we could have each dialog
+-- return a string value, and that value will go into the callback?
+--]]
 return {
     preQuest = {
         [1] = {

@@ -64,6 +64,14 @@ public:
         }
     }
 
+    sol::table GetDialog(const std::string& name) {
+        if (dialogs.find(name) == dialogs.end()) {
+            std::cout << "Cannot find dialog: " << name << std::endl;
+            return sol::table();
+        }
+        return dialogs[name]; 
+    }
+
     Animation* GetAnimation(const std::string& name) {
         if (animations.find(name) == animations.end()) {
             std::cout << "Cannot find animation: " << name << std::endl;

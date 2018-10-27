@@ -5,7 +5,8 @@
 struct Dialog {
     Dialog(const sol::table& Data) : Data(std::move(Data)) {}
     sol::table Data;
-    int CurrentIndex;
+    int CurrentIndex{1};
+    int CurrentOptionSelection{0};
 };
 
 #endif//SKYVAULT_DIALOG_H

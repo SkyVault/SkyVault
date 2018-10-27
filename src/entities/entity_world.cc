@@ -44,48 +44,50 @@ void EntityWorld::Update(const SkyTime& time) {
         }
 
         e->loaded = true;
+        
+        if (GameState::It()->CurrentState == GameState::States::PLAYING_STATE) {
+            if (player && e->Has<Interaction>() && e->Has<Body>()) {
+                e->Get<Interaction>()->Hot = false;
+                const auto player_body = player->Get<Body>();
+                const auto obody = e->Get<Body>();
+                const auto distance = obody->Distance(*player_body);
+                if (distance < (obody->Size.x + margin)){
+                    potential_interactions.push_back({distance, e->Get<Interaction>()});
+                }
+            }
 
-        if (player && e->Has<Interaction>() && e->Has<Body>()) {
-            e->Get<Interaction>()->Hot = false;
-            const auto player_body = player->Get<Body>();
-            const auto obody = e->Get<Body>();
-            const auto distance = obody->Distance(*player_body);
-            if (distance < (obody->Size.x + margin)){
-                potential_interactions.push_back({distance, e->Get<Interaction>()});
+            // If the entity has a body, place him in the interaction grid
+            if (e->Has<Body>()) {
+                const auto& body = e->Get<Body>();
+                
+                const auto gx = static_cast<int>((body->Position.x * 8 * 4) / MAP_SIZE);
+                const auto gy = static_cast<int>((body->Position.y * 8 * 4) / MAP_SIZE);
+
+                const auto gx2 = static_cast<int>((32 * (body->Position.x + body->Size.x)) / MAP_SIZE);
+                const auto gy2 = static_cast<int>((32 * (body->Position.y + body->Size.y)) / MAP_SIZE);
+
+                for (int yy = gy; yy <= gy2; yy++)
+                    for (int xx = gx; xx <= gx2; xx++)
+                        this->grid[xx+yy*MAP_SIZE] = e.get(); // Use an int identifier
             }
         }
 
-        // If the entity has a body, place him in the interaction grid
-        if (e->Has<Body>()) {
-            const auto& body = e->Get<Body>();
+        if (potential_interactions.size() > 0) {
+            if (potential_interactions.size() > 1) {
+                std::sort(potential_interactions.begin(), potential_interactions.end(), [](auto a, auto b) {
+                    return std::get<0>(a) < std::get<0>(b);
+                });
+            }
             
-            const auto gx = static_cast<int>((body->Position.x * 8 * 4) / MAP_SIZE);
-            const auto gy = static_cast<int>((body->Position.y * 8 * 4) / MAP_SIZE);
+            const auto winner = std::get<1>(potential_interactions[0]);
+            winner->Hot = true;
 
-            const auto gx2 = static_cast<int>((32 * (body->Position.x + body->Size.x)) / MAP_SIZE);
-            const auto gy2 = static_cast<int>((32 * (body->Position.y + body->Size.y)) / MAP_SIZE);
+            if (Input::It()->IsKeyPressed(sf::Keyboard::Z, true)) {
+                // Set the players velocity to zero, avoids sliding past entities
+                player->Get<PhysicsBody>()->Velocity = sf::Vector2f(0, 0);
 
-            for (int yy = gy; yy <= gy2; yy++)
-                for (int xx = gx; xx <= gx2; xx++)
-                    this->grid[xx+yy*MAP_SIZE] = e.get(); // Use an int identifier
-        }
-    }
-
-    if (potential_interactions.size() > 0) {
-        if (potential_interactions.size() > 1) {
-            std::sort(potential_interactions.begin(), potential_interactions.end(), [](auto a, auto b) {
-                return std::get<0>(a) < std::get<0>(b);
-            });
-        }
-        
-        const auto winner = std::get<1>(potential_interactions[0]);
-        winner->Hot = true;
-
-        if (Input::It()->IsKeyPressed(sf::Keyboard::Z)) {
-            // Set the players velocity to zero, avoids sliding past entity
-
-            player->Get<PhysicsBody>()->Velocity = sf::Vector2f(0, 0);
-            winner->onInteractionWithPlayer();
+                winner->onInteractionWithPlayer();
+            }
         }
     }
 }

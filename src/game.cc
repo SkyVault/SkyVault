@@ -79,13 +79,23 @@ void Game::LoadContent() {
     }
 
     //TODO(Dustin): Refactor into the assets singleton
-    auto* font = new sf::Font();
-    if (!font->loadFromFile("assets/fonts/arcade.ttf")){
-        std::cout << "Failed to load the arcade font\n";
+    {
+        auto* font = new sf::Font();
+        if (!font->loadFromFile("assets/fonts/arcade.ttf")){
+            std::cout << "Failed to load the arcade font\n";
+        }
+        const_cast<sf::Texture&>(font->getTexture(42)).setSmooth(false); 
+        Assets::It()->Add("arcade", font);
     }
-    const_cast<sf::Texture&>(font->getTexture(42)).setSmooth(false);
 
-    Assets::It()->Add("arcade", font);
+    {
+        auto* font = new sf::Font();
+        if (!font->loadFromFile("assets/fonts/DejaVuSans.ttf")){
+            std::cout << "Failed to load the DejaVuSans font\n";
+        }
+        //const_cast<sf::Texture&>(font->getTexture(42)).setSmooth(false); 
+        Assets::It()->Add("dialog", font);
+    }
 
     camera = std::make_shared<Camera>(window->getSize().x, window->getSize().y);
 

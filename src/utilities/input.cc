@@ -8,11 +8,17 @@ void Input::Update() {
     
 }
 
-bool Input::IsKeyPressed(int key) {
+bool Input::IsKeyPressed(int key, bool reset) {
     const auto state = key_map[key];
-    return
+    const auto res = 
         state.state == 1 &&
         state.last == 0;
+
+    if (reset) {
+        key_map[key].last = key_map[key].state;
+    }
+
+    return res;
 }
 
 bool Input::IsKeyReleased(int key) {

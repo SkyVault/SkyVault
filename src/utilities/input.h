@@ -74,7 +74,7 @@ public:
     void Update();
     void HandleEvent(sf::Event& event);
 
-    bool IsKeyPressed(int key);
+    bool IsKeyPressed(int key, bool reset=false);
     bool IsKeyReleased(int key);
     bool IsKeyDown(int key);
     bool IsKeyUp(int key);

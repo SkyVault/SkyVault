@@ -39,6 +39,14 @@ void GUI::Update(const SkyTime& time) {
                 if (Input::It()->IsKeyPressed(sf::Keyboard::Z, true)) {
                     const auto& top = dialog_stack[dialog_stack.size()-1];
                     const auto nextIndex = top->Data[top->CurrentIndex][2].get<int>();
+                    if (top->CurrentIndex >= 0){
+                        const sol::table curr = top->Data[top->CurrentIndex];
+                        if (curr.get<std::string>("startQuest") != "") {
+                            // Push the quest onto the quest stack
+                            
+                            std::cout << "Starting Quest: " << curr.get<std::string>("startQuest") << std::endl; 
+                        }
+                    }
                     top->CurrentIndex = nextIndex;
                 }
             }

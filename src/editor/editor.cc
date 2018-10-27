@@ -233,17 +233,14 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window) {
 }
 
 void Editor::doColors(std::shared_ptr<Sky>& sky) {
-    ImGui::Begin("Colors");
+    ImGui::Begin("Color Editor");
 
-    constexpr bool hdr = false;
-    constexpr bool drag_and_drop = false;
-    constexpr bool options_menu = false;
-    constexpr int misc_flags = 0;
+    //constexpr int misc_flags = 0;
 
     if (ImGui::BeginMenu("Sky")) {
-        ImGui::ColorEdit3("Sun Color##1", (float*)&sky->Suncolor, misc_flags);
-        ImGui::ColorEdit3("High Color##2", (float*)&sky->Highsky, misc_flags);
-        ImGui::ColorEdit3("Low Color##3", (float*)&sky->Lowsky, misc_flags);
+        ImGui::ColorEdit3("Sun Color##1", (float*)&sky->Suncolor);
+        ImGui::ColorEdit3("High Color##2", (float*)&sky->Highsky);
+        ImGui::ColorEdit3("Low Color##3", (float*)&sky->Lowsky);
     }
 
     ImGui::End();

@@ -80,8 +80,11 @@ void LevelLayer::Load(){
 
     // Create test items
 
-    const auto e = world->Create(Assets::It()->GetPrefab("BlueDiamond"));
-    e->Get<Body>()->Position = sf::Vector2f(500+128, 400);
+    auto cursor = 0.0f;
+    for (auto tag : {"BlueDiamond", "Heart", "Potion", "FloppyDisk"}) {
+        const auto e = world->Create(Assets::It()->GetPrefab(tag));
+        e->Get<Body>()->Position = sf::Vector2f(500+128 + (cursor++*16), 400);
+    }
 }
 void LevelLayer::Update(const SkyTime& time){
     auto [x, y] = GameState::It()->GetWindowSize();

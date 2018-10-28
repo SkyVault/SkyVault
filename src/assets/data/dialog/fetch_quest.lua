@@ -15,7 +15,7 @@ return {
         },
         
         [3] = {
-            "Okay go get that carrot!",
+            "Okay go get that floppy disk!",
             -1,
             startQuest = "FetchQuestTest"
         },

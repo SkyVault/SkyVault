@@ -41,23 +41,18 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
         ImGui::Begin("Entity Prefabs"); // begin window
 
         const auto prefabs = Assets::It()->GetPrefabs();
+        int i = 0;
         for (auto& [name, table] : prefabs) {
             ImGui::Text("[%-18s]", name.c_str());
             ImGui::SameLine();
 
             // NOTE(Dustin): This is just a test
-            if (ImGui::Button("spawn")) {
-                if (name == "Bird"){
-                    var bird = world->Create();
-                    var t = Assets::It()->Get<sf::Texture>("bird");
+            if (ImGui::Button(("spawn##"+std::to_string(i++)).c_str())) {
+                auto e = world->Create(Assets::It()->GetPrefab(name));
 
-                    bird->Add<Body>(cursor, sf::Vector2f(8*2, 8*2));
-                    bird->Add<PhysicsBody>();
-                    
-                    //bird->Add<Renderable>(t, sf::IntRect(0, 0, 8, 8));
-                    bird->Add<AnimatedSprite>(t, std::map<std::string, Animation>{
-                            {"flight", *Assets::It()->GetAnimation("bird")} 
-                            });
+                if (e->Has<Body>()) {
+                    sf::Vector2f worldPos = window->mapPixelToCoords(sf::Vector2i(cursor.x, cursor.y));
+                    e->Get<Body>()->Position = worldPos;
                 }
             }
         }
@@ -71,9 +66,6 @@ void Editor::doUI(std::unique_ptr<sf::RenderWindow> &window, const SkyTime& time
 
     // Render the editor
     ImGui::SFML::Render(*window);
-
-    if (GameState::It()->FullEditor())
-        Draw(window);
 }
 
 void Editor::doEntityInspector(std::shared_ptr<EntityWorld>& world) {
@@ -187,8 +179,6 @@ void Editor::doInGameTerminal() {
 }
 
 void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window) {
-     //const auto view = camera->View;
-
     // get the current mouse position in the window
     sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
 
@@ -244,4 +234,7 @@ void Editor::doColors(std::shared_ptr<Sky>& sky) {
     }
 
     ImGui::End();
+
+
+
 }

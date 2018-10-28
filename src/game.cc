@@ -142,6 +142,9 @@ void Game::Render() {
         GameState::It()->Render(window);
         world->Render(window);
         Art::It()->Flush(window);
+
+        if (GameState::It()->FullEditor())
+            editor->Draw(window);
     }
     window->setView(window->getDefaultView());
 
@@ -190,7 +193,6 @@ void Game::RunLoop() {
         Update(time);
 
         window->clear();
-        window->setView(camera->View);
         Render();
 
         editor->doUI(window, time, world, sky);

@@ -7,15 +7,18 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <typeindex>
+#include <sol.hpp>
 
 #include "entity.h"
 #include "filter.h"
 #include "../skytime.h"
 #include "../skyvault.h"
+#include "../graphics/assets.h"
 
 struct EntityWorld {
 
     Entity* Create();
+    Entity* Create(const sol::table& prefab);
 
     template <typename T, typename... Args>
     void Register(Args&&... args) {

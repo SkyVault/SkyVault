@@ -76,6 +76,12 @@ void LevelLayer::Load(){
             _gui->DoDialog(Assets::It()->GetDialog("preQuest"));
         });
     }
+
+
+    // Create test items
+
+    const auto e = world->Create(Assets::It()->GetPrefab("BlueDiamond"));
+    e->Get<Body>()->Position = sf::Vector2f(500+128, 400);
 }
 void LevelLayer::Update(const SkyTime& time){
     auto [x, y] = GameState::It()->GetWindowSize();

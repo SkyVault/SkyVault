@@ -214,6 +214,7 @@ void Game::Run() {
     );
 
     window->setPosition(sf::Vector2i(400, 80));
+    GameState::It()->SetWindowSize(window->getSize());
 
     LoadContent();
 

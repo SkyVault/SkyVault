@@ -91,6 +91,7 @@ public:
     }
 
     inline sf::Vector2u GetWindowSize() { return window_size; }
+    inline void SetWindowSize(const sf::Vector2u& size) { window_size = size; }
 
     States CurrentState {PLAYING_STATE};
 

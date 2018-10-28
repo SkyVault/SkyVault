@@ -4,5 +4,6 @@ return {
         ["bird"] = "assets/images/bird.png",
         ["tes"] = "assets/images/tes.png",
         ["enemies"] = "assets/images/enemies.png",
+        ["items"] = "assets/images/sprites14c.png",
     }
 }

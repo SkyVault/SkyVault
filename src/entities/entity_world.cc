@@ -5,6 +5,7 @@
 
 #include "components/player.h"
 #include "components/body.h"
+#include "components/renderable.h"
 #include "components/physics_body.h"
 #include "components/interaction.h"
 
@@ -13,6 +14,52 @@
 
 Entity* EntityWorld::Create() {
     var entity = new Entity();
+    entities.push_back(std::unique_ptr<Entity>(entity));
+    return entity;
+}
+
+Entity* EntityWorld::Create(const sol::table& prefab) {
+    var entity = new Entity();
+
+    if (prefab.get<sol::table>("tags")) {
+        std::cout << "We dont yet handle entity tags" << std::endl;
+    }
+
+    if (sol::table components = prefab.get<sol::table>("components")) {
+        components.for_each([&](const sol::object& key, const sol::object value) {
+            const std::string& which_component = key.as<std::string>();
+            const sol::table& component = value.as<sol::table>();
+
+            // Match the component type
+            if (which_component == "Body") {
+                const int x = component.get<int>("x");
+                const int y = component.get<int>("y");
+                const int width = component.get<int>("width");
+                const int height = component.get<int>("height");
+                entity->Add<Body>(sf::Vector2f(x, y), sf::Vector2f(width, height));
+            } 
+            else if (which_component == "Sprite") {
+                const std::string which_texture = component.get<std::string>("texture");
+                const auto texture = Assets::It()->Get<sf::Texture>(which_texture);
+
+                unsigned int rx{0}, ry{0}, rw{texture->getSize().x}, rh{texture->getSize().y};
+
+                if (const sol::table region = component.get<sol::table>("region")) {
+                    rx = (unsigned int)(int)region[1];
+                    ry = (unsigned int)(int)region[2];
+                    rw = (unsigned int)(int)region[3];
+                    rh = (unsigned int)(int)region[4];
+                }
+
+                entity->Add<Renderable>(texture, sf::IntRect(rx, ry, rw, rh), sf::Vector2f(0, 0));
+            }
+            else {
+                std::cout << "(WARNING)::EntityWorld::Create(const sol::table& prefab):: Unknown component type: " << which_component << std::endl;
+            }
+
+        });
+    }
+
     entities.push_back(std::unique_ptr<Entity>(entity));
     return entity;
 }

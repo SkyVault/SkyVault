@@ -10,12 +10,13 @@ Sky::Sky() {
 }
 
 void Sky::Load(int width, int height) {
+    std::cout << width << " " << height << std::endl;
     for (int i = 0; i < 30; i++) {
         const auto scale = (rand_float() * 2.0f) * 0.5; 
         cloudStates.push_back(CloudState{
             sf::Vector2f(
-                -400.0f + rand_float() * (float)width + 100.0f, 
-                0.0f
+                rand_float() * (float)width, 
+                rand_float() * (float)height
             ),
             sf::Vector2f((1 + scale) + (rand_float() * 0.2f), 1 + scale),
 

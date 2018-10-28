@@ -14,11 +14,6 @@ void Assets::LoadPrefabs() {
 
             const auto entPrefab = value.as<sol::table>();
             entity_prefabs[skey] = entPrefab;
-
-            //entPrefab.for_each([&](sol::object const& _key, sol::object const& _value){
-                //const auto _skey = _key.as<std::string>();
-                //std::cout << "  " << _skey << std::endl;
-            //});
         });
     }
 

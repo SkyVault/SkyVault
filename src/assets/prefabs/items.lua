@@ -7,7 +7,7 @@ return {
                 texture = "items",
                 region = { 163, 37, 16, 16 }
             },
-            Item = {},
+            Item = {}, -- Item adds a physics component, this might not be good design...
         }
     },
 

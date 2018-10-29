@@ -2,15 +2,27 @@
 
 #include <tuple>
 #include <algorithm>
+#include <type_traits>
 
 #include "components/player.h"
 #include "components/body.h"
 #include "components/renderable.h"
+#include "components/item.h"
 #include "components/physics_body.h"
 #include "components/interaction.h"
+#include "filters/physics_filter.h"
 
 #include "../game_state.h"
 #include "../skyvault.h"
+ 
+/*
+    NOTE(Dustin): 
+    Now I'm thinking that all over the entity system we want to see which entities 
+    intersect each other, so we probably should just do that here in the entity world
+    though there are some interesting issues with that, one of which is that this code
+    doesnt really allow for modularity. So its harder to move this code to a new project 
+    because it assumes that collisions need to be checked.
+ */
 
 Entity* EntityWorld::Create() {
     var entity = new Entity();
@@ -53,6 +65,10 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
 
                 entity->Add<Renderable>(texture, sf::IntRect(rx, ry, rw, rh), sf::Vector2f(0, 0));
             }
+            else if (which_component == "Item") {
+                entity->Add<Item>();
+                entity->Add<PhysicsBody>(PhysicsTypes::PHYSICS_ITEM);
+            }
             else {
                 std::cout << "(WARNING)::EntityWorld::Create(const sol::table& prefab):: Unknown component type: " << which_component << std::endl;
             }
@@ -69,7 +85,19 @@ void EntityWorld::Update(const SkyTime& time) {
     std::fill(grid.begin(), grid.end(), nullptr);
 
     for (auto& [key, filter] : filters) {
-        filter->PreLoad();
+        filter->PreUpdate(time);
+       
+        // NOTE(Dustin): @Hack @Refactor This is is a dirty hack that I must do so that
+        // this project doesn't come to a halt, basically to avoid circular dependancies
+        // and a huge re-archetecting of the engine, I need to pass all of the physics
+        // bodies to the physics filter from here
+        
+        if (dynamic_cast<PhysicsFilter*>(filter.get()) != nullptr){
+            auto* physicsFilter = dynamic_cast<PhysicsFilter*>(filter.get());
+            auto e = GetAllWith<PhysicsBody>();
+            physicsFilter->physicsBodies.clear();
+            for (auto& _e : e) physicsFilter->physicsBodies.push_back(_e);
+        }
     }
 
     const auto player = GetFirstWith<Player>();
@@ -137,6 +165,12 @@ void EntityWorld::Update(const SkyTime& time) {
             }
         }
     }
+
+    for (int i = entities.size() - 1; i >= 0; i--){
+        if (entities[i]->remove) {
+            entities.erase(entities.begin() + i);
+        }
+    }
 }
 
 void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
@@ -161,8 +195,7 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
 
     for (auto& [key, f] : filters) {
         f->PostRender(window);
-    }
-
+    } 
 
     if (GameState::It()->IsDebug() == false) return;
 

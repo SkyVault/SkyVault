@@ -1,11 +1,4 @@
 return {
-    ["Test_1"] = {
-    },
-
-    ["Player"] = {
-
-    },
-
     ["Bird"] = {
         tags = {"Hello", "World"},
         components = {
@@ -16,8 +9,4 @@ return {
             }
         }
     },
-
-    ["Item"] = {
-
-    }
 }

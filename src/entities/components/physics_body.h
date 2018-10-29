@@ -14,7 +14,8 @@
 #define X_PHYSICS_TYPES\
 	X(PHYSICS_STATIC)\
 	X(PHYSICS_LADDER)\
-	X(PHYSICS_DYNAMIC)
+	X(PHYSICS_DYNAMIC)\
+	X(PHYSICS_ITEM)
 
 enum PhysicsTypes {
 #define X(Enum) Enum,
@@ -30,12 +31,15 @@ const static std::vector<std::string> PhysicsTypesNames = {
 
 
 struct PhysicsBody : public Component {
-    PhysicsBody(PhysicsTypes type=PhysicsTypes::PHYSICS_STATIC);
+    PhysicsBody(PhysicsTypes type=PhysicsTypes::PHYSICS_DYNAMIC);
 
     sf::Vector2f Velocity;
     float Friction{0.02f};
 
     void Decelerate(float dt);
+    inline PhysicsTypes GetType() {
+        return type;
+    }
 
 private:
     PhysicsTypes type{PHYSICS_STATIC};

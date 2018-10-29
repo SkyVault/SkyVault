@@ -10,7 +10,7 @@
 #include "entity.h"
 #include "../skytime.h"
 
-struct EntityWorld;
+struct EntityWorld; 
 
 struct Filter {
     friend EntityWorld;
@@ -29,8 +29,9 @@ struct Filter {
         return true;
     }
 
-    virtual void PreLoad() {}
     virtual void Load(std::unique_ptr<Entity>& entity) {}
+
+    virtual void PreUpdate(const SkyTime& time) {}
     virtual void Update(const SkyTime& time, std::unique_ptr<Entity>& entity) {}
 
     // Doesnt get effected by pausing

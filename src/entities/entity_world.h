@@ -45,6 +45,15 @@ struct EntityWorld {
         return nullptr;
     }
 
+    template<typename T>
+    inline std::vector<Entity*> GetAllWith(){
+        std::vector<Entity*> result;
+        for (auto& entity : entities) {
+            if (entity->Has<T>()) result.push_back(entity.get());
+        }
+        return result;
+    }
+
     inline std::vector<std::unique_ptr<Entity>>& GetEntities() { return entities; }
 
 private:

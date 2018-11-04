@@ -19,6 +19,8 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
     var physics = self->Get<PhysicsBody>();
     var body = self->Get<Body>();
 
+    physics->colliding_with_solid = false;
+
     switch (physics->GetType()) {
         case PhysicsTypes::PHYSICS_DYNAMIC: {
             var xbody = Body(
@@ -41,10 +43,12 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
                 for (auto& solid : solids) {
                     if (xbody.Contains(*solid)) {
                         xbody = *body;
+                        physics->colliding_with_solid = true;
                     }
 
                     if (ybody.Contains(*solid)) {
                         ybody = *body;
+                        physics->colliding_with_solid = true;
                     }
                 } 
             }
@@ -57,11 +61,13 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
 
                 if (other_physics->GetType() == PHYSICS_DYNAMIC){
                     if (xbody.Contains(*other_body)) {
-                        xbody = *body;
+                        xbody = *body; 
+                        physics->colliding_with_solid = true;
                     }
 
                     if (ybody.Contains(*other_body)) {
                         ybody = *body;
+                        physics->colliding_with_solid = true;
                     } 
                 } else if (other_physics->GetType() == PHYSICS_ITEM) {
                     bool contains{false};

@@ -12,6 +12,7 @@
 #define MAP_SIZE_PIXELS (TILE_SIZE * MAP_SIZE)
 
 #include <random>
+#include <ctime>
 
 #define let const auto
 #define var auto
@@ -47,6 +48,11 @@ inline int rand_int(int min, int max) {
 }
 
 inline float rand_float() {
+    static bool first {true};
+    if (first) {
+        srand(time(NULL));
+        first = false;
+    }
     return rand() / (RAND_MAX + 1.f);
 }
 

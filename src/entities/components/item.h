@@ -3,8 +3,12 @@
 
 #include "../component.h"
 
-struct Item : public Component {
+#include <SFML/Graphics.hpp>
+#include <string>
 
+struct Item : public Component {
+    std::string Name;
+    sf::Sprite Sprite; 
 };
 
 #endif//SKYVAULT_ITEM_H

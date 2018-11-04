@@ -32,15 +32,34 @@ void LevelLayer::Load(){
         other->Add<Body>(sf::Vector2f(500 + 32, 400 - 32), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(0, 16, 32, 32), sf::Vector2f(0, -16));
-        //other->Add<AI>([](const auto time, std::unique_ptr<Entity>& e){
-            //auto ai = e->Get<AI>();
+        other->Add<AI>([](const auto time, std::unique_ptr<Entity>& self, auto* ai){
+            if (ai->DoFirst()) { ai->CurrentState = AI::States::IDLE; return; }
 
-            //if (ai->DoFirst()) {
-                //ai->Flags["movingLeft"] = true;
-                //ai->Wait(2.0f);
-                //return;
-            //}
+            switch (ai->CurrentState) {
+                case AI::States::IDLE: {
 
+                    // Move to a random location and scan for player
+                    ai->MoveRelativeRandom(40, 120);
+
+                    break;
+                } 
+                case AI::States::MOVE_TO_RANDOM_LOCATION_RELATIVE: {
+                    if (ai->ReachedTarget()) {
+                        ai->Wait(1.0f);
+                    }
+
+                    break;
+                }
+                case AI::States::WAIT: {
+                    if (ai->WaitIsDone()){
+                        ai->CurrentState = AI::States::IDLE;
+                    }
+
+                    break;
+                }
+
+                default: break;
+            }
             //switch (ai->CurrentState) {
             //case AI::States::WAIT: {
                 //if (ai->WaitIsDone()) {
@@ -58,7 +77,7 @@ void LevelLayer::Load(){
             //}
             //default: break; 
             //}
-        //});
+        });
         other->Add<Interaction>([](){
             std::cout << "Orc\n";
         });

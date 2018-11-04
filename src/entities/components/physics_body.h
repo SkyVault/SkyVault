@@ -30,7 +30,10 @@ const static std::vector<std::string> PhysicsTypesNames = {
 };
 
 
+struct PhysicsFilter;
 struct PhysicsBody : public Component {
+    friend PhysicsFilter;
+
     PhysicsBody(PhysicsTypes type=PhysicsTypes::PHYSICS_DYNAMIC);
 
     sf::Vector2f Velocity;
@@ -41,8 +44,11 @@ struct PhysicsBody : public Component {
         return type;
     }
 
+    inline bool CollidingWithSolid(){ return colliding_with_solid; }
+
 private:
     PhysicsTypes type{PHYSICS_STATIC};
+    bool colliding_with_solid{false}; 
 };
 
 #endif//SKYVAULT_PHYSICS_BODY_H

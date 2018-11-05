@@ -52,6 +52,20 @@ void Game::LoadContent() {
 
     lua->script("print(\"Initialized \" .. _VERSION)");
 
+    // Set up the quest engine in lua
+    // TODO(Dustin): Move this somewhere else
+    (*lua)["QuestEngine_StartQuest"] = [](std::string str){
+        QuestEngine::It()->StartQuest(str); 
+    };
+
+    (*lua)["QuestEngine_WorkingOnQuest"] = [](std::string str) {
+        return QuestEngine::It()->WorkingOnQuest(str); 
+    };
+
+    (*lua)["QuestEngine_IsCompleted"] = [](std::string str) {
+        return QuestEngine::It()->IsCompleted(str); 
+    };
+
     sol::table asset_data = lua->script_file("assets/data/asset_data.lua");
     if (!asset_data) {
         std::cout << "Failed to load the asset data script!\n";

@@ -52,6 +52,8 @@ public:
         return instance.get();
     }
 
+    int testValue {13};
+
     void StartQuest(const std::string& which);
     void Update(const SkyTime& time, std::shared_ptr<EntityWorld>& world);
 

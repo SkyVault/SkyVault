@@ -7,6 +7,16 @@ void AIFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& entity) {
     auto physics = entity->Get<PhysicsBody>();
     ai->bodyPosition = body->Position;
 
+    const auto player = ai->player_ref;
+
+    if (player != nullptr && body != nullptr) {
+        const auto player_body = player->Get<Body>();
+        ai->dist_to_player = sqrtf(
+                powf(player_body->Position.x - body->Position.x, 2) +
+                powf(player_body->Position.y - body->Position.y, 2)
+                );
+    }
+
     ai->DoAI(time, entity, ai);
 
     switch (ai->CurrentState) {

@@ -10,6 +10,8 @@
 #include "components/item.h"
 #include "components/physics_body.h"
 #include "components/interaction.h"
+#include "components/ai.h"
+
 #include "filters/physics_filter.h"
 
 #include "../game_state.h"
@@ -66,7 +68,21 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
                 entity->Add<Renderable>(texture, sf::IntRect(rx, ry, rw, rh), sf::Vector2f(0, 0));
             }
             else if (which_component == "Item") {
-                entity->Add<Item>();
+                const std::string which_texture = component.get<std::string>("texture");
+                const auto texture = Assets::It()->Get<sf::Texture>(which_texture);
+
+                unsigned int rx{0}, ry{0}, rw{texture->getSize().x}, rh{texture->getSize().y};
+
+                if (const sol::table region = component.get<sol::table>("region")) {
+                    rx = (unsigned int)(int)region[1];
+                    ry = (unsigned int)(int)region[2];
+                    rw = (unsigned int)(int)region[3];
+                    rh = (unsigned int)(int)region[4];
+                }
+
+                const std::string name = prefab.get<std::string>("__x_prefab_name");
+                entity->Add<Renderable>(texture, sf::IntRect(rx, ry, rw, rh), sf::Vector2f(0, 0));
+                entity->Add<Item>(name, entity->Get<Renderable>()->GetSprite());
                 entity->Add<PhysicsBody>(PhysicsTypes::PHYSICS_ITEM);
             }
             else {
@@ -119,6 +135,10 @@ void EntityWorld::Update(const SkyTime& time) {
         }
 
         e->loaded = true;
+
+        if (e->Has<AI>()) {
+            e->Get<AI>()->player_ref = player;
+        }
         
         if (GameState::It()->CurrentState == GameState::States::PLAYING_STATE) {
             if (player && e->Has<Interaction>() && e->Has<Body>()) {

@@ -1,5 +1,5 @@
-#ifndef SKYVAULT_AST_H
-#define SKYVAULT_AST_H
+#ifndef SKYVAULT_ART_H
+#define SKYVAULT_ART_H
 
 #include <SFML/Graphics.hpp>
 #include <memory>
@@ -35,4 +35,4 @@ private:
     //std::vector<std::tuple<sf::Drawable, sf::RenderStates>> foreground_drawables;
 };
 
-#endif//SKYVAULT_AST_H 
+#endif//SKYVAULT_ART_H 

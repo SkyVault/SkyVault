@@ -43,8 +43,7 @@ void GUI::Update(const SkyTime& time) {
                         const sol::table curr = top->Data[top->CurrentIndex];
                         if (curr.get<std::string>("startQuest") != "") {
                             // Push the quest onto the quest stack
-                            
-                            std::cout << "Starting Quest: " << curr.get<std::string>("startQuest") << std::endl; 
+                            QuestEngine::It()->StartQuest(curr.get<std::string>("startQuest"));
                         }
                     }
                     top->CurrentIndex = nextIndex;

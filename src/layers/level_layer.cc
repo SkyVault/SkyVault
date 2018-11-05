@@ -32,55 +32,7 @@ void LevelLayer::Load(){
         other->Add<Body>(sf::Vector2f(500 + 32, 400 - 32), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(0, 16, 32, 32), sf::Vector2f(0, -16));
-        other->Add<AI>([](const auto time, std::unique_ptr<Entity>& self, auto* ai){
-            if (ai->DoFirst()) { ai->CurrentState = AI::States::IDLE; return; }
-
-            switch (ai->CurrentState) {
-                case AI::States::IDLE: {
-
-                    // Move to a random location and scan for player
-                    ai->MoveRelativeRandom(40, 120);
-
-                    break;
-                } 
-                case AI::States::MOVE_TO_RANDOM_LOCATION_RELATIVE: {
-                    if (ai->ReachedTarget()) {
-                        ai->Wait(1.0f);
-                    }
-
-                    break;
-                }
-                case AI::States::WAIT: {
-                    if (ai->WaitIsDone()){
-                        ai->CurrentState = AI::States::IDLE;
-                    }
-
-                    break;
-                }
-
-                default: break;
-            }
-            //switch (ai->CurrentState) {
-            //case AI::States::WAIT: {
-                //if (ai->WaitIsDone()) {
-                    //auto dir = (ai->Flags["movingLeft"] ? -1 : 1);
-                    //ai->MoveRelative(sf::Vector2f(80 * dir, 0));
-                //}
-                //break;
-            //}
-            //case AI::States::MOVE_RELATIVE: {
-                //if (ai->ReachedTarget()){
-                    //ai->Wait(2.0f);
-                    //ai->Flags["movingLeft"] = !ai->Flags["movingLeft"];
-                //}
-                //break;
-            //}
-            //default: break; 
-            //}
-        });
-        other->Add<Interaction>([](){
-            std::cout << "Orc\n";
-        });
+        other->Add<AI>(BasicEnemyAI);
     }
 
     {
@@ -90,12 +42,19 @@ void LevelLayer::Load(){
         other->Add<PhysicsBody>();
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(64, 16, 32, 32), sf::Vector2f(0, -16));
         other->Add<Interaction>([_gui](){
-            std::cout << "Skelly\n";
-
-            _gui->DoDialog(Assets::It()->GetDialog("preQuest"));
+            if (!QuestEngine::It()->IsCompleted("FloppyDiskQuest") &&
+                !QuestEngine::It()->WorkingOnQuest("FloppyDiskQuest")){
+                _gui->DoDialog(Assets::It()->GetDialog("preQuest"));
+            } else {
+                if (QuestEngine::It()->WorkingOnQuest("FloppyDiskQuest")){
+                    _gui->DoDialog(Assets::It()->GetDialog("duringQuest")); 
+                } else if (QuestEngine::It()->IsCompleted("FloppyDiskQuest")) {
+                    _gui->DoDialog(Assets::It()->GetDialog("postQuest")); 
+                }
+            }
         });
+        other->Add<AI>(BasicEnemyAI);
     }
-
 
     // Create test items
 

@@ -7,6 +7,7 @@
 
 #include "layer.h"
 #include "../skyvault.h"
+#include "../utilities/quest_engine.h"
 #include "../entities/entity_world.h"
 #include "../entities/components/body.h"
 #include "../entities/components/renderable.h"

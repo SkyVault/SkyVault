@@ -9,6 +9,7 @@
 #include "entities/filters/player_filter.h"
 #include "entities/filters/ai_filter.h"
 #include "utilities/input.h"
+#include "utilities/quest_engine.h"
 #include "graphics/animation.h"
 #include "graphics/frame.h"
 #include "layers/menu_layer.h"
@@ -120,6 +121,7 @@ void Game::Update(const SkyTime& time) {
     world->Update(time);
     gui->Update(time);
     GameState::It()->Update(time);
+    QuestEngine::It()->Update(time, world);
 
     auto p = world->GetFirstWith<Player>();
     if (p == nullptr) return;

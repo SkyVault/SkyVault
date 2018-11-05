@@ -13,6 +13,7 @@
 
 #include <random>
 #include <ctime>
+#include <map>
 
 #define let const auto
 #define var auto
@@ -33,6 +34,10 @@ enum GameStates {
 
 //inline bool IsDebug() { return is_debugging; }
 //inline void ToggleDebug() { is_debugging = !is_debugging; }
+
+#ifndef HAS_KEY
+#define HAS_KEY(the_map, key) (the_map.find(key) != the_map.end())
+#endif//HAS_KEY
 
 inline int rand_int(int min, int max) {
     static std::mt19937 rng;

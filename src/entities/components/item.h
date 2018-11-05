@@ -7,6 +7,11 @@
 #include <string>
 
 struct Item : public Component {
+    inline Item(const std::string& Name, sf::Sprite Sprite) : Name(Name), Sprite(Sprite) {}
+    inline Item(const Item& copy) {
+        Name = copy.Name;
+        Sprite = copy.Sprite;
+    }
     std::string Name;
     sf::Sprite Sprite; 
 };

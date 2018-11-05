@@ -6,6 +6,7 @@
 #include <sol.hpp>
 #include "dialog.h"
 #include "../utilities/input.h"
+#include "../utilities/quest_engine.h"
 #include "../game_state.h"
 #include "../skytime.h"
 #include "../graphics/assets.h"

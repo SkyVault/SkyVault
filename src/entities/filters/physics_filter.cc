@@ -80,6 +80,9 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
                     } 
 
                     if (contains && self->Has<Player>()) {
+                        auto* player = self->Get<Player>();
+                        auto item = other->Get<Item>();
+                        player->Invatory.emplace_back(Item(*item));
                         other->Kill();
                     }
                 }

@@ -36,11 +36,14 @@ other->Add<AI>([](const auto time, std::unique_ptr<Entity>& self) {
     X(MOVE_TO_RANDOM_LOCATION_RELATIVE)\
 	X(MOVE_TO_LOCATION)\
 	X(MOVE_RELATIVE)\
+    X(ATTACK_PLAYER)\
     X(TRACK_PLAYER)
 
 struct AIFilter;
+struct EntityWorld;
 struct AI : public Component {
     friend AIFilter;
+    friend EntityWorld;
 
     AI(AiAction action): DoAI(action) {}
 
@@ -62,9 +65,11 @@ struct AI : public Component {
     void MoveRelativeRandom(const float min_dist, const float max_dist);
     bool ReachedTarget();
 
+    float GetDistToPlayer();
+
     AiAction DoAI;
 
-    States CurrentState{WAIT}; 
+    States CurrentState {WAIT}; 
 
     inline bool DoFirst() {
         if (isFirst) {
@@ -82,6 +87,12 @@ private:
 
     sf::Vector2f bodyPosition{sf::Vector2f(0, 0)};
     sf::Vector2f targetLocation{sf::Vector2f(0, 0)};
+
+    Entity* player_ref{nullptr};
+
+    float dist_to_player{0.0f};
 };
+
+void BasicEnemyAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai);
 
 #endif//SKYVAULT_AI_H

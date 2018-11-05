@@ -1,4 +1,5 @@
 #include "ai.h"
+#include "body.h"
 
 void AI::Wait(float time){ 
     CurrentState = WAIT;
@@ -24,4 +25,51 @@ bool AI::ReachedTarget() {
     const auto b = targetLocation; 
     const auto res = sqrtf(powf((b.x - a.x),2) + powf((b.y - a.y), 2));
     return res <= margin;
+}
+
+float AI::GetDistToPlayer() {
+    return dist_to_player;
+}
+
+// AI's
+void BasicEnemyAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai) {
+    if (ai->DoFirst()) { ai->CurrentState = AI::States::IDLE; return; }
+
+    switch(ai->CurrentState) {
+        case AI::States::IDLE:
+        case AI::States::MOVE_TO_RANDOM_LOCATION_RELATIVE: 
+            if (ai->GetDistToPlayer() < 100.0f)
+                ai->CurrentState = AI::States::ATTACK_PLAYER;
+            break;
+        default: break;
+    }
+
+    if (ai->CurrentState == AI::States::ATTACK_PLAYER)
+        if (ai->GetDistToPlayer() >= 100.0f)
+            ai->CurrentState = AI::States::IDLE;
+
+    switch (ai->CurrentState) {
+        case AI::States::IDLE: {
+
+            // Move to a random location and scan for player
+            ai->MoveRelativeRandom(40, 120);
+
+            break;
+        } 
+        case AI::States::MOVE_TO_RANDOM_LOCATION_RELATIVE: {
+            if (ai->ReachedTarget()) {
+                ai->Wait(1.0f);
+            }
+            break;
+        }
+        case AI::States::WAIT: {
+            if (ai->WaitIsDone()){
+                ai->CurrentState = AI::States::IDLE;
+            }
+
+            break;
+        }
+
+        default: break;
+    }
 }

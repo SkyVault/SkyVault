@@ -17,11 +17,18 @@ return {
         [3] = {
             "Okay go get that floppy disk!",
             -1,
-            startQuest = "FetchQuestTest"
+            startQuest = "FloppyDiskQuest"
         },
 
         [4] = {
             "Well thats to bad :(",
+            -1
+        }
+    },
+
+    duringQuest = {
+        [1] = {
+            "Still waiting on that floppy disk...",
             -1
         }
     },

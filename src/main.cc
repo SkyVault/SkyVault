@@ -6,6 +6,7 @@
 #include "graphics/assets.h"
 #include "utilities/input.h"
 #include "game_state.h"
+#include "utilities/quest_engine.h"
 
 std::unique_ptr<GameState> GameState::instance;
 std::once_flag GameState::onceFlag;
@@ -18,6 +19,9 @@ std::once_flag Assets::onceFlag;
 
 std::unique_ptr<Input> Input::instance;
 std::once_flag Input::onceFlag;
+
+std::unique_ptr<QuestEngine> QuestEngine::instance;
+std::once_flag QuestEngine::onceFlag;
 
 #include "game.h"
 

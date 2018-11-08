@@ -26,10 +26,16 @@
     because it assumes that collisions need to be checked.
  */
 
+// TODO(Dustin): Implement animated sprites
+
 Entity* EntityWorld::Create() {
     var entity = new Entity();
     entities.push_back(std::unique_ptr<Entity>(entity));
     return entity;
+}
+
+void EntityWorld::OnRoomChange(std::function<void(std::string)> fn) {
+    this->on_room_change = fn; 
 }
 
 Entity* EntityWorld::Create(const sol::table& prefab) {
@@ -46,10 +52,10 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
 
             // Match the component type
             if (which_component == "Body") {
-                const int x = component.get<int>("x");
-                const int y = component.get<int>("y");
-                const int width = component.get<int>("width");
-                const int height = component.get<int>("height");
+                const float x = component.get<float>("x");
+                const float y = component.get<float>("y");
+                const float width = component.get<float>("width");
+                const float height = component.get<float>("height");
                 entity->Add<Body>(sf::Vector2f(x, y), sf::Vector2f(width, height));
             } 
             else if (which_component == "Sprite") {
@@ -57,6 +63,7 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
                 const auto texture = Assets::It()->Get<sf::Texture>(which_texture);
 
                 unsigned int rx{0}, ry{0}, rw{texture->getSize().x}, rh{texture->getSize().y};
+                float ox{0.0f}, oy{0.0f};
 
                 if (const sol::table region = component.get<sol::table>("region")) {
                     rx = (unsigned int)(int)region[1];
@@ -65,7 +72,12 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
                     rh = (unsigned int)(int)region[4];
                 }
 
-                entity->Add<Renderable>(texture, sf::IntRect(rx, ry, rw, rh), sf::Vector2f(0, 0));
+                if (const sol::table offset = component.get<sol::table>("offset")) {
+                    ox = (float)offset[1];
+                    oy = (float)offset[2];
+                }
+
+                entity->Add<Renderable>(texture, sf::IntRect(rx, ry, rw, rh), sf::Vector2f(ox, oy));
             }
             else if (which_component == "Item") {
                 const std::string which_texture = component.get<std::string>("texture");
@@ -85,6 +97,13 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
                 entity->Add<Item>(name, entity->Get<Renderable>()->GetSprite());
                 entity->Add<PhysicsBody>(PhysicsTypes::PHYSICS_ITEM);
             }
+            else if (which_component == "PhysicsBody") {
+                entity->Add<PhysicsBody>(); 
+            }
+
+            else if (which_component == "Interaction") {
+                entity->Add<Interaction>(component.get<sol::function>("fn"));
+            } 
             else {
                 std::cout << "(WARNING)::EntityWorld::Create(const sol::table& prefab):: Unknown component type: " << which_component << std::endl;
             }
@@ -139,6 +158,18 @@ void EntityWorld::Update(const SkyTime& time) {
         if (e->Has<AI>()) {
             e->Get<AI>()->player_ref = player;
         }
+
+        if (e->Has<Player>()){
+            // Test for intersection with the door
+            const auto body = e->Get<Body>();
+            for (auto& door : doors) {
+                if (door.Contains(*body)) {
+                    try {
+                        std::invoke(on_room_change, door.To);
+                    } catch (std::bad_function_call& e) {}
+                }
+            }
+        }
         
         if (GameState::It()->CurrentState == GameState::States::PLAYING_STATE) {
             if (player && e->Has<Interaction>() && e->Has<Body>()) {
@@ -181,7 +212,7 @@ void EntityWorld::Update(const SkyTime& time) {
                 // Set the players velocity to zero, avoids sliding past entities
                 player->Get<PhysicsBody>()->Velocity = sf::Vector2f(0, 0);
 
-                winner->onInteractionWithPlayer();
+                winner->Interact();
             }
         }
     }
@@ -246,4 +277,25 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
         shape.setSize(sf::Vector2f(MAP_SIZE * grid_square, 1));
         window->draw(shape);
     }
+}
+
+void EntityWorld::AddDoor(const std::string& To, float x, float y, float width, float height) {
+    doors.push_back(Door
+            ( To
+            , x
+            , y
+            , width
+            , height));
+}
+
+void EntityWorld::ClearAll() {
+    std::remove_if
+        ( entities.begin()
+        , entities.end()
+        , [](const std::unique_ptr<Entity>& e){
+            // TODO(Dustin): Check entity persistance
+            return true; 
+        } );
+
+    doors.clear();
 }

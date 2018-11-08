@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.1" tiledversion="2018.09.12" orientation="orthogonal" renderorder="right-down" width="128" height="128" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#55ffff" nextlayerid="43" nextobjectid="200">
+<map version="1.1" tiledversion="2018.09.12" orientation="orthogonal" renderorder="right-down" width="128" height="128" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#55ffff" nextlayerid="43" nextobjectid="201">
  <properties>
   <property name="Sky" value="true"/>
  </properties>
@@ -1257,14 +1257,13 @@
   <object id="190" name="Blue-Flame" type="Blue-Flame" x="768" y="440" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="31" name="Doors">
-  <object id="84" type="Door" x="592" y="768.5" width="128" height="23.5">
-   <properties>
-    <property name="Door" value="Dungeon_Floor_1 528 725"/>
-    <property name="is_sensor" type="bool" value="true"/>
-   </properties>
-  </object>
   <object id="90" name="Shulk" type="Shulk" x="624" y="616" width="16" height="16"/>
   <object id="191" name="Player" type="Player" x="648.5" y="584" width="16" height="16"/>
+  <object id="200" name="Door" type="Door" x="592" y="720" width="128" height="16">
+   <properties>
+    <property name="goto" value="StairsDown"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="32" name="Billboards">
   <object id="93" name="Column" type="Billboard" x="496" y="448" width="16" height="48">

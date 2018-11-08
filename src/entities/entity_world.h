@@ -1,6 +1,7 @@
 #ifndef SKYVAULT_ENTITY_WORLD_H
 #define SKYVAULT_ENTITY_WORLD_H
 
+#include "components/body.h"
 #include "../utilities/input.h"
 
 #include <memory>
@@ -14,6 +15,13 @@
 #include "../skytime.h"
 #include "../skyvault.h"
 #include "../graphics/assets.h"
+
+struct Door : Body{
+    inline Door(std::string _to, float x, float y, float w, float h):
+        Body(x, y, w, h),
+        To(_to){}
+    std::string To{""};
+};
 
 struct EntityWorld {
 
@@ -55,10 +63,18 @@ struct EntityWorld {
     }
 
     inline std::vector<std::unique_ptr<Entity>>& GetEntities() { return entities; }
+    
+    void AddDoor(const std::string& To, float x, float y, float width, float height);
+    void ClearAll();
+
+    void OnRoomChange(std::function<void(std::string)> fn);
 
 private:
     std::map<std::type_index, std::unique_ptr<Filter>> filters;
     std::vector<std::unique_ptr<Entity>> entities;
+
+    std::vector<Door> doors;
+    std::function<void(std::string)> on_room_change;
 
     // Interaction grid
     std::array<Entity*, MAP_SIZE*MAP_SIZE> grid;

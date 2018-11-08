@@ -6,6 +6,7 @@
 #include <vector>
 #include "../tinyxml2.h"
 #include "../entities/filters/physics_filter.h"
+#include "../entities/entity_world.h"
 
 struct Tileset {
     std::string name{""};
@@ -34,7 +35,7 @@ struct TiledMap : public sf::Drawable, public sf::Transformable {
             delete layer;
     }
 
-    bool loadFromFile(const std::string& path, PhysicsFilter* physics);
+    bool loadFromFile(const std::string& path, PhysicsFilter* physics, std::shared_ptr<EntityWorld>& world);
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

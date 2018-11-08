@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics) {
+bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std::shared_ptr<EntityWorld>& world) {
     using namespace tinyxml2;
 
     if (physics == nullptr) {
@@ -135,14 +135,30 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics) {
                 } else {
                     const auto type = std::string{objectXml->Attribute("type")};
 
-                    //if (type == "") {
-                    //}
+                    if (type == "Door") {
+                        // Spawn a door entity
+                        const auto properties = objectXml->FirstChildElement("properties"); 
+                        if (properties == nullptr){
+                            std::cout << "Door is missing properties" << std::endl;
+                        } else {
+                            if (const auto to = properties->FirstChildElement("property")){
+                                const auto _to = std::string{to->Attribute("value")};
+                                world->AddDoor
+                                    ( _to 
+                                    , ox
+                                    , oy
+                                    , owidth
+                                    , oheight );
+                            } else {
+                                std::cout << "Door is missing goto property" << std::endl;
+                            } 
+                        }
+                    }
 
                 }
                 objectXml = objectXml->NextSiblingElement();
             }
         }
-        
         child = child->NextSiblingElement();
     }
 

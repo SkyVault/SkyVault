@@ -66,6 +66,10 @@ void Game::LoadContent() {
         return QuestEngine::It()->IsCompleted(str); 
     };
 
+    (*lua)["Gui_DoDialog"] = [&](std::string which) {
+        gui->DoDialog(Assets::It()->GetDialog(which));
+    };
+
     sol::table asset_data = lua->script_file("assets/data/asset_data.lua");
     if (!asset_data) {
         std::cout << "Failed to load the asset data script!\n";

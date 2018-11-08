@@ -13,6 +13,10 @@ struct Body : public Component {
         Position(position), 
         Size(size){}
 
+    Body(float x, float y, float width, float height): 
+        Position(x, y), 
+        Size(width, height){}
+
     inline bool Contains(const Body& other) {
         return 
             Position.x + Size.x > other.Position.x &&

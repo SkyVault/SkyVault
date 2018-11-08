@@ -16,7 +16,7 @@ void LevelLayer::Load(){
     sky->Load(x, y);
 
     auto* physics_filter = world->GetFilter<PhysicsFilter>();
-    map.loadFromFile("assets/maps/Dungeon_Room_2.tmx", physics_filter);
+    map.loadFromFile("assets/maps/Dungeon_Room_2.tmx", physics_filter, world);
     map.setScale(1.0f, 1.0f);
 
     {
@@ -35,34 +35,15 @@ void LevelLayer::Load(){
         other->Add<AI>(BasicEnemyAI);
     }
 
-    {
-        const auto& _gui = gui;
-        var other = world->Create();
-        other->Add<Body>(sf::Vector2f(500+32, 400-64), sf::Vector2f(32,16));
-        other->Add<PhysicsBody>();
-        other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(64, 16, 32, 32), sf::Vector2f(0, -16));
-        other->Add<Interaction>([_gui](){
-            if (!QuestEngine::It()->IsCompleted("FloppyDiskQuest") &&
-                !QuestEngine::It()->WorkingOnQuest("FloppyDiskQuest")){
-                _gui->DoDialog(Assets::It()->GetDialog("preQuest"));
-            } else {
-                if (QuestEngine::It()->WorkingOnQuest("FloppyDiskQuest")){
-                    _gui->DoDialog(Assets::It()->GetDialog("duringQuest")); 
-                } else if (QuestEngine::It()->IsCompleted("FloppyDiskQuest")) {
-                    _gui->DoDialog(Assets::It()->GetDialog("postQuest")); 
-                }
-            }
-        });
-        other->Add<AI>(BasicEnemyAI);
-    }
-
-    // Create test items
-
     auto cursor = 0.0f;
     for (auto tag : {"BlueDiamond", "Heart", "Potion", "FloppyDisk"}) {
         const auto e = world->Create(Assets::It()->GetPrefab(tag));
         e->Get<Body>()->Position = sf::Vector2f(500+128 + (cursor++*16), 400);
     }
+
+    world->OnRoomChange([](const std::string& to) {
+        std::cout << "Changing rooms to... " << to << std::endl;
+    });
 }
 void LevelLayer::Update(const SkyTime& time){
     auto [x, y] = GameState::It()->GetWindowSize();

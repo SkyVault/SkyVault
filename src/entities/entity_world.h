@@ -16,11 +16,17 @@
 #include "../skyvault.h"
 #include "../graphics/assets.h"
 
+struct EntityWorld;
 struct Door : Body{
+    friend EntityWorld;
+
     inline Door(std::string _to, float x, float y, float w, float h):
         Body(x, y, w, h),
         To(_to){}
     std::string To{""};
+
+private:
+    bool last{false};
 };
 
 struct EntityWorld {

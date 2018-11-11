@@ -4,7 +4,7 @@
 #define VERSION_MAJOR "0"
 #define VERSION_REVISION "0"
 #define VERSION_MINOR "1"
-#define SKYVAULT_VERSION VERSION_MAJOR "." VERSION_REVISION "." VERSION_MINOR
+#define SKYVAULT_VERSION "PreAlpha " VERSION_MAJOR "." VERSION_REVISION "." VERSION_MINOR
 
 // Size of a map in tiles, used mainly for entity interactions
 #define MAP_SIZE 256

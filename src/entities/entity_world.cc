@@ -163,11 +163,13 @@ void EntityWorld::Update(const SkyTime& time) {
             // Test for intersection with the door
             const auto body = e->Get<Body>();
             for (auto& door : doors) {
-                if (door.Contains(*body)) {
+                const auto curr = door.Contains(*body);
+                if (curr && !door.last) {
                     try {
                         std::invoke(on_room_change, door.To);
                     } catch (std::bad_function_call& e) {}
                 }
+                door.last = curr; 
             }
         }
         

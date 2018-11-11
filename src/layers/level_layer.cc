@@ -16,7 +16,7 @@ void LevelLayer::Load(){
     sky->Load(x, y);
 
     auto* physics_filter = world->GetFilter<PhysicsFilter>();
-    map.loadFromFile("assets/maps/Dungeon_Room_2.tmx", physics_filter, world);
+    map.loadFromFile("assets/maps/Dungeon_Room_1.tmx", physics_filter, world);
     map.setScale(1.0f, 1.0f);
 
     {

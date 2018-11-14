@@ -4,6 +4,10 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <gzip/decompress.hpp>
+#include <gzip/compress.hpp>
+#include <gzip/utils.hpp>
 #include "../tinyxml2.h"
 #include "../entities/filters/physics_filter.h"
 #include "../entities/entity_world.h"
@@ -23,6 +27,7 @@ struct TiledLayer {
     std::string name{""};
     std::vector<unsigned short> data;
     sf::VertexArray vertices;
+    float layer{0.0f};
 };
 
 struct TiledObject {
@@ -49,6 +54,8 @@ private:
 
     int width{0}, height{0};
     int tilewidth{0}, tileheight{0};
+
+    std::string base64_decode(std::string const& encoded_string);
 };
 
 

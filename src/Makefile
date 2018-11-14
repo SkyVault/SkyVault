@@ -8,7 +8,7 @@ SRC_EXT = cc
 # Path to the source directory, relative to the makefile
 SRC_PATH = .
 # Space-separated pkg-config libraries used by this project
-LIBS = sfml-all gl lua53
+LIBS = sfml-all gl lua53 zlib
 # General compiler flags
 COMPILE_FLAGS = -std=c++17 -lstdc++fs -Wall -g
 # Additional release-specific flags

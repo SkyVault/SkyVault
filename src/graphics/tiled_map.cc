@@ -3,6 +3,19 @@
 #include <iostream>
 #include <sstream>
 
+std::string trim(const std::string& str,
+                 const std::string& whitespace = " \t\n")
+{
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+
 bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std::shared_ptr<EntityWorld>& world) {
     using namespace tinyxml2;
 
@@ -58,12 +71,34 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
             let name = std::string{child->Attribute("name")};
             
             let data = child->FirstChildElement("data");
-            if (std::string{data->Attribute("encoding")} != "csv") {
-                std::cout << "Error we only support csv encoding for now..." << std::endl;
-            }
-            
-            let text = std::string{data->GetText()};
+            auto text = std::string{data->GetText()};
+            std::vector<unsigned char> decompressed;
+
+            const auto encoding = std::string{data->Attribute("encoding")};
+            bool isCompressed{false};
+
+            if (encoding == "base64") {
+                if (std::string{data->Attribute("compression")} != "gzip") {
+                    std::cout << "(Error)::TiledMap::loadFromFile:: We only support csv and gzip encoding, the map: " << path << " uses: " << encoding << ".\n";
+                    return false;
+                }
+
+                text = trim(text); 
+                text = base64_decode(text);
+
+                isCompressed = gzip::is_compressed(text.data(), text.size());
+
+                auto s = gzip::decompress(text.data(), text.size());
+                for (unsigned char c : s){
+                    decompressed.push_back(c);
+                }
+
+            }          
             //var it = text.begin();
+            
+            for (auto i : decompressed)
+                if (i != 0)
+                    std::cout << ":" << (int)i << std::endl;
 
             var* layer = new TiledLayer();
             layer->name = name;
@@ -73,13 +108,23 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
             layer->vertices.setPrimitiveType(sf::Quads);
             layer->vertices.resize(width * height * 4);
 
-            var stream = std::stringstream(text);
-
-            int i = 0;
-            while (stream >> i) {
-                layer->data[ptr++] = i;
-                if (stream.peek() == ',' || stream.peek() == '\n')
-                    stream.ignore();
+            if (!isCompressed) {
+                var stream = std::stringstream(text); 
+                int i = 0;
+                while (stream >> i) {
+                    layer->data[ptr++] = i;
+                    if (stream.peek() == ',' || stream.peek() == '\n')
+                        stream.ignore();
+                }
+            } else {
+                int ptr = 0;
+                for (auto i = 0u; i < (decompressed.size()); i+=4u) {
+                    layer->data[ptr++] = 
+                          decompressed[i + 0] 
+                        | decompressed[i + 1] << 8 
+                        | decompressed[i + 2] << 16 
+                        | decompressed[i + 3] << 24;
+                } 
             }
 
             for (auto i = 0; i < width; i++) {
@@ -186,3 +231,67 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
 }
 
+std::string TiledMap::base64_decode(std::string const& encoded_string) {
+    static const std::string base64_chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz"
+        "0123456789+/";            
+        
+    std::function<bool(unsigned char)> is_base64 = 
+        [](unsigned char c)->bool
+    {
+        return (isalnum(c) || (c == '+') || (c == '/'));
+    };
+
+    auto in_len = encoded_string.size();
+    int i = 0;
+    int j = 0;
+    int in_ = 0;
+    unsigned char char_array_4[4], char_array_3[3];
+    std::string ret;
+
+    while (in_len-- && (encoded_string[in_] != '=') && is_base64(encoded_string[in_]))
+    {
+        char_array_4[i++] = encoded_string[in_]; in_++;
+        if (i == 4)
+        {
+            for (i = 0; i < 4; i++)
+            {
+                char_array_4[i] = static_cast<unsigned char>(base64_chars.find(char_array_4[i]));
+            }
+            char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+            char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+            char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+            for (i = 0; (i < 3); i++)
+            {
+                ret += char_array_3[i];
+            }
+            i = 0;
+        }
+    }
+
+    if (i)
+    {
+        for (j = i; j < 4; j++)
+        {
+            char_array_4[j] = 0;
+        }
+
+        for (j = 0; j < 4; j++)
+        {
+            char_array_4[j] = static_cast<unsigned char>(base64_chars.find(char_array_4[j]));
+        }
+
+        char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+        char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+        char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+        for (j = 0; (j < i - 1); j++)
+        {
+            ret += char_array_3[j];
+        }
+    }
+
+    return ret;
+}

@@ -16,7 +16,7 @@ std::string trim(const std::string& str,
     return str.substr(strBegin, strRange);
 }
 
-bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std::shared_ptr<EntityWorld>& world) {
+bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std::shared_ptr<EntityWorld>& world, std::shared_ptr<sol::state>& lua) {
     using namespace tinyxml2;
 
     if (physics == nullptr) {
@@ -203,7 +203,58 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
     }
 
     // Load billboards and entities
+    // Create the path
+    std::string pcopy = path;
+    auto beg = path.begin();
+    auto end = path.end();
+    while (end != beg) {
+        if (*end == '.'){ break; }
+        --end;
+    }
+    
+    std::string file_name = std::string(beg, end);
+    const std::string data_file_path = file_name + ".data.lua";
 
+    meta_data_file_name = data_file_path;
+    
+    if (!file_exists(data_file_path)) {
+        std::ofstream file(data_file_path);
+        if (!file) {
+            std::cout << "Failed to create the data file for the map: " << file_name << std::endl;
+            return false;
+        }
+
+        std::string code = R"(
+return {
+    billboard_regions = {
+
+    },
+
+    billboards = {
+
+    },
+
+    entities = {
+
+    },
+}
+        )";
+
+        file << code;
+        file.close();
+
+        const auto result = lua->script(code, &sol::script_default_on_error);
+        if (result.valid()) {
+            meta_data = result.get<sol::table>(0);
+        } else {
+            std::cout << "Failed to retrieve the table from the data file for map: " << file_name << std::endl;
+            return false;
+        }
+
+    } else {
+        // Load the script and the data associated with it
+        meta_data = lua->script_file(data_file_path);
+    }
 
     return true;
 }

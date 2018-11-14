@@ -14,6 +14,7 @@
 #include <random>
 #include <ctime>
 #include <map>
+#include <fstream>
 
 #define let const auto
 #define var auto
@@ -59,6 +60,11 @@ inline float rand_float() {
         first = false;
     }
     return rand() / (RAND_MAX + 1.f);
+}
+
+inline bool file_exists(const std::string& name) {
+    std::ifstream f(name.c_str());
+    return f.good();
 }
 
 #endif//SKY_VAULT_H

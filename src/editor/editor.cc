@@ -191,7 +191,7 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window) {
     // convert it to world coordinates
     sf::Vector2f worldPos = window->mapPixelToCoords(pixelPos);
 
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Middle))
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
         cursor = worldPos;
     
     constexpr float radius{4.0f};

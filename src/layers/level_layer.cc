@@ -16,8 +16,19 @@ void LevelLayer::Load(){
     sky->Load(x, y);
 
     auto* physics_filter = world->GetFilter<PhysicsFilter>();
-    map.loadFromFile("assets/maps/Dungeon_Room_1.tmx", physics_filter, world, lua);
-    map.setScale(1.0f, 1.0f);
+
+    if (map) {
+        delete map;
+        map = nullptr;
+    }
+
+    map = new TiledMap();
+    if (!map) {
+        std::cout << "Failed to create new instance of map" << std::endl;
+        return;
+    }
+    map->loadFromFile("assets/maps/Dungeon_Room_1.tmx", physics_filter, world, lua);
+    map->setScale(1.0f, 1.0f);
 
     {
         var player = world->Create();
@@ -75,7 +86,7 @@ void LevelLayer::Render(std::unique_ptr<sf::RenderWindow>& window){
                 window->draw(*sky);
             window->setView(camera->View);
 
-            window->draw(map); 
+            if (map) window->draw(*map); 
         }
         //std::cout << map_tile << std::endl;
 
@@ -83,5 +94,8 @@ void LevelLayer::Render(std::unique_ptr<sf::RenderWindow>& window){
 }
 
 void LevelLayer::Destroy(){
-
+    if (map) {
+        delete map;
+        map = nullptr;
+    }
 }

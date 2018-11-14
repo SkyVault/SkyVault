@@ -58,7 +58,9 @@ private:
 
     sf::Vector2i globalPosition;
 
-    TiledMap map;
+    // We make this dynamic so we can ensure the destructor gets called
+    TiledMap* map{nullptr};
+
     std::shared_ptr<Sky> sky;
 };
 

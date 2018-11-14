@@ -35,11 +35,7 @@ struct TiledObject {
 };
 
 struct TiledMap : public sf::Drawable, public sf::Transformable {
-    ~TiledMap() {
-        for (auto* layer : layers)
-            delete layer;
-        // Write the meta_data back to the file
-    }
+    ~TiledMap();
 
     bool loadFromFile(const std::string& path, PhysicsFilter* physics, std::shared_ptr<EntityWorld>& world, std::shared_ptr<sol::state>& lua);
 
@@ -59,6 +55,8 @@ private:
     std::string base64_decode(std::string const& encoded_string);
     std::string meta_data_file_name{""};
     sol::table meta_data;
+
+    std::shared_ptr<sol::state> lua;
 };
 
 

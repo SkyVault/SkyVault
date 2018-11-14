@@ -18,8 +18,17 @@ class GameState {
 	static std::once_flag onceFlag;
 
     GameState() { }
-
 public:
+    ~GameState() {
+        for(auto* s : layer_stack) {
+            if (s) {
+                s->Destroy();
+                delete s;
+                s = nullptr;
+            }
+        }
+    }
+
 
 #ifndef MACROSTR
 #define MACROSTR(k) #k

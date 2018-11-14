@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 struct Layer {
+    virtual ~Layer() {}
     virtual void Load() {}
     virtual void Update(const SkyTime& time) {}
     virtual void Render(std::unique_ptr<sf::RenderWindow>& window) {}

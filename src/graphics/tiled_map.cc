@@ -3,6 +3,38 @@
 #include <iostream>
 #include <sstream>
 
+TiledMap::~TiledMap() {
+    // TODO(Dustin): We are going to need to rewrite the majority of this.
+    // It's very dangerous and needs to be rewritten to be safer.
+    
+    for (auto* layer : layers)
+        delete layer;
+    
+    // Write the meta_data back to the file
+    if (!lua) return;
+
+    // TODO(Dustin): Explicitly handle errors and
+    // make sure that result.get actually returns a string
+
+    (*lua)["tmp"] = meta_data;
+    const auto result = lua->script(R"(
+        local v = serpent.block(tmp)
+        return v
+    )", &sol::script_default_on_error);
+
+    std::ofstream outFile(meta_data_file_name);
+    if (!outFile) {
+        std::cout << "Failed to open the meta_data_file for map: " << meta_data_file_name << std::endl;
+        return;
+    }
+    if (result.valid() == false) {
+        std::cout << "Result is not valid" << std::endl;
+        return;
+    }
+    outFile << "return " << result.get<std::string>(0);
+    outFile.close();
+}
+
 std::string trim(const std::string& str,
                  const std::string& whitespace = " \t\n")
 {
@@ -202,8 +234,10 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
         child = child->NextSiblingElement();
     }
 
+    // TODO(Dustin): We are going to need to rewrite the majority of this.
+    // It's very dangerous and needs to be rewritten to be safer.
+   
     // Load billboards and entities
-    // Create the path
     std::string pcopy = path;
     auto beg = path.begin();
     auto end = path.end();
@@ -216,13 +250,6 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
     const std::string data_file_path = file_name + ".data.lua";
 
     meta_data_file_name = data_file_path;
-    
-    if (!file_exists(data_file_path)) {
-        std::ofstream file(data_file_path);
-        if (!file) {
-            std::cout << "Failed to create the data file for the map: " << file_name << std::endl;
-            return false;
-        }
 
         std::string code = R"(
 return {
@@ -240,9 +267,7 @@ return {
 }
         )";
 
-        file << code;
-        file.close();
-
+    auto set_meta_data_to_code = [&]() -> bool{
         const auto result = lua->script(code, &sol::script_default_on_error);
         if (result.valid()) {
             meta_data = result.get<sol::table>(0);
@@ -250,12 +275,31 @@ return {
             std::cout << "Failed to retrieve the table from the data file for map: " << file_name << std::endl;
             return false;
         }
+        return true;
+    };
+    
+    if (!file_exists(data_file_path)) {
+        std::ofstream file(data_file_path);
+        if (!file) {
+            std::cout << "Failed to create the data file for the map: " << file_name << std::endl;
+            return false;
+        }
+
+        file << code;
+        file.close();
+
+        if (!set_meta_data_to_code()) { return false; }
 
     } else {
         // Load the script and the data associated with it
         meta_data = lua->script_file(data_file_path);
+        if (meta_data["billboard_regions"].valid()){
+        }else{
+            if (!set_meta_data_to_code()) { return false; }
+        }
     }
 
+    this->lua = lua;
     return true;
 }
 

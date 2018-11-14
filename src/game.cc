@@ -235,6 +235,7 @@ void Game::Run() {
         "DevWindow"
     );
 
+    window->setFramerateLimit(60);
     window->setPosition(sf::Vector2i(400, 80));
     GameState::It()->SetWindowSize(window->getSize());
 

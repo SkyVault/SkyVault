@@ -215,7 +215,7 @@ void Game::RunLoop() {
         window->clear();
         Render();
 
-        editor->doUI(window, time, world, sky);
+        editor->doUI(window, time, world, sky, tiledMap);
 
         window->display();
 

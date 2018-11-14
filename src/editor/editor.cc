@@ -41,10 +41,64 @@ void Editor::doUI
     }
     ImGui::End();
 
-    if (GameState::It()->FullEditor()){
+    if (GameState::It()->FullEditor()){ 
+        doColors(sky);
+        doInGameTerminal();
+        doEntityInspector(world, window);
+    }
 
-        // Entity prefab window
-        ImGui::Begin("Entity Prefabs"); // begin window
+    // Render the editor
+    ImGui::SFML::Render(*window);
+}
+
+void Editor::doEntityInspector(std::shared_ptr<EntityWorld>& world, std::unique_ptr<sf::RenderWindow> &window) {
+    ImGui::Begin("Entity Editor");
+    
+    if (ImGui::TreeNode("Properties")) {
+        ImGui::BeginGroup();
+
+        const auto& entities = world->GetEntities();
+
+        for(auto& entity : entities) {
+            ImGui::Spacing();
+
+            auto str = "entity id: " + std::to_string(entity->GetUUID());
+            if (ImGui::CollapsingHeader(str.c_str())){
+                auto& components = entity->GetComponentNames();
+
+                if (entity->Has<Body>()) {
+            
+                    auto body = entity->Get<Body>();
+                    const auto& btn_label = std::string{"Goto"};
+                    if (ImGui::Button(btn_label.c_str())) {
+                        auto player = world->GetFirstWith<Player>();
+                        if (player) {
+                            player->Get<Body>()->Position = body->Position;
+                        }
+                    }
+
+                    float p[] = {body->Position.x, body->Position.y};
+                    ImGui::DragFloat2(std::string{"Position##"+entity->GetUUID()}.c_str(), p);
+                    body->Position.x = p[0];
+                    body->Position.y = p[1];
+                }
+
+                for (auto& m : components) {
+                    auto name = std::string{m};
+                    auto it = name.begin();
+                    while(*it >= '0' && *it <= '9' && it != name.end())
+                        it++;
+                    ImGui::BulletText(std::string(it, name.end()).c_str());
+                }
+            }
+        }
+
+        ImGui::EndGroup();
+
+    }
+
+    if (ImGui::TreeNode("Prefabs")) {
+        ImGui::BeginGroup();
 
         const auto prefabs = Assets::It()->GetPrefabs();
         int i = 0;
@@ -63,58 +117,9 @@ void Editor::doUI
             }
         }
 
-        ImGui::End();
-
-        doColors(sky);
-        doInGameTerminal();
-        doEntityInspector(world);
+        ImGui::EndGroup();
     }
 
-    // Render the editor
-    ImGui::SFML::Render(*window);
-}
-
-void Editor::doEntityInspector(std::shared_ptr<EntityWorld>& world) {
-    ImGui::Begin("Entity Inspector");
-    ImGui::BeginGroup();
-
-    const auto& entities = world->GetEntities();
-
-    for(auto& entity : entities) {
-        ImGui::Spacing();
-
-        auto str = "entity id: " + std::to_string(entity->GetUUID());
-        if (ImGui::CollapsingHeader(str.c_str())){
-            auto& components = entity->GetComponentNames();
-
-            if (entity->Has<Body>()) {
-        
-                auto body = entity->Get<Body>();
-                const auto& btn_label = std::string{"Goto"};
-                if (ImGui::Button(btn_label.c_str())) {
-                    auto player = world->GetFirstWith<Player>();
-                    if (player) {
-                        player->Get<Body>()->Position = body->Position;
-                    }
-                }
-
-                float p[] = {body->Position.x, body->Position.y};
-                ImGui::DragFloat2(std::string{"Position##"+entity->GetUUID()}.c_str(), p);
-                body->Position.x = p[0];
-                body->Position.y = p[1];
-            }
-
-            for (auto& m : components) {
-                auto name = std::string{m};
-                auto it = name.begin();
-                while(*it >= '0' && *it <= '9' && it != name.end())
-                    it++;
-                ImGui::BulletText(std::string(it, name.end()).c_str());
-            }
-        }
-    }
-
-    ImGui::EndGroup();
     ImGui::End();
 }
 

@@ -35,7 +35,7 @@ struct Editor {
         , std::shared_ptr<TiledMap>& tiledMap
         );
 
-    void doEntityInspector(std::shared_ptr<EntityWorld>& world);
+    void doEntityInspector(std::shared_ptr<EntityWorld>& world, std::unique_ptr<sf::RenderWindow> &window);
     void Draw(std::unique_ptr<sf::RenderWindow> &window);
 
 private:

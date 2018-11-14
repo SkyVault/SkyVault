@@ -72,7 +72,8 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
             
             let data = child->FirstChildElement("data");
             auto text = std::string{data->GetText()};
-            std::vector<unsigned char> decompressed;
+            std::vector<unsigned char> decompressed; 
+            decompressed.resize(width*height*4);
 
             const auto encoding = std::string{data->Attribute("encoding")};
             bool isCompressed{false};
@@ -89,16 +90,10 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
                 isCompressed = gzip::is_compressed(text.data(), text.size());
 
                 auto s = gzip::decompress(text.data(), text.size());
-                for (unsigned char c : s){
-                    decompressed.push_back(c);
-                }
-
+                int i = 0;
+                for (unsigned char c : s)
+                    decompressed[i++] = c;
             }          
-            //var it = text.begin();
-            
-            for (auto i : decompressed)
-                if (i != 0)
-                    std::cout << ":" << (int)i << std::endl;
 
             var* layer = new TiledLayer();
             layer->name = name;
@@ -207,9 +202,9 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
         child = child->NextSiblingElement();
     }
 
-    //setScale(2, 2);
+    // Load billboards and entities
 
-    //std::cout << map_xml->Attribute("version") << std::endl;
+
     return true;
 }
 

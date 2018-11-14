@@ -30,6 +30,7 @@ struct LevelLayer: public Layer {
         const std::shared_ptr<Camera>& camera,
         const std::shared_ptr<sol::state>& lua,
         const std::shared_ptr<GUI>& gui,
+        const std::shared_ptr<TiledMap>& tiledMap,
         const std::shared_ptr<Sky>& sky
         ):
 
@@ -37,7 +38,8 @@ struct LevelLayer: public Layer {
     camera(std::move(camera)),
     lua(std::move(lua)),
     gui(std::move(gui)),
-    sky(std::move(sky)) 
+    sky(std::move(sky)),
+    tiledMap(std::move(tiledMap))
     {
 
     }
@@ -52,16 +54,14 @@ private:
     std::shared_ptr<Camera> camera;
     std::shared_ptr<sol::state> lua;
     std::shared_ptr<GUI> gui;
+    std::shared_ptr<Sky> sky;
+    std::shared_ptr<TiledMap> tiledMap;
 
     const int AtlasSize{5};
     std::vector<std::string> Atlas;
 
     sf::Vector2i globalPosition;
 
-    // We make this dynamic so we can ensure the destructor gets called
-    TiledMap* map{nullptr};
-
-    std::shared_ptr<Sky> sky;
 };
 
 #endif//SKYVAULT_LEVEL_LAYER_H

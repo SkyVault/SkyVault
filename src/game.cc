@@ -126,7 +126,7 @@ void Game::LoadContent() {
     world->Register<PlayerFilter>();
     world->Register<AIFilter>();
 
-    GameState::It()->PushLayer(new MenuLayer(world, camera, lua, gui, sky));
+    GameState::It()->PushLayer(new MenuLayer(world, camera, lua, gui, sky, tiledMap));
 
     camera->View.zoom(0.5f);
 

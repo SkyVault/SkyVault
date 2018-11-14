@@ -49,6 +49,7 @@ private:
     std::unique_ptr<sf::RenderWindow> window;
 
     std::shared_ptr<Sky> sky;
+    std::shared_ptr<TiledMap> tiledMap;
 
     float timer{0.0};
     long ticks{0};

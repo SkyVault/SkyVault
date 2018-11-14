@@ -14,12 +14,14 @@ struct MenuLayer : public Layer {
         const std::shared_ptr<Camera>& camera,
         const std::shared_ptr<sol::state>& lua,
         const std::shared_ptr<GUI>& gui,
-        const std::shared_ptr<Sky>& sky):
+        const std::shared_ptr<Sky>& sky,
+        const std::shared_ptr<TiledMap>& tiledMap):
 
     world(std::move(world)),
     camera(std::move(camera)),
     lua(std::move(lua)),
     gui(std::move(gui)),
+    tiledMap(std::move(tiledMap)),
     sky(std::move(sky))
     {
 
@@ -35,6 +37,7 @@ private:
     std::shared_ptr<Camera> camera;
     std::shared_ptr<sol::state> lua;
     std::shared_ptr<GUI> gui;
+    std::shared_ptr<TiledMap> tiledMap;
     std::shared_ptr<Sky> sky;
 };
 

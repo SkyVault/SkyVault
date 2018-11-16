@@ -34,6 +34,10 @@ struct TiledObject {
 
 };
 
+struct Billboard {
+    sf::Sprite Sprite;
+};
+
 struct TiledMap : public sf::Drawable, public sf::Transformable {
     ~TiledMap();
 
@@ -44,10 +48,23 @@ struct TiledMap : public sf::Drawable, public sf::Transformable {
     inline int getWidth() const { return width; }
     inline int getHeight() const { return height; }
 
+    inline sol::table GetMetaData() { return meta_data; }
+    inline Tileset GetFirstTileset() {
+        if (tilesets.size() == 0) {
+            std::cout << "Tried to get a non existant tileset from the tiled map" << std::endl;
+            return Tileset{};
+        }
+        return tilesets[0];
+    }
+
+    void Destroy();
+    void AddBillboard(const sf::IntRect& region, sf::Vector2f position);
+
 private:
     std::vector<TiledLayer*> layers;
     std::vector<TiledLayer*> foreground_layers;
     std::vector<Tileset> tilesets;
+    std::vector<Billboard> billboards;
 
     int width{0}, height{0};
     int tilewidth{0}, tileheight{0};

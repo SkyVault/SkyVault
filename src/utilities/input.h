@@ -10,6 +10,17 @@
 
 #include <mutex>
 
+/*
+TODO(Dustin):
+- [ ] Mouse support
+    * [ ] Is mouse left/right down
+    * [ ] Is mouse left/right pressed
+    * [ ] Is mouse left/right released
+    * [ ] Is mouse left/right not down
+
+- [ ] Controller / Gamepad support
+*/
+
 #ifndef MACROSTR
 #define MACROSTR(k) #k
 #endif

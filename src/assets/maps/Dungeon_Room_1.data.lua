@@ -1,5 +1,41 @@
 return {
-  billboard_regions = {} --[[table: 0x55aed75feca0]],
-  billboards = {} --[[table: 0x55aed75fed30]],
-  entities = {} --[[table: 0x55aed75fedc0]]
-} --[[table: 0x55aed75fcfb0]]
+  billboard_regions = {
+    {
+      7,
+      164,
+      38,
+      29
+    },
+    {
+      153,
+      3,
+      14,
+      43
+    },
+    {
+      209,
+      2,
+      73,
+      112
+    }
+  },
+  billboards = {
+    {
+      7,
+      164,
+      38,
+      29,
+      374.49996948242188,
+      344.5
+    },
+    {
+      209,
+      2,
+      73,
+      112,
+      267.0784912109375,
+      51.621337890625
+    }
+  },
+  entities = {}
+}

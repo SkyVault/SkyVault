@@ -35,8 +35,12 @@ struct Editor {
         , std::shared_ptr<TiledMap>& tiledMap
         );
 
-    void doEntityInspector(std::shared_ptr<EntityWorld>& world, std::unique_ptr<sf::RenderWindow> &window);
-    void Draw(std::unique_ptr<sf::RenderWindow> &window);
+    void doEntityInspector
+        ( std::shared_ptr<EntityWorld>& world
+        , std::unique_ptr<sf::RenderWindow> &window
+        , std::shared_ptr<TiledMap> &tiledMap
+        );
+    void Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<TiledMap> &tiledMap);
 
 private:
     std::shared_ptr<sol::state> lua;
@@ -48,6 +52,9 @@ private:
     sf::Clock editorClock;
 
     sf::Vector2f cursor;
+
+    bool HoldingBillboardToBePlaced;
+    sf::IntRect BillboardRect{sf::IntRect(0, 0, 0, 0)};
 };
 
 #endif//SKYVAULT_EDITOR_H

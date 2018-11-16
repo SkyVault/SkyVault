@@ -17,7 +17,7 @@ void LevelLayer::Load(){
 
     auto* physics_filter = world->GetFilter<PhysicsFilter>();
 
-    tiledMap = std::make_shared<TiledMap>();
+    tiledMap->Destroy();
     tiledMap->loadFromFile("assets/maps/Dungeon_Room_1.tmx", physics_filter, world, lua);
     tiledMap->setScale(1.0f, 1.0f);
 

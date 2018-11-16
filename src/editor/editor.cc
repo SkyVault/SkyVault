@@ -44,17 +44,22 @@ void Editor::doUI
     if (GameState::It()->FullEditor()){ 
         doColors(sky);
         doInGameTerminal();
-        doEntityInspector(world, window);
+        doEntityInspector(world, window, tiledMap);
     }
 
     // Render the editor
     ImGui::SFML::Render(*window);
 }
 
-void Editor::doEntityInspector(std::shared_ptr<EntityWorld>& world, std::unique_ptr<sf::RenderWindow> &window) {
+void Editor::doEntityInspector
+    ( std::shared_ptr<EntityWorld>& world
+    , std::unique_ptr<sf::RenderWindow> &window
+    , std::shared_ptr<TiledMap> &tiledMap
+    ) {
+
     ImGui::Begin("Entity Editor");
     
-    if (ImGui::TreeNode("Properties")) {
+    if (ImGui::TreeNode("Inspector")) {
         ImGui::BeginGroup();
 
         const auto& entities = world->GetEntities();
@@ -115,6 +120,52 @@ void Editor::doEntityInspector(std::shared_ptr<EntityWorld>& world, std::unique_
                     e->Get<Body>()->Position = worldPos;
                 }
             }
+        }
+
+        ImGui::EndGroup();
+    }
+
+    if (ImGui::TreeNode("Billboards")) {
+        ImGui::BeginGroup();
+
+        const auto meta = tiledMap->GetMetaData();
+
+        if (meta["billboard_regions"].valid()) {
+            const auto bt = meta.get<sol::table>("billboard_regions");
+
+            int i = 99;
+            bt.for_each([&](sol::object const& key, sol::object const& value) {
+                ImGui::PushID(i++); 
+
+                const auto tab = value.as<sol::table>();
+                const auto x = (int)tab[1];
+                const auto y = (int)tab[2];
+                const auto w = (int)tab[3];
+                const auto h = (int)tab[4];
+
+                const auto required_width = 64;
+                const auto scale = ((float)required_width) / ((float)w);
+
+                const auto tileset = tiledMap->GetFirstTileset();
+                const auto region = sf::IntRect(x, y, w, h);
+
+                sf::Sprite sprite;
+                sprite.setTexture(*Assets::It()->Get<sf::Texture>("tiles"));
+                sprite.setTextureRect(region);
+                sprite.setScale(scale, scale);
+
+                if (ImGui::ImageButton(sprite)) {
+                    std::cout << "REEEEEEEEEEE" << std::endl;
+                    
+                    HoldingBillboardToBePlaced = true;
+                    BillboardRect = region;
+
+                }
+
+                if (i % 3 != 0) ImGui::SameLine();
+
+                ImGui::PopID(); 
+            });
         }
 
         ImGui::EndGroup();
@@ -189,7 +240,7 @@ void Editor::doInGameTerminal() {
     ImGui::End();
 }
 
-void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window) {
+void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<TiledMap> &tiledMap) {
     // get the current mouse position in the window
     sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
 
@@ -197,7 +248,18 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window) {
     sf::Vector2f worldPos = window->mapPixelToCoords(pixelPos);
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-        cursor = worldPos;
+        if (HoldingBillboardToBePlaced){
+            HoldingBillboardToBePlaced = !HoldingBillboardToBePlaced;
+        } else 
+            cursor = worldPos;
+
+    // TODO(Dustin): use isMousePressed
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (HoldingBillboardToBePlaced) {
+            tiledMap->AddBillboard(BillboardRect, worldPos - sf::Vector2f((float)BillboardRect.width, (float)BillboardRect.height) * 0.5f);
+            HoldingBillboardToBePlaced = false;
+        }
+    }
     
     constexpr float radius{4.0f};
     sf::CircleShape circle;
@@ -208,6 +270,18 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window) {
     circle.setOutlineThickness(1);
 
     window->draw(circle);
+
+    // Draw billboard before being placed
+
+    if (HoldingBillboardToBePlaced) {
+        const auto [x, y] = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+        sf::Sprite sprite;
+        sprite.setTexture(*Assets::It()->Get<sf::Texture>("tiles"));
+        sprite.setTextureRect(BillboardRect);
+        sprite.setColor(sf::Color(255, 255, 255, 100));
+        sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)BillboardRect.width, (float)BillboardRect.height) * 0.5f);
+        window->draw(sprite);
+    }
 
     constexpr auto offset = radius * 0.5;
 
@@ -238,11 +312,11 @@ void Editor::doColors(std::shared_ptr<Sky>& sky) {
 
     //constexpr int misc_flags = 0;
 
-    if (ImGui::BeginMenu("Sky")) {
+    //if (ImGui::BeginMenu("Sky")) {
         ImGui::ColorEdit3("Sun Color##1", (float*)&sky->Suncolor);
         ImGui::ColorEdit3("High Color##2", (float*)&sky->Highsky);
         ImGui::ColorEdit3("Low Color##3", (float*)&sky->Lowsky);
-    }
+    //}
 
     ImGui::End();
 

@@ -29,8 +29,9 @@ void Game::LoadContent() {
 
     auto* texture = new sf::Texture();
 
-    lua = std::make_shared<sol::state>();
-    sky = std::make_shared<Sky>();
+    lua         = std::make_shared<sol::state>();
+    sky         = std::make_shared<Sky>();
+    tiledMap    = std::make_shared<TiledMap>();
 
     lua->open_libraries
         ( sol::lib::base
@@ -164,7 +165,7 @@ void Game::Render() {
         Art::It()->Flush(window);
 
         if (GameState::It()->FullEditor())
-            editor->Draw(window);
+            editor->Draw(window, tiledMap);
     }
     window->setView(window->getDefaultView());
 
@@ -244,4 +245,11 @@ void Game::Run() {
     RunLoop();
 
     DestroyContent();
+   
+    //TODO(Dustin): @Refactor
+    // Lame that we have to call this here, but the destructor 
+    // does not get called at the end of the program if 
+    // force killed
+    tiledMap->Destroy();
+
 }

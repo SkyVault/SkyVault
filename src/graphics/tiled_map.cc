@@ -4,35 +4,7 @@
 #include <sstream>
 
 TiledMap::~TiledMap() {
-    // TODO(Dustin): We are going to need to rewrite the majority of this.
-    // It's very dangerous and needs to be rewritten to be safer.
-    
-    for (auto* layer : layers)
-        delete layer;
-    
-    // Write the meta_data back to the file
-    if (!lua) return;
-
-    // TODO(Dustin): Explicitly handle errors and
-    // make sure that result.get actually returns a string
-
-    (*lua)["tmp"] = meta_data;
-    const auto result = lua->script(R"(
-        local v = serpent.block(tmp)
-        return v
-    )", &sol::script_default_on_error);
-
-    std::ofstream outFile(meta_data_file_name);
-    if (!outFile) {
-        std::cout << "Failed to open the meta_data_file for map: " << meta_data_file_name << std::endl;
-        return;
-    }
-    if (result.valid() == false) {
-        std::cout << "Result is not valid" << std::endl;
-        return;
-    }
-    outFile << "return " << result.get<std::string>(0);
-    outFile.close();
+    this->Destroy();
 }
 
 std::string trim(const std::string& str,
@@ -297,10 +269,57 @@ return {
         }else{
             if (!set_meta_data_to_code()) { return false; }
         }
+
+        // Load the billboards
+        if (meta_data["billboards"].valid()){
+            auto billboards_table = meta_data.get<sol::table>("billboards");
+            billboards_table.for_each([&](const sol::object& key, const sol::object& value){
+                const auto billboard_table = value.as<sol::table>();
+
+                const auto rx = billboard_table.get<int>(1);
+                const auto ry = billboard_table.get<int>(2);
+                const auto rw = billboard_table.get<int>(3);
+                const auto rh = billboard_table.get<int>(4);
+                const auto x = billboard_table.get<float>(5);
+                const auto y = billboard_table.get<float>(6);
+
+                sf::Sprite sprite;
+                sprite.setTexture(tilesets[0].image);
+                sprite.setTextureRect(sf::IntRect(rx, ry, rw, rh));
+                sprite.setPosition(sf::Vector2f(x, y));
+
+                billboards.push_back(Billboard{sprite});
+            });
+        } else {
+            std::cout << "Error::TiledMap::loadTiledMap:: Failed to load the billboards from the data script, billboards table entry is invalid, map: " << path << std::endl; 
+        }
     }
 
     this->lua = lua;
     return true;
+}
+
+void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position){
+    if (meta_data["billboards"].valid()) {
+        sol::table t  = meta_data.get<sol::table>("billboards");
+        sol::table b = lua->create_table();
+        b[1 + 0] = region.left;
+        b[1 + 1] = region.top;
+        b[1 + 2] = region.width;
+        b[1 + 3] = region.height;
+        b[1 + 4] = position.x;
+        b[1 + 5] = position.y;
+        t.add(b); 
+
+        meta_data["billboards"] = t;
+
+        sf::Sprite sprite;
+        sprite.setTexture(tilesets[0].image);
+        sprite.setTextureRect(region);
+        sprite.setPosition(position);
+
+        billboards.push_back(Billboard{sprite});
+    }
 }
 
 void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -319,6 +338,11 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     for (auto* layer : layers){
         target.draw(layer->vertices, states);
     }
+
+    for (const auto& billboard : billboards) {
+        target.draw(billboard.Sprite);
+    }
+
 }
 
 std::string TiledMap::base64_decode(std::string const& encoded_string) {
@@ -327,10 +351,9 @@ std::string TiledMap::base64_decode(std::string const& encoded_string) {
         "abcdefghijklmnopqrstuvwxyz"
         "0123456789+/";            
         
-    std::function<bool(unsigned char)> is_base64 = 
-        [](unsigned char c)->bool
-    {
-        return (isalnum(c) || (c == '+') || (c == '/'));
+    auto is_base64 = 
+        [](unsigned char c)->bool {
+        return (static_cast<bool>(isalnum(c)) || (c == '+') || (c == '/'));
     };
 
     auto in_len = encoded_string.size();
@@ -340,36 +363,29 @@ std::string TiledMap::base64_decode(std::string const& encoded_string) {
     unsigned char char_array_4[4], char_array_3[3];
     std::string ret;
 
-    while (in_len-- && (encoded_string[in_] != '=') && is_base64(encoded_string[in_]))
-    {
+    while (in_len-- && (encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
         char_array_4[i++] = encoded_string[in_]; in_++;
-        if (i == 4)
-        {
-            for (i = 0; i < 4; i++)
-            {
+        if (i == 4) {
+            for (i = 0; i < 4; i++) {
                 char_array_4[i] = static_cast<unsigned char>(base64_chars.find(char_array_4[i]));
             }
             char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
             char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
             char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
-            for (i = 0; (i < 3); i++)
-            {
+            for (i = 0; (i < 3); i++) {
                 ret += char_array_3[i];
             }
             i = 0;
         }
     }
 
-    if (i)
-    {
-        for (j = i; j < 4; j++)
-        {
+    if (i) {
+        for (j = i; j < 4; j++) {
             char_array_4[j] = 0;
         }
 
-        for (j = 0; j < 4; j++)
-        {
+        for (j = 0; j < 4; j++) {
             char_array_4[j] = static_cast<unsigned char>(base64_chars.find(char_array_4[j]));
         }
 
@@ -377,11 +393,44 @@ std::string TiledMap::base64_decode(std::string const& encoded_string) {
         char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
         char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
-        for (j = 0; (j < i - 1); j++)
-        {
+        for (j = 0; (j < i - 1); j++) {
             ret += char_array_3[j];
         }
     }
 
     return ret;
+}
+
+void TiledMap::Destroy() {
+    // TODO(Dustin): We are going to need to rewrite the majority of this.
+    // It's very dangerous and needs to be rewritten to be safer.
+    
+    if (layers.size() == 0) return;
+    for (auto* layer : layers)
+        delete layer;
+
+    billboards.clear();
+    
+    // Write the meta_data back to the file
+    if (!lua) return;
+    // TODO(Dustin): Explicitly handle errors and
+    // make sure that result.get actually returns a string
+
+    (*lua)["tmp"] = meta_data;
+    const auto result = lua->script(R"(
+        local v = serpent.block(tmp, {comment=false})
+        return v
+    )", &sol::script_default_on_error);
+
+    std::ofstream outFile(meta_data_file_name);
+    if (!outFile) {
+        std::cout << "Failed to open the meta_data_file for map: " << meta_data_file_name << std::endl;
+        return;
+    }
+    if (result.valid() == false) {
+        std::cout << "Result is not valid" << std::endl;
+        return;
+    }
+    outFile << "return " << result.get<std::string>(0);
+    outFile.close();
 }

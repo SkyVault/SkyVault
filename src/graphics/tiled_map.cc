@@ -377,6 +377,7 @@ void TiledMap::Update(const SkyTime& time) {
             if ((*it)->ShouldRemove){
                 RemoveBillboardFromMetaData(*it);
                 it = billboards.erase(it);
+                return;
             }
             ++it;
         }

@@ -271,6 +271,7 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<Til
 
     window->draw(circle);
 
+
     // Draw billboard before being placed
 
     if (HoldingBillboardToBePlaced) {
@@ -281,6 +282,40 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<Til
         sprite.setColor(sf::Color(255, 255, 255, 100));
         sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)BillboardRect.width, (float)BillboardRect.height) * 0.5f);
         window->draw(sprite);
+    }
+
+    const auto& billboards = tiledMap->GetBillboards();
+
+    sf::RectangleShape rect;
+    rect.setFillColor(sf::Color(0, 0, 0, 0));
+    rect.setOutlineColor(sf::Color::White);
+    rect.setOutlineThickness(1);
+    
+    for (const auto& billboard : billboards) {
+        const auto region = billboard->Sprite.getTextureRect();
+        rect.setSize(sf::Vector2f(region.width, region.height));
+        rect.setPosition(billboard->Sprite.getPosition());
+        window->draw(rect);
+
+        constexpr auto SIZE{4u}; 
+
+        rect.setSize(sf::Vector2f(SIZE, SIZE));
+        rect.setPosition
+            ( billboard->Sprite.getPosition() 
+            - sf::Vector2f(0, SIZE));
+
+        if (Input::It()->IsMouseLeftPressed(sf::Mouse::Left)) {
+            const auto [mx, my] = worldPos;
+            const auto [bx, by] = rect.getPosition();
+
+            if (mx > bx && mx < bx + SIZE &&
+                my > by && my < by + SIZE) {
+
+                billboard->ShouldRemove = true;
+            }
+        }
+
+        window->draw(rect);
     }
 
     constexpr auto offset = radius * 0.5;

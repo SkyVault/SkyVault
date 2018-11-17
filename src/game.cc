@@ -53,6 +53,24 @@ void Game::LoadContent() {
 
     lua->script("print(\"Initialized \" .. _VERSION)");
 
+    lua->script(R"(
+        function getTableAddress(t)
+            return tostring(t) 
+        end
+    )");
+
+    lua->script(R"(
+        function removeIfMatchingAddress(source, test)
+            for i = 1, #source do
+                if test == tostring(source[i]) then
+                    table.remove(source, i)
+                    return true
+                end
+            end
+            return false
+        end
+    )");
+
     // Set up the quest engine in lua
     // TODO(Dustin): Move this somewhere else
     (*lua)["QuestEngine_StartQuest"] = [](std::string str){
@@ -141,6 +159,7 @@ void Game::Update(const SkyTime& time) {
     gui->Update(time);
     GameState::It()->Update(time);
     QuestEngine::It()->Update(time, world);
+    tiledMap->Update(time);
 
     auto p = world->GetFirstWith<Player>();
     if (p == nullptr) return;

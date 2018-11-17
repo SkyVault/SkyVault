@@ -288,7 +288,11 @@ return {
                 sprite.setTextureRect(sf::IntRect(rx, ry, rw, rh));
                 sprite.setPosition(sf::Vector2f(x, y));
 
-                billboards.push_back(Billboard{sprite});
+                const std::string uuid = (*lua)["getTableAddress"](billboard_table);
+                auto sh = std::make_shared<Billboard>(sprite);
+                sh->Uuid = uuid;
+
+                billboards.push_back(sh);
             });
         } else {
             std::cout << "Error::TiledMap::loadTiledMap:: Failed to load the billboards from the data script, billboards table entry is invalid, map: " << path << std::endl; 
@@ -301,7 +305,7 @@ return {
 
 void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position){
     if (meta_data["billboards"].valid()) {
-        sol::table t  = meta_data.get<sol::table>("billboards");
+        auto t  = meta_data.get<sol::table>("billboards");
         sol::table b = lua->create_table();
         b[1 + 0] = region.left;
         b[1 + 1] = region.top;
@@ -311,14 +315,16 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position){
         b[1 + 5] = position.y;
         t.add(b); 
 
-        meta_data["billboards"] = t;
-
         sf::Sprite sprite;
         sprite.setTexture(tilesets[0].image);
         sprite.setTextureRect(region);
         sprite.setPosition(position);
 
-        billboards.push_back(Billboard{sprite});
+        const std::string uuid = (*lua)["getTableAddress"](t);
+        auto sh = std::make_shared<Billboard>(sprite); 
+        sh->Uuid = uuid;
+
+        billboards.push_back(sh);
     }
 }
 
@@ -340,13 +346,45 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
 
     for (const auto& billboard : billboards) {
-        target.draw(billboard.Sprite);
-    }
+        auto position = billboard->Sprite.getPosition();
+        Art::It()->Draw(billboard->Sprite, position.y); 
+    } 
+}
 
+void TiledMap::Update(const SkyTime& time) {
+    auto RemoveBillboardFromMetaData = [&](const std::shared_ptr<Billboard>& billboard) {
+        if (meta_data["billboards"].valid()) {
+            auto tabl = meta_data.get<sol::table>("billboards");
+            auto result = (*lua)["removeIfMatchingAddress"](tabl, billboard->Uuid);
+            if (result.valid()){
+                if ((bool)result) {
+                    std::cout << "Successfully removed table" << std::endl;
+                } else {
+                    std::cout << "Failed to removed table" << std::endl;
+                }
+            }
+        } 
+    };
+
+    if (billboards.size() == 1)  {
+        if (billboards[0]->ShouldRemove){
+            RemoveBillboardFromMetaData(billboards[0]);
+            billboards.clear();
+        }
+    } else {
+        auto it = billboards.begin();
+        while (it != billboards.end()){
+            if ((*it)->ShouldRemove){
+                RemoveBillboardFromMetaData(*it);
+                it = billboards.erase(it);
+            }
+            ++it;
+        }
+    }
 }
 
 std::string TiledMap::base64_decode(std::string const& encoded_string) {
-    static const std::string base64_chars =
+    const std::string base64_chars =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz"
         "0123456789+/";            
@@ -433,4 +471,8 @@ void TiledMap::Destroy() {
     }
     outFile << "return " << result.get<std::string>(0);
     outFile.close();
+}
+
+std::vector<std::shared_ptr<Billboard>> TiledMap::GetBillboards(){
+    return billboards;
 }

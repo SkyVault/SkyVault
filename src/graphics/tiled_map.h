@@ -11,6 +11,7 @@
 #include "../tinyxml2.h"
 #include "../entities/filters/physics_filter.h"
 #include "../entities/entity_world.h"
+#include "../graphics/art.h"
 
 struct Tileset {
     std::string name{""};
@@ -35,7 +36,14 @@ struct TiledObject {
 };
 
 struct Billboard {
+    inline Billboard(const sf::Sprite& sprite): 
+        Sprite(sprite)
+	{ }
+
     sf::Sprite Sprite;
+    bool ShouldRemove{false};
+
+    std::string Uuid{""}; // Corrisponds to the unique table id
 };
 
 struct TiledMap : public sf::Drawable, public sf::Transformable {
@@ -44,6 +52,8 @@ struct TiledMap : public sf::Drawable, public sf::Transformable {
     bool loadFromFile(const std::string& path, PhysicsFilter* physics, std::shared_ptr<EntityWorld>& world, std::shared_ptr<sol::state>& lua);
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+    void Update(const SkyTime& time);
 
     inline int getWidth() const { return width; }
     inline int getHeight() const { return height; }
@@ -59,12 +69,13 @@ struct TiledMap : public sf::Drawable, public sf::Transformable {
 
     void Destroy();
     void AddBillboard(const sf::IntRect& region, sf::Vector2f position);
+    std::vector<std::shared_ptr<Billboard>> GetBillboards();
 
 private:
     std::vector<TiledLayer*> layers;
     std::vector<TiledLayer*> foreground_layers;
     std::vector<Tileset> tilesets;
-    std::vector<Billboard> billboards;
+    std::vector<std::shared_ptr<Billboard>> billboards;
 
     int width{0}, height{0};
     int tilewidth{0}, tileheight{0};

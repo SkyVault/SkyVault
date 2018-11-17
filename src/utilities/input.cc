@@ -5,7 +5,18 @@ void Input::Update() {
         state.last = state.state;
     }
 
-    
+    left_mouse_button.last = left_mouse_button.state;
+}
+
+bool Input::IsMouseLeftDown(int mouse_button) {
+    left_mouse_button.state = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    return left_mouse_button.state;
+}
+
+bool Input::IsMouseLeftPressed(int mouse_button) { 
+    left_mouse_button.state = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    return left_mouse_button.state == 1 &&
+        left_mouse_button.last == 0;
 }
 
 bool Input::IsKeyPressed(int key, bool reset) {

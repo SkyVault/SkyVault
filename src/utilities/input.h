@@ -43,6 +43,7 @@ const static std::vector<std::string> ActionTypesNames = {
 };
 
 struct KeyState { int state, last; };
+struct MouseState { int state, last; };
 
 struct Input {
 private:
@@ -74,6 +75,12 @@ public:
         Y               = 0x8000,
     };
 
+    enum Mouse {
+        MOUSE_LEFT,
+        MOUSE_RIGHT,
+        MOUSE_MIDDLE
+    };
+
     static auto* It() {
         std::call_once(Input::onceFlag, [] () {
             instance.reset(new Input());     
@@ -89,6 +96,9 @@ public:
     bool IsKeyReleased(int key);
     bool IsKeyDown(int key);
     bool IsKeyUp(int key);
+
+    bool IsMouseLeftDown(int mouse_button);
+    bool IsMouseLeftPressed(int mouse_button);
 
     sf::Vector2f GetMovementAxis() {
         // NOTE(Dustin): This can be done much more efficiently
@@ -119,6 +129,10 @@ public:
 private:
 
     std::map<int, KeyState> key_map;
+
+    MouseState left_mouse_button;
+    MouseState right_mouse_button;
+    MouseState middle_mouse_button;
 
     //std::map<ActionTypes, int> keyboard_mappings; // Used for remapping of keys and buttons
     //std::map<ActionTypes, int> button_mappings;

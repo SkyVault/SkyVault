@@ -43,6 +43,7 @@ struct Editor {
         , std::unique_ptr<sf::RenderWindow> &window
         , std::shared_ptr<TiledMap> &tiledMap
         );
+
     void Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<TiledMap> &tiledMap);
 
 private:
@@ -60,6 +61,8 @@ private:
     sf::IntRect BillboardRect{sf::IntRect(0, 0, 0, 0)};
 
     sol::table editor_save_data;
+
+    sf::Vector2f EntityInspectorSize{0, 0};
 };
 
 #endif//SKYVAULT_EDITOR_H

@@ -44,20 +44,24 @@ void Editor::doUI
     , std::shared_ptr<TiledMap>& tiledMap
     ) {
     ImGui::SFML::Update(*window, editorClock.restart());
+
     ImGui::Begin("Sky Vault"); // begin window
-    ImGui::LabelText("Timing", "FPS: %f DT: %f", time.fps, time.dt);
-    if (ImGui::Button("Toggle Debug View")) {
-        std::cout << "Toggling Debug" << std::endl;
-        GameState::It()->ToggleDebug();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Toggle Full Editor")) {
-        GameState::It()->ToggleFullEditor();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Toggle No Clip")) {
-        GameState::It()->ToggleNoClip();
-    }
+        // Menu bar
+        
+
+        ImGui::LabelText("Timing", "FPS: %f DT: %f", time.fps, time.dt);
+        if (ImGui::Button("Toggle Debug View")) {
+            std::cout << "Toggling Debug" << std::endl;
+            GameState::It()->ToggleDebug();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Toggle Full Editor")) {
+            GameState::It()->ToggleFullEditor();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Toggle No Clip")) {
+            GameState::It()->ToggleNoClip();
+        }
     ImGui::End();
 
     if (GameState::It()->FullEditor()){ 
@@ -76,7 +80,26 @@ void Editor::doEntityInspector
     , std::shared_ptr<TiledMap> &tiledMap
     ) {
 
+    auto [wx, wy] = window->getSize();
+    float ww = static_cast<float>(wx);
+    float wh = static_cast<float>(wy);
+
+    auto windowPos = sf::Vector2
+        ( ww - (ww * 0.20f)
+        , 0.0f
+        );
+
     ImGui::Begin("Entity Editor");
+
+    ImGui::SetWindowPos
+        ( ImVec2(windowPos.x, windowPos.y)
+        , true   
+        ); 
+    
+    ImGui::SetWindowSize
+        ( ImVec2(ww * 0.20f, wh)
+        , true
+        );
     
     if (ImGui::TreeNode("Inspector")) {
         ImGui::BeginGroup();
@@ -378,8 +401,5 @@ void Editor::doColors(std::shared_ptr<Sky>& sky) {
         ImGui::ColorEdit3("Low Color##3", (float*)&sky->Lowsky);
     //}
 
-    ImGui::End();
-
-
-
+    ImGui::End(); 
 }

@@ -60,6 +60,13 @@ void Game::LoadContent() {
     )");
 
     lua->script(R"(
+        function serialize(t)
+            assert(type(t) == "table") 
+            return serpent.block(t, {comment = false})
+        end 
+    )");
+
+    lua->script(R"(
         function removeIfMatchingAddress(source, test)
             for i = 1, #source do
                 if test == tostring(source[i]) then
@@ -245,7 +252,7 @@ void Game::RunLoop() {
 }
 
 void Game::DestroyContent() {
-
+    editor->Destroy();
 }
 
 void Game::Run() {

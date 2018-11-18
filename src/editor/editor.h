@@ -22,8 +22,11 @@
 #include <stdio.h>
 #include <sol.hpp>
 #include <typeinfo>
+#include <iostream>
 
 struct Editor {
+    void Destroy(); // serializes out the table
+
     void initUI(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<sol::state>& lua);
     void processEvent(sf::Event& event);
 
@@ -55,6 +58,8 @@ private:
 
     bool HoldingBillboardToBePlaced;
     sf::IntRect BillboardRect{sf::IntRect(0, 0, 0, 0)};
+
+    sol::table editor_save_data;
 };
 
 #endif//SKYVAULT_EDITOR_H

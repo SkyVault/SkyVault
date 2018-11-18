@@ -3,6 +3,20 @@
 #include <string.h>
 #include <sstream>
 
+void Editor::Destroy() {
+    editor_save_data["is_open"] = GameState::It()->FullEditor();
+    std::cout << "Serializing out the editors save data" << std::endl;
+
+    auto result = (*lua)["serialize"](editor_save_data);
+
+    if (result.valid()) {
+        std::string out = result.get<std::string>(0);
+        std::ofstream ostream("assets/data/editor_save_data.lua");
+        ostream << "return " << out << std::endl;
+        ostream.close();
+    }
+}
+
 void Editor::initUI(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<sol::state>& lua) {
     ImGui::SFML::Init(*window);
     this->lua = lua;
@@ -11,6 +25,11 @@ void Editor::initUI(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<s
         GameState::It()->ToggleNoClip(); 
         std::cout << "Toggled No clip to (" << (GameState::It()->IsNoClip() ? "true" : "false") << ")\n";
     });
+
+    editor_save_data = lua->script_file("assets/data/editor_save_data.lua");
+    if (editor_save_data.get<bool>("is_open")) {
+        GameState::It()->ToggleFullEditor();        
+    }
 }
 
 void Editor::processEvent(sf::Event& event) {
@@ -111,14 +130,20 @@ void Editor::doEntityInspector
             ImGui::Text("[%-18s]", name.c_str());
             ImGui::SameLine();
 
-            // NOTE(Dustin): This is just a test
             if (ImGui::Button(("spawn##"+std::to_string(i++)).c_str())) {
                 auto e = world->Create(Assets::It()->GetPrefab(name));
 
                 if (e->Has<Body>()) {
-                    sf::Vector2f worldPos = window->mapPixelToCoords(sf::Vector2i(cursor.x, cursor.y));
+                    sf::Vector2f worldPos = 
+                        window->mapPixelToCoords(sf::Vector2i(cursor.x, cursor.y));
+
                     e->Get<Body>()->Position = worldPos;
                 }
+            }
+            
+            ImGui::SameLine();
+
+            if (ImGui::Button(("place##"+std::to_string(i++)).c_str())) {
             }
         }
 

@@ -23,6 +23,7 @@
 
 struct Game {
     Game();
+    inline ~Game() { this->DestroyContent(); }
 
     void LoadContent();
     void DestroyContent();

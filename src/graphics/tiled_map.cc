@@ -225,17 +225,10 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
 
         std::string code = R"(
 return {
-    billboard_regions = {
-
-    },
-
-    billboards = {
-
-    },
-
-    entities = {
-
-    },
+    billboard_regions = {}, 
+    billboards = {}, 
+    solids = {}, 
+    entities = {},
 }
         )";
 
@@ -268,6 +261,26 @@ return {
         if (meta_data["billboard_regions"].valid()){
         }else{
             if (!set_meta_data_to_code()) { return false; }
+        }
+
+        // Load the entities
+        if (meta_data["entities"].valid()) {
+            auto entities_table = meta_data.get<sol::table>("entities");
+            
+            entities_table.for_each([&](const sol::object& key, const sol::object& value){ 
+                const auto entity_table = value.as<sol::table>();
+                const auto which = entity_table.get<std::string>(1);
+                const auto x = entity_table.get<float>(2);
+                const auto y = entity_table.get<float>(3);
+
+                const auto prefab = Assets::It()->GetPrefab(which);
+                auto entity = world->Create(prefab);
+                if (entity->Has<Body>()) {
+                    entity->Get<Body>()->Position = sf::Vector2f(x, y);
+                }
+            });
+        } else {
+            std::cout << "Error::TiledMap::loadTiledMap:: Failed to load the entities from the data script, entities table entry is invalid, map: " << path << std::endl; 
         }
 
         // Load the billboards
@@ -372,6 +385,7 @@ void TiledMap::Update(const SkyTime& time) {
             billboards.clear();
         }
     } else {
+        // TODO(Dustin): Find out why we need to return
         auto it = billboards.begin();
         while (it != billboards.end()){
             if ((*it)->ShouldRemove){

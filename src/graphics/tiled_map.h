@@ -11,6 +11,8 @@
 #include "../tinyxml2.h"
 #include "../entities/filters/physics_filter.h"
 #include "../entities/entity_world.h"
+#include "../entities/entity.h"
+#include "../entities/components/body.h"
 #include "../graphics/art.h"
 
 struct Tileset {
@@ -69,6 +71,7 @@ struct TiledMap : public sf::Drawable, public sf::Transformable {
 
     void Destroy();
     void AddBillboard(const sf::IntRect& region, sf::Vector2f position);
+    void AddEntity();
     std::vector<std::shared_ptr<Billboard>> GetBillboards();
 
 private:

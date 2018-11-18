@@ -36,6 +36,13 @@ void LevelLayer::Load(){
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(0, 16, 32, 32), sf::Vector2f(0, -16));
         other->Add<AI>(BasicEnemyAI);
     }
+    
+    {
+        var block = world->Create();
+        block ->Add<Body>(sf::Vector2f(500 + 128, 400 + 128), sf::Vector2f(32, 56));
+        block ->Add<PhysicsBody>();
+        block ->Add<Renderable>(Assets::It()->Get<sf::Texture>("moveable_block"), sf::IntRect(0, 0, 32, 56), sf::Vector2f(0, 0));
+    }
 
     auto cursor = 0.0f;
     for (auto tag : {"BlueDiamond", "Heart", "Potion", "FloppyDisk"}) {

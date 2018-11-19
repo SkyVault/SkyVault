@@ -273,6 +273,14 @@ return {
                 const auto x = entity_table.get<float>(2);
                 const auto y = entity_table.get<float>(3);
 
+                const std::string uuid = (*lua)["getTableAddress"](entity_table); 
+                auto sh = std::make_shared<EntitySpawn>();
+                sh->Position = sf::Vector2f(x, y);
+                sh->EntityName = which;
+                sh->Uuid = uuid;
+
+                entity_spawns.push_back(sh);
+
                 const auto prefab = Assets::It()->GetPrefab(which);
                 auto entity = world->Create(prefab);
                 if (entity->Has<Body>()) {
@@ -382,23 +390,41 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 void TiledMap::Update(const SkyTime& time) {
-    auto RemoveBillboardFromMetaData = [&](const std::shared_ptr<Billboard>& billboard) {
-        if (meta_data["billboards"].valid()) {
-            auto tabl = meta_data.get<sol::table>("billboards");
-            auto result = (*lua)["removeIfMatchingAddress"](tabl, billboard->Uuid);
-            if (result.valid()){
-                if ((bool)result) {
-                    std::cout << "Successfully removed table" << std::endl;
-                } else {
-                    std::cout << "Failed to removed table" << std::endl;
-                }
+    auto RemoveBillboardFromMetaData = [&](sol::table& table, const auto& item) {
+        auto result = (*lua)["removeIfMatchingAddress"](table, item->Uuid);
+        if (result.valid()){
+            if ((bool)result) {
+                std::cout << "Successfully removed table" << std::endl;
+            } else {
+                std::cout << "Failed to removed table" << std::endl;
             }
-        } 
+        }
     };
+
+    if (entity_spawns.size() == 1)  {
+        if (entity_spawns[0]->ShouldRemove){
+            auto t = meta_data.get<sol::table>("entities");
+            RemoveBillboardFromMetaData(t,entity_spawns[0]);
+            entity_spawns.clear();
+        }
+    } else {
+        // TODO(Dustin): Find out why we need to return
+        auto it =entity_spawns.begin();
+        while (it !=entity_spawns.end()){
+            if ((*it)->ShouldRemove){
+                auto t = meta_data.get<sol::table>("entities");
+                RemoveBillboardFromMetaData(t,*it);
+                it =entity_spawns.erase(it);
+                return;
+            }
+            ++it;
+        }
+    }
 
     if (billboards.size() == 1)  {
         if (billboards[0]->ShouldRemove){
-            RemoveBillboardFromMetaData(billboards[0]);
+            auto t = meta_data.get<sol::table>("billboards");
+            RemoveBillboardFromMetaData(t,billboards[0]);
             billboards.clear();
         }
     } else {
@@ -406,7 +432,8 @@ void TiledMap::Update(const SkyTime& time) {
         auto it = billboards.begin();
         while (it != billboards.end()){
             if ((*it)->ShouldRemove){
-                RemoveBillboardFromMetaData(*it);
+                auto t = meta_data.get<sol::table>("billboards");
+                RemoveBillboardFromMetaData(t,*it);
                 it = billboards.erase(it);
                 return;
             }
@@ -507,4 +534,8 @@ void TiledMap::Destroy() {
 
 std::vector<std::shared_ptr<Billboard>> TiledMap::GetBillboards(){
     return billboards;
+}
+
+std::vector<std::shared_ptr<EntitySpawn>> TiledMap::GetEntitySpawns() {
+    return entity_spawns;
 }

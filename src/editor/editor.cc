@@ -164,7 +164,7 @@ void Editor::doEntityInspector
         const auto prefabs = Assets::It()->GetPrefabs();
         int i = 0;
         for (auto& [name, table] : prefabs) {
-            ImGui::Text("[%-18s]", name.c_str());
+            ImGui::Text("[%-14s]", name.c_str());
             ImGui::SameLine();
 
             if (ImGui::Button(("spawn##"+std::to_string(i++)).c_str())) {
@@ -181,6 +181,10 @@ void Editor::doEntityInspector
             ImGui::SameLine();
 
             if (ImGui::Button(("place##"+std::to_string(i++)).c_str())) {
+                // TODO(Dustin): Make it so the entity spawn is a drag and drop thing, 
+                // dont use the cursor
+
+                tiledMap->AddEntitySpawn(name, cursor.x, cursor.y);
             }
         }
 
@@ -347,6 +351,7 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<Til
     }
 
     const auto& billboards = tiledMap->GetBillboards();
+    const auto& entity_spawns = tiledMap->GetEntitySpawns();
 
     sf::RectangleShape rect;
     rect.setFillColor(sf::Color(0, 0, 0, 0));
@@ -377,6 +382,43 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<Til
             }
         }
 
+        window->draw(rect);
+    }
+
+    auto font = Assets::It()->Get<sf::Font>("dialog");
+    rect.setOutlineColor(sf::Color(0, 255, 255, 100));
+    sf::Text text;
+    text.setFont(*font);
+    text.setFillColor(sf::Color(0, 255, 255, 100));
+    text.setScale(0.2f, 0.2f);
+
+    for (const auto& entity_spawn : entity_spawns) {
+        rect.setSize(sf::Vector2f(32, 32));
+        rect.setPosition(entity_spawn->Position);
+        window->draw(rect);
+
+        constexpr auto SIZE{4u}; 
+
+        text.setString(entity_spawn->EntityName);
+        text.setPosition(entity_spawn->Position + sf::Vector2f(2, 2));
+
+        rect.setSize(sf::Vector2f(SIZE, SIZE));
+        rect.setPosition
+            ( entity_spawn->Position
+            - sf::Vector2f(0, SIZE + 1));
+
+        if (Input::It()->IsMouseLeftPressed(sf::Mouse::Left)) {
+            const auto [mx, my] = worldPos;
+            const auto [bx, by] = rect.getPosition();
+
+            if (mx > bx && mx < bx + SIZE &&
+                my > by && my < by + SIZE) {
+
+                entity_spawn->ShouldRemove = true;
+            }
+        }
+
+        window->draw(text);
         window->draw(rect);
     }
 

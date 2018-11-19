@@ -51,7 +51,10 @@ struct Billboard {
 struct EntitySpawn {
     sf::Vector2f Position;
     std::string EntityName{""};
+    bool ShouldRemove{false};
+
     std::string Uuid{""}; // Corrisponds to the unique table id
+
 };
 
 struct TiledMap : public sf::Drawable, public sf::Transformable {
@@ -80,6 +83,7 @@ struct TiledMap : public sf::Drawable, public sf::Transformable {
     void AddEntitySpawn(const std::string& which, float x, float y);
 
     std::vector<std::shared_ptr<Billboard>> GetBillboards();
+    std::vector<std::shared_ptr<EntitySpawn>> GetEntitySpawns();
 
 private:
     std::vector<TiledLayer*> layers;

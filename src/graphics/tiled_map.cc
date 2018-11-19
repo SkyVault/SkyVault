@@ -341,6 +341,23 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position){
     }
 }
 
+void TiledMap::AddEntitySpawn(const std::string& which, float x, float y) {
+    auto es = std::make_shared<EntitySpawn>();
+    es->EntityName = which;
+    es->Position = sf::Vector2f(x, y);
+
+    auto t  = meta_data.get<sol::table>("entities");
+    sol::table e = lua->create_table();
+    e[1 + 0] = which;
+    e[1 + 1] = x;
+    e[1 + 2] = y;
+    t.add(e); 
+
+    es->Uuid = (*lua)["getTableAddress"](t);
+
+    entity_spawns.push_back(es);
+}
+
 void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     if (tilesets.size() == 0) {
         std::cout << "Missing tileset" << std::endl;

@@ -48,6 +48,12 @@ struct Billboard {
     std::string Uuid{""}; // Corrisponds to the unique table id
 };
 
+struct EntitySpawn {
+    sf::Vector2f Position;
+    std::string EntityName{""};
+    std::string Uuid{""}; // Corrisponds to the unique table id
+};
+
 struct TiledMap : public sf::Drawable, public sf::Transformable {
     ~TiledMap();
 
@@ -71,14 +77,19 @@ struct TiledMap : public sf::Drawable, public sf::Transformable {
 
     void Destroy();
     void AddBillboard(const sf::IntRect& region, sf::Vector2f position);
-    void AddEntity();
+    void AddEntitySpawn(const std::string& which, float x, float y);
+
     std::vector<std::shared_ptr<Billboard>> GetBillboards();
 
 private:
     std::vector<TiledLayer*> layers;
     std::vector<TiledLayer*> foreground_layers;
     std::vector<Tileset> tilesets;
+
     std::vector<std::shared_ptr<Billboard>> billboards;
+    
+    // NOTE(Dustin): We don't have to keep this in the final build of the game
+    std::vector<std::shared_ptr<EntitySpawn>> entity_spawns;
 
     int width{0}, height{0};
     int tilewidth{0}, tileheight{0};

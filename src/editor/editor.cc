@@ -47,7 +47,21 @@ void Editor::doUI
 
     ImGui::Begin("Sky Vault"); // begin window
         // Menu bar
-        
+
+        if (ImGui::BeginMenuBar()) { 
+
+            static bool show_file_menu_bar{false};
+            if (ImGui::BeginMenu("File")) { 
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Edit")) { 
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMenuBar();
+        }
+        ImGui::Spacing();
 
         ImGui::LabelText("Timing", "FPS: %f DT: %f", time.fps, time.dt);
         if (ImGui::Button("Toggle Debug View")) {
@@ -336,7 +350,7 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<Til
 
     sf::RectangleShape rect;
     rect.setFillColor(sf::Color(0, 0, 0, 0));
-    rect.setOutlineColor(sf::Color::White);
+    rect.setOutlineColor(sf::Color(255, 255, 255, 100));
     rect.setOutlineThickness(1);
     
     for (const auto& billboard : billboards) {
@@ -349,8 +363,8 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<Til
 
         rect.setSize(sf::Vector2f(SIZE, SIZE));
         rect.setPosition
-            ( billboard->Sprite.getPosition() 
-            - sf::Vector2f(0, SIZE));
+            ( billboard->Sprite.getPosition()
+            - sf::Vector2f(0, SIZE + 1));
 
         if (Input::It()->IsMouseLeftPressed(sf::Mouse::Left)) {
             const auto [mx, my] = worldPos;

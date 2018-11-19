@@ -30,6 +30,6 @@ int main() {
 
     let myGame = new Game();
     myGame->Run();
-    
+
     return 0;
 }

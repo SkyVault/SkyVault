@@ -1,0 +1,6 @@
+lua j2l.lua && cd src && make && clear && ./bin/release/SkyVault
+make[1]: Entering directory '/home/dustin/Documents/SkyVault/src'
+Creating directories
+Beginning release build
+Compiling: main.cc -> build/release/main.o
+make[1]: Leaving directory '/home/dustin/Documents/SkyVault/src'

@@ -177,6 +177,13 @@ void Game::Update(const SkyTime& time) {
     if (sf::Joystick::isButtonPressed(0, 0)) {
         std::cout << "Here" << std::endl;
     }
+
+    sf::IntRect rect;
+    rect.left = 0;
+    rect.top = 0;
+    rect.width = tiledMap->WidthInPixels();
+    rect.height = tiledMap->HeightInPixels();
+    camera->Clamp(rect);
 }
 
 void Game::Render() {

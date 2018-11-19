@@ -6,6 +6,8 @@ struct Camera {
     Camera(int width, int height);
     
     void Resize(int width, int height);
+    void Clamp(const sf::IntRect& bounds);
+    
     sf::View View;
 };
 

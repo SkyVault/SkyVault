@@ -85,6 +85,9 @@ struct TiledMap : public sf::Drawable, public sf::Transformable {
     std::vector<std::shared_ptr<Billboard>> GetBillboards();
     std::vector<std::shared_ptr<EntitySpawn>> GetEntitySpawns();
 
+    inline int WidthInPixels() const { return width * tilewidth; }
+    inline int HeightInPixels() const { return height * tileheight; }
+
 private:
     std::vector<TiledLayer*> layers;
     std::vector<TiledLayer*> foreground_layers;

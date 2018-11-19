@@ -13,9 +13,8 @@ TODO(Dustin): Global todos that we need to get done before release
     
 - [ ] Camera
     * [ ] Clamp camera to room
-    * [ ] Smooth camera follow
-    * [ ] Pan camera from editor
-
+    * [X] Smooth camera follow
+    * [X] Pan camera from editor 
  */
 
 std::unique_ptr<GameState> GameState::instance;
@@ -39,6 +38,9 @@ int main() {
     std::cout << "Sky Vault Engine Version: " << SKYVAULT_VERSION << std::endl;
 
     let myGame = new Game();
+    std::cout << "one" << std::endl;
+    std::cout << "two" << std::endl;
+    std::cout << "three" << std::endl;
     myGame->Run();
 
     return 0;

@@ -718,7 +718,6 @@ public:
     }
 
     bool is_directory() const {
-        struct stat* st = get_stat();
         return S_ISDIR(stat_->st_mode);
     }
 

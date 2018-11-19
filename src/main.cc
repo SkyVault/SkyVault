@@ -11,7 +11,10 @@
 /*
 TODO(Dustin): Global todos that we need to get done before release
     
-    - [ ] Clamp camera to room
+- [ ] Camera
+    * [ ] Clamp camera to room
+    * [ ] Smooth camera follow
+    * [ ] Pan camera from editor
 
  */
 

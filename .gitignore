@@ -35,3 +35,4 @@ tags
 *callgrind*
 *.svg
 *vgcore*
+src/imgui.ini

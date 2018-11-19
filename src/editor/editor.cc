@@ -42,15 +42,15 @@ void Editor::doUI
     , std::shared_ptr<EntityWorld>& world
     , std::shared_ptr<Sky>& sky
     , std::shared_ptr<TiledMap>& tiledMap
+    , std::shared_ptr<Camera>& camera
     ) {
+
     ImGui::SFML::Update(*window, editorClock.restart());
 
     ImGui::Begin("Sky Vault"); // begin window
         // Menu bar
 
         if (ImGui::BeginMenuBar()) { 
-
-            static bool show_file_menu_bar{false};
             if (ImGui::BeginMenu("File")) { 
                 ImGui::EndMenu();
             }
@@ -86,6 +86,22 @@ void Editor::doUI
 
     // Render the editor
     ImGui::SFML::Render(*window);
+
+    // Camera control
+
+    if (GameState::It()->FullEditor()) {
+        static sf::Vector2f last_mouse{sf::Vector2f(0, 0)}; 
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            auto curr = sf::Mouse::getPosition();
+            auto delta = sf::Vector2f(curr.x, curr.y) - last_mouse;
+            auto newPos = camera->View.getCenter() + delta * -1.0f;
+            last_mouse = sf::Vector2f(curr.x, curr.y);
+            camera->View.setCenter(newPos);
+        } else {
+            auto curr = sf::Mouse::getPosition();
+            last_mouse = sf::Vector2f(curr.x, curr.y);
+        }
+    }
 }
 
 void Editor::doEntityInspector
@@ -313,11 +329,13 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<Til
     // convert it to world coordinates
     sf::Vector2f worldPos = window->mapPixelToCoords(pixelPos);
 
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
         if (HoldingBillboardToBePlaced){
             HoldingBillboardToBePlaced = !HoldingBillboardToBePlaced;
-        } else 
+        } else {
             cursor = worldPos;
+        }
+    }
 
     // TODO(Dustin): use isMousePressed
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {

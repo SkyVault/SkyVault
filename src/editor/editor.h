@@ -9,6 +9,7 @@
 #include "../graphics/animation.h"
 #include "../graphics/sky.h"
 #include "../graphics/tiled_map.h"
+#include "../graphics/camera.h"
 #include "../entities/entity_world.h"
 #include "../entities/components/body.h"
 #include "../entities/components/player.h"
@@ -36,6 +37,7 @@ struct Editor {
         , std::shared_ptr<EntityWorld>& world
         , std::shared_ptr<Sky>& sky
         , std::shared_ptr<TiledMap>& tiledMap
+        , std::shared_ptr<Camera>& camera
         );
 
     void doEntityInspector

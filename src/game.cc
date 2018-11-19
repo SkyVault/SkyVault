@@ -149,7 +149,7 @@ void Game::LoadContent() {
     world->Register<PhysicsFilter>();
     world->Register<RenderFilter>();
     world->Register<RenderAnimatedSpriteFilter>();
-    world->Register<PlayerFilter>();
+    world->Register<PlayerFilter>(camera);
     world->Register<AIFilter>();
 
     GameState::It()->PushLayer(new MenuLayer(world, camera, lua, gui, sky, tiledMap));
@@ -177,10 +177,6 @@ void Game::Update(const SkyTime& time) {
     if (sf::Joystick::isButtonPressed(0, 0)) {
         std::cout << "Here" << std::endl;
     }
-
-    //TODO(Dustin): Move this to the player filter
-    //TODO(Dustin): Camera smoothing
-    camera->View.setCenter(p->Get<Body>()->Center());
 }
 
 void Game::Render() {

@@ -8,6 +8,13 @@
 #include "game_state.h"
 #include "utilities/quest_engine.h"
 
+/*
+TODO(Dustin): Global todos that we need to get done before release
+    
+    - [ ] Clamp camera to room
+
+ */
+
 std::unique_ptr<GameState> GameState::instance;
 std::once_flag GameState::onceFlag;
 

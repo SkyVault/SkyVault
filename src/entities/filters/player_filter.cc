@@ -7,7 +7,7 @@ void PlayerFilter::Load(std::unique_ptr<Entity>& entity) {
 }
 
 void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
-    //var body = self->Get<Body>();
+    var body = self->Get<Body>();
     var player = self->Get<Player>();
     var physics = self->Get<PhysicsBody>();
 
@@ -50,6 +50,13 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
         break;
     }
     player->State.Tick();
+
+    // Update camera
+    if (GameState::It()->FullEditor() == false) {
+        
+        camera->View.setCenter(body->Center());
+
+    } 
 }
 
 void PlayerFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) {

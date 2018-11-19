@@ -53,9 +53,23 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
 
     // Update camera
     if (GameState::It()->FullEditor() == false) {
-        
-        camera->View.setCenter(body->Center());
+        const auto track_point = 
+            body->Center() 
+            + physics->Velocity * 0.50f;
 
+        const auto delta_x = 
+            track_point.x - camera->View.getCenter().x;
+
+        const auto delta_y = 
+            track_point.y - camera->View.getCenter().y;
+
+        auto newPos = camera->View.getCenter();
+        newPos += sf::Vector2f
+            ( delta_x * 0.08f
+            , delta_y * 0.08f 
+            );
+        
+        camera->View.setCenter(newPos); 
     } 
 }
 

@@ -36,3 +36,4 @@ tags
 *.svg
 *vgcore*
 src/imgui.ini
+src/bin/release/SkyVault

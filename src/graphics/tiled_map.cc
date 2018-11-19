@@ -507,17 +507,14 @@ void TiledMap::Destroy() {
         delete layer;
 
     billboards.clear();
+    entity_spawns.clear();
     
     // Write the meta_data back to the file
     if (!lua) return;
     // TODO(Dustin): Explicitly handle errors and
     // make sure that result.get actually returns a string
 
-    (*lua)["tmp"] = meta_data;
-    const auto result = lua->script(R"(
-        local v = serpent.block(tmp, {comment=false})
-        return v
-    )", &sol::script_default_on_error);
+    auto result = (*lua)["serialize"](meta_data);
 
     std::ofstream outFile(meta_data_file_name);
     if (!outFile) {
@@ -526,8 +523,10 @@ void TiledMap::Destroy() {
     }
     if (result.valid() == false) {
         std::cout << "Result is not valid" << std::endl;
+        outFile.close();
         return;
     }
+
     outFile << "return " << result.get<std::string>(0);
     outFile.close();
 }

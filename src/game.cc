@@ -178,12 +178,14 @@ void Game::Update(const SkyTime& time) {
         std::cout << "Here" << std::endl;
     }
 
-    sf::IntRect rect;
-    rect.left = 0;
-    rect.top = 0;
-    rect.width = tiledMap->WidthInPixels();
-    rect.height = tiledMap->HeightInPixels();
-    camera->Clamp(rect);
+    if (GameState::It()->FullEditor() == false){
+        sf::IntRect rect;
+        rect.left = 0;
+        rect.top = 0;
+        rect.width = tiledMap->WidthInPixels();
+        rect.height = tiledMap->HeightInPixels();
+        camera->Clamp(rect);
+    }
 }
 
 void Game::Render() {

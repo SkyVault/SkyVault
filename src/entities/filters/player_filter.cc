@@ -23,6 +23,7 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
         player->DashTimer -= time.dt;
         break;
     }
+
     case Player::State::MOVING: {
         auto axis = Input::It()->GetMovementAxis();
 

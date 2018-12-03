@@ -32,5 +32,8 @@ void Camera::Clamp(const sf::IntRect& bounds) {
         vy = bounds.top + bounds.height - vh;
     }
 
-    View.setCenter(sf::Vector2f(vx + w * 0.5f, vy + h * 0.5f));
+    View.setCenter(sf::Vector2f
+            ( vx + w * 0.5f
+            , vy + h * 0.5f
+            ));
 }

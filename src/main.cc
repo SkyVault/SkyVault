@@ -11,10 +11,23 @@
 /*
 TODO(Dustin): Global todos that we need to get done before release
     
-- [ ] Camera
-    * [ ] Clamp camera to room
+- [O] Camera
+    * [X] Clamp camera to room
     * [X] Smooth camera follow
     * [X] Pan camera from editor 
+- [ ] Graphics
+    * [ ] Simple phong shading
+    * [ ] Water distortion
+    * [ ] GUI
+        + [ ] Button
+        + [ ] Layout
+        + [ ] List
+        + [ ] Grid
+- [ ] Gameplay
+    * [ ] Draggable blocks
+    * [ ] Trigger zones (for the blocks and player)
+    * [ ] Combat
+        + [ ] Figure out what type of combat were going to use...
  */
 
 std::unique_ptr<GameState> GameState::instance;
@@ -38,9 +51,6 @@ int main() {
     std::cout << "Sky Vault Engine Version: " << SKYVAULT_VERSION << std::endl;
 
     let myGame = new Game();
-    std::cout << "one" << std::endl;
-    std::cout << "two" << std::endl;
-    std::cout << "three" << std::endl;
     myGame->Run();
 
     return 0;

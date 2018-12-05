@@ -31,6 +31,22 @@ float AI::GetDistToPlayer() {
     return dist_to_player;
 }
 
+void ColoredBlockAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai) {
+    auto sprite = self->Get<Renderable>();
+
+    auto tags = self->GetTags();
+    for (auto tag : tags) {
+        if (tag == "Red") {
+            sprite->Color = sf::Color::Red;
+        } else if (tag == "Blue") {
+            sprite->Color = sf::Color::Blue; 
+        } else if (tag == "Green") {
+            sprite->Color = sf::Color::Green; 
+        } 
+    }
+
+}
+
 // AI's
 void BasicEnemyAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai) {
     if (ai->DoFirst()) { ai->CurrentState = AI::States::IDLE; return; }

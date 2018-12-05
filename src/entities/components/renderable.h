@@ -2,6 +2,7 @@
 #define SKYVAULT_RENDERABLE_H
 
 #include "../component.h"
+#include "renderable.h"
 #include "../../graphics/animation.h"
 #include "../../graphics/frame.h"
 #include <map>

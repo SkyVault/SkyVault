@@ -31,6 +31,13 @@ enum GameStates {
     QUITTING
 };
 
+enum Cardinal {
+    North,
+    West,
+    South,
+    East
+};
+
 //static bool is_debugging {true};
 
 //inline bool IsDebug() { return is_debugging; }

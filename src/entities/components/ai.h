@@ -2,9 +2,12 @@
 #define SKYVAULT_AI_H
 #include "../component.h"
 #include "../filter.h"
+#include "../entity.h"
+#include "renderable.h"
 #include "../../skytime.h"
 #include "../../skyvault.h"
 #include <functional>
+#include <algorithm>
 #include <map>
 #include <string>
 #include <cmath>
@@ -93,6 +96,7 @@ private:
     float dist_to_player{0.0f};
 };
 
+void ColoredBlockAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai);
 void BasicEnemyAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai);
 
 #endif//SKYVAULT_AI_H

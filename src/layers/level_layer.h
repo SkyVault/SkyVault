@@ -14,6 +14,7 @@
 #include "../entities/components/player.h"
 #include "../entities/components/renderable.h"
 #include "../entities/components/ai.h"
+#include "../entities/components/laser.h"
 #include "../entities/components/interaction.h"
 #include "../graphics/tiled_map.h"
 #include "../graphics/camera.h"

@@ -20,6 +20,13 @@ struct Entity {
         this->uuid = UUID++; 
     }
 
+    template<typename... Args>
+    void AddTags(Args&&... args) {
+        (tags.push_back(args), ...);
+    } 
+
+    auto GetTags() { return tags; }
+
     template<typename T, typename... Args>
     void Add(Args&&... args) {
         components[typeid(T)] = std::make_unique<T>(std::forward<Args>(args)...);
@@ -59,6 +66,7 @@ private:
     std::map<std::type_index, std::unique_ptr<Component>> components;
     std::vector<std::type_index> matchlist;
     std::vector<std::string> component_names;
+    std::vector<std::string> tags;
 
     bool loaded{false};
     bool remove{false};

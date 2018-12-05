@@ -8,6 +8,7 @@
 #include "entities/filters/render_filter.h"
 #include "entities/filters/player_filter.h"
 #include "entities/filters/ai_filter.h"
+#include "entities/filters/once_off_filter.h"
 #include "utilities/input.h"
 #include "utilities/quest_engine.h"
 #include "graphics/animation.h"
@@ -151,6 +152,7 @@ void Game::LoadContent() {
     world->Register<RenderAnimatedSpriteFilter>();
     world->Register<PlayerFilter>(camera);
     world->Register<AIFilter>();
+    world->Register<OnceOffFilter>();
 
     GameState::It()->PushLayer(new MenuLayer(world, camera, lua, gui, sky, tiledMap));
 

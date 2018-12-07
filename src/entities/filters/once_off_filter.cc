@@ -48,6 +48,13 @@ void OnceOffFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::uniqu
                         Body(shape.getPosition(),
                         shape.getSize())
                                 )) {
+
+                        switch(laser->Color) {
+                            case LaserColor::Red: { if (!block->HasTag("Red")) block->Kill(); break; }
+                            case LaserColor::Green: { if (!block->HasTag("Green")) block->Kill(); break; }
+                            case LaserColor::Blue: { if (!block->HasTag("Blue")) block->Kill(); break; }
+                        }
+
                         done = true;
                     }
                 } 

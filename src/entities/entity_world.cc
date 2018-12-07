@@ -287,7 +287,8 @@ void EntityWorld::AddDoor(const std::string& To, float x, float y, float width, 
             , x
             , y
             , width
-            , height));
+            , height
+            ));
 }
 
 void EntityWorld::ClearAll() {

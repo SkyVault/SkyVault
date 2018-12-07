@@ -43,8 +43,7 @@ void ColoredBlockAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai) 
         } else if (tag == "Green") {
             sprite->Color = sf::Color::Green; 
         } 
-    }
-
+    } 
 }
 
 // AI's

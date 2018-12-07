@@ -6,6 +6,7 @@
 #include <map>
 #include <type_traits>
 #include <iostream>
+#include <algorithm>
 #include <initializer_list>
 #include <typeindex>
 #include <vector>
@@ -24,6 +25,10 @@ struct Entity {
     void AddTags(Args&&... args) {
         (tags.push_back(args), ...);
     } 
+
+    inline bool HasTag(const std::string& tag) {
+        return std::find(tags.begin(), tags.end(), tag) != tags.end();
+    }
 
     auto GetTags() { return tags; }
 

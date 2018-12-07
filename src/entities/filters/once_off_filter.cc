@@ -22,6 +22,8 @@ void OnceOffFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::uniqu
            
         shape.setSize(sf::Vector2f(8, 8));
 
+        auto blocks = world->GetAllWithTag("Block");
+
         switch(laser->Color) {
             case LaserColor::Red: shape.setFillColor(sf::Color::Red); break;
             case LaserColor::Green: shape.setFillColor(sf::Color::Green); break;
@@ -35,8 +37,24 @@ void OnceOffFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::uniqu
             auto dir = laser->Facing == Cardinal::West ? -1 : 1;
             shape.setPosition(center);
 
+            bool done = false;
             for (int i = 0; i < 100; i++) {
+
+                if (done) break;
+                for (Entity* block : blocks) {
+                    auto body = block->Get<Body>();
+
+                    if (body->Contains(
+                        Body(shape.getPosition(),
+                        shape.getSize())
+                                )) {
+                        done = true;
+                    }
+                } 
+                if (done) break;
+
                 window->draw(shape); 
+
                 shape.setPosition(shape.getPosition() + sf::Vector2f(dir * shape.getSize().x, 0));
             }
 

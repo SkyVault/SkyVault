@@ -68,6 +68,14 @@ struct EntityWorld {
         return result;
     }
 
+    inline std::vector<Entity*> GetAllWithTag(const std::string& tag){
+        std::vector<Entity*> result;
+        for (auto& entity : entities) {
+            if (entity->HasTag(tag)) result.push_back(entity.get());
+        }
+        return result;
+    }
+
     inline std::vector<std::unique_ptr<Entity>>& GetEntities() { return entities; }
     
     void AddDoor(const std::string& To, float x, float y, float width, float height);

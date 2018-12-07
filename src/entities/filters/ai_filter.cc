@@ -17,7 +17,7 @@ void AIFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& entity) {
                 );
     }
 
-    ai->DoAI(time, entity, ai);
+    ai->DoAI(time, entity, ai, world);
 
     switch (ai->CurrentState) {
         case AI::States::WAIT: {

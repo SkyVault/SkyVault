@@ -151,8 +151,8 @@ void Game::LoadContent() {
     world->Register<RenderFilter>();
     world->Register<RenderAnimatedSpriteFilter>();
     world->Register<PlayerFilter>(camera);
-    world->Register<AIFilter>();
-    world->Register<OnceOffFilter>();
+    world->Register<AIFilter>(world);
+    world->Register<OnceOffFilter>(world);
 
     GameState::It()->PushLayer(new MenuLayer(world, camera, lua, gui, sky, tiledMap));
 

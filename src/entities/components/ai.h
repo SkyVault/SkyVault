@@ -1,7 +1,9 @@
 #ifndef SKYVAULT_AI_H
 #define SKYVAULT_AI_H
 #include "../component.h"
+#include "../components/body.h"
 #include "../filter.h"
+#include "../entity_world.h"
 #include "../entity.h"
 #include "renderable.h"
 #include "../../skytime.h"
@@ -13,20 +15,7 @@
 #include <cmath>
 
 struct AI;
-typedef std::function<void(const SkyTime&, std::unique_ptr<Entity>&, AI* ai)> AiAction;
-
-/*
-NOTES:
-
-Ideal api
-
-other->Add<AI>([](const auto time, std::unique_ptr<Entity>& self) {
-    auto ai = self->Get<AI>();
-
-
-});
-
-*/
+typedef std::function<void(const SkyTime&, std::unique_ptr<Entity>&, AI* ai, std::shared_ptr<EntityWorld>& world)> AiAction;
 
 #ifndef MACROSTR
 #define MACROSTR(k) #k
@@ -96,7 +85,7 @@ private:
     float dist_to_player{0.0f};
 };
 
-void ColoredBlockAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai);
-void BasicEnemyAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai);
+void ColoredBlockAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai, std::shared_ptr<EntityWorld>& world);
+void BasicEnemyAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai, std::shared_ptr<EntityWorld>& world);
 
 #endif//SKYVAULT_AI_H

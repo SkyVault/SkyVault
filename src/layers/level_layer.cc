@@ -40,7 +40,18 @@ void LevelLayer::Load(){
     {
         var block = world->Create();
         block->AddTags("Red");
+        block->AddTags("Block");
         block->Add<Body>(sf::Vector2f(500 + 64, 400 + 128), sf::Vector2f(32, 56));
+        block->Add<AI>(ColoredBlockAI);
+        block->Add<PhysicsBody>();
+        block->Add<Renderable>(Assets::It()->Get<sf::Texture>("moveable_block"), sf::IntRect(0, 0, 32, 56), sf::Vector2f(0, 0));
+    }
+    
+    {
+        var block = world->Create();
+        block->AddTags("Green");
+        block->AddTags("Block");
+        block->Add<Body>(sf::Vector2f(500 - 64, 400 + 128 + 32), sf::Vector2f(32, 56));
         block->Add<AI>(ColoredBlockAI);
         block->Add<PhysicsBody>();
         block->Add<Renderable>(Assets::It()->Get<sf::Texture>("moveable_block"), sf::IntRect(0, 0, 32, 56), sf::Vector2f(0, 0));

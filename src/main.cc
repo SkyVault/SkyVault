@@ -42,7 +42,7 @@ std::once_flag Assets::onceFlag;
 
 std::unique_ptr<Input> Input::instance;
 std::once_flag Input::onceFlag;
-
+ 
 std::unique_ptr<QuestEngine> QuestEngine::instance;
 std::once_flag QuestEngine::onceFlag;
 

@@ -88,8 +88,7 @@ void Editor::doUI
     ImGui::SFML::Render(*window);
 
     // Camera control
-
-    if (GameState::It()->FullEditor()) {
+    if (GameState::It()->FullEditor() && moving == nullptr) {
         static sf::Vector2f last_mouse{sf::Vector2f(0, 0)}; 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             auto curr = sf::Mouse::getPosition();
@@ -322,7 +321,11 @@ void Editor::doInGameTerminal() {
     ImGui::End();
 }
 
-void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<TiledMap> &tiledMap) {
+void Editor::Draw
+    ( std::unique_ptr<sf::RenderWindow> &window
+    , std::shared_ptr<TiledMap> &tiledMap
+    , std::shared_ptr<EntityWorld> &world
+    ) {
     // get the current mouse position in the window
     sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
 
@@ -354,7 +357,6 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<Til
     circle.setOutlineThickness(1);
 
     window->draw(circle);
-
 
     // Draw billboard before being placed
 
@@ -409,6 +411,35 @@ void Editor::Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<Til
     text.setFont(*font);
     text.setFillColor(sf::Color(0, 255, 255, 100));
     text.setScale(0.2f, 0.2f);
+
+    if (moving != nullptr) {
+
+        if (moving->Has<Body>()) {
+            auto body = moving->Get<Body>(); 
+
+            body->Position = worldPos;
+        }
+
+        if (Input::It()->IsMouseLeftReleased(1)) {
+            moving = nullptr;
+        } 
+    } 
+
+    for (const auto& entity : world->GetEntities()) {
+        if (!entity->Has<Body>()) { continue; }
+        if (Input::It()->IsMouseLeftPressed(1)) { 
+            auto body = entity->Get<Body>(); 
+            const auto [mx, my] = worldPos;
+
+            if (mx > body->Position.x && mx < body->Position.x + body->Size.x &&
+                my > body->Position.y && my < body->Position.y + body->Size.y) {
+
+                moving = entity.get(); 
+
+                std::cout << "Clicked entity\n";
+            }
+        }
+    }
 
     for (const auto& entity_spawn : entity_spawns) {
         rect.setSize(sf::Vector2f(32, 32));

@@ -19,6 +19,17 @@ bool Input::IsMouseLeftPressed(int mouse_button) {
         left_mouse_button.last == 0;
 }
 
+bool Input::IsMouseLeftUp(int mouse_button) { 
+    left_mouse_button.state = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    return !left_mouse_button.state;
+}
+
+bool Input::IsMouseLeftReleased(int mouse_button) {
+    left_mouse_button.state = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    return left_mouse_button.state == 0 &&
+        left_mouse_button.last == 1; 
+}
+
 bool Input::IsKeyPressed(int key, bool reset) {
     const auto state = key_map[key];
     const auto res = 

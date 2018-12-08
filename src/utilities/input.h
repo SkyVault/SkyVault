@@ -100,6 +100,9 @@ public:
     bool IsMouseLeftDown(int mouse_button);
     bool IsMouseLeftPressed(int mouse_button);
 
+    bool IsMouseLeftUp(int mouse_button);
+    bool IsMouseLeftReleased(int mouse_button); 
+
     sf::Vector2f GetMovementAxis() {
         // NOTE(Dustin): This can be done much more efficiently
         // but I dont know if its worth it at the moment.

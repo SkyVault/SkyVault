@@ -46,10 +46,16 @@ struct Editor {
         , std::shared_ptr<TiledMap> &tiledMap
         );
 
-    void Draw(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<TiledMap> &tiledMap);
+    void Draw
+        ( std::unique_ptr<sf::RenderWindow> &window
+        , std::shared_ptr<TiledMap> &tiledMap
+        , std::shared_ptr<EntityWorld>& world
+        );
 
 private:
     std::shared_ptr<sol::state> lua;
+
+    Entity* moving{nullptr};
 
     void doInGameTerminal();
     void doColors(std::shared_ptr<Sky>& sky);

@@ -198,7 +198,7 @@ void Game::Render() {
         Art::It()->Flush(window);
 
         if (GameState::It()->FullEditor())
-            editor->Draw(window, tiledMap);
+            editor->Draw(window, tiledMap, world);
     }
     window->setView(window->getDefaultView());
 

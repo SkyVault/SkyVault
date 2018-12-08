@@ -37,6 +37,7 @@ void LevelLayer::Load(){
         other->Add<AI>(BasicEnemyAI);
     }
     
+#if 0
     {
         var block = world->Create();
         block->AddTags("Red");
@@ -56,6 +57,7 @@ void LevelLayer::Load(){
         block->Add<PhysicsBody>();
         block->Add<Renderable>(Assets::It()->Get<sf::Texture>("moveable_block"), sf::IntRect(0, 0, 32, 56), sf::Vector2f(0, 0));
     }
+#endif
 
     {
         var laser = world->Create();

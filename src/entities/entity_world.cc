@@ -42,7 +42,10 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
     var entity = new Entity();
 
     if (prefab.get<sol::table>("tags")) {
-        std::cout << "We dont yet handle entity tags" << std::endl;
+        auto t = prefab.get<sol::table>("tags");
+        t.for_each([&](const sol::object& key, const sol::object value) {
+            entity->AddTags(value.as<std::string>());
+        });
     }
 
     if (sol::table components = prefab.get<sol::table>("components")) {
@@ -104,6 +107,12 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
             else if (which_component == "Interaction") {
                 entity->Add<Interaction>(component.get<sol::function>("fn"));
             } 
+
+            else if (which_component == "Ai") {
+                auto which = component.get<std::string>(1);
+                if (which == "ColoredBlockAI") entity->Add<AI>(ColoredBlockAI);
+            }
+
             else {
                 std::cout << "(WARNING)::EntityWorld::Create(const sol::table& prefab):: Unknown component type: " << which_component << std::endl;
             }

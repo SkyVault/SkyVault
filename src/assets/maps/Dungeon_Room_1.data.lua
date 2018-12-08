@@ -68,6 +68,31 @@ return {
       "Potion",
       465.5,
       275.42758178710938
+    },
+    {
+      "BlueDiamond",
+      0,
+      0
+    },
+    {
+      "BlueDiamond",
+      0,
+      0
+    },
+    {
+      "FloppyDisk",
+      635.00006103515625,
+      337.5
+    },
+    {
+      "RedBlock",
+      567,
+      556
+    },
+    {
+      "GreenBlock",
+      436.5,
+      587.5
     }
   },
   solids = {}

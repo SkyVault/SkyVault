@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sol.hpp>
+
 #include "skyvault.h"
 #include "game.h"
 #include "graphics/art.h"

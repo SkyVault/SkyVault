@@ -12,6 +12,8 @@
 
 #include "entity.h"
 #include "filter.h"
+#include "../entities/components/renderable.h"
+#include "../entities/components/ai.h"
 #include "../skytime.h"
 #include "../skyvault.h"
 #include "../graphics/assets.h"

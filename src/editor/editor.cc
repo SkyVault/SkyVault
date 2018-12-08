@@ -411,7 +411,10 @@ void Editor::Draw
     text.setFont(*font);
     text.setFillColor(sf::Color(0, 255, 255, 100));
     text.setScale(0.2f, 0.2f);
-
+ 
+    //NOTE(Dustin): The use of a pointer is awful, what would be better
+    // is an integer that we can use to query the entity, or maybe a shared
+    // pointer
     if (moving != nullptr) {
 
         if (moving->Has<Body>()) {

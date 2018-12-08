@@ -173,11 +173,11 @@ void Game::Update(const SkyTime& time) {
     auto p = world->GetFirstWith<Player>();
     if (p == nullptr) return;
 
+    //TODO(Dustin): Get this working on linux and windows
     if (sf::Joystick::isConnected(0)) {
     }
 
     if (sf::Joystick::isButtonPressed(0, 0)) {
-        std::cout << "Here" << std::endl;
     }
 
     if (GameState::It()->FullEditor() == false){

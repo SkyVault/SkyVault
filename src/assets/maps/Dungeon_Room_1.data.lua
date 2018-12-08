@@ -93,6 +93,11 @@ return {
       "GreenBlock",
       436.5,
       587.5
+    },
+    {
+      "BlueBlock",
+      540,
+      488.5
     }
   },
   solids = {}

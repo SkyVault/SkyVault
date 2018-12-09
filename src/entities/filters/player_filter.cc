@@ -53,26 +53,15 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
     player->State.Tick();
 
     // Update camera
-    if (GameState::It()->FullEditor() == false) {
+    if (GameState::It()->FullEditor() == false &&
+        GameState::It()->CurrentState != GameState::States::CUTSCENE_STATE) {
         constexpr auto smoothing{0.08f};
         
         const auto track_point = 
             body->Center() 
             + physics->Velocity * 0.50f;
 
-        const auto delta_x = 
-            track_point.x - camera->View.getCenter().x;
-
-        const auto delta_y = 
-            track_point.y - camera->View.getCenter().y;
-
-        auto newPos = camera->View.getCenter();
-        newPos += sf::Vector2f
-            ( delta_x * smoothing
-            , delta_y * smoothing
-            );
-        
-        camera->View.setCenter(newPos); 
+        camera->Track(track_point);
     } 
 }
 

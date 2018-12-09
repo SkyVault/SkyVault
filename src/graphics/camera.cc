@@ -7,6 +7,22 @@ Camera::Camera(int width, int height) {
 void Camera::Resize(int width, int height) {
 }
 
+void Camera::Track(const sf::Vector2f& track_point, const float smoothing) {
+    const auto delta_x = 
+        track_point.x - View.getCenter().x;
+
+    const auto delta_y = 
+        track_point.y - View.getCenter().y;
+
+    auto newPos = View.getCenter();
+    newPos += sf::Vector2f
+        ( delta_x * smoothing
+        , delta_y * smoothing
+        );
+    
+    View.setCenter(newPos); 
+}
+
 void Camera::Clamp(const sf::IntRect& bounds) {
     auto [cx, cy] = View.getCenter();
     auto [w, h] = View.getSize();

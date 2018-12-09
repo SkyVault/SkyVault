@@ -180,6 +180,12 @@ void Game::Update(const SkyTime& time) {
     if (sf::Joystick::isButtonPressed(0, 0)) {
     }
 
+    if (Input::It()->IsKeyDown(sf::Keyboard::LControl) &&
+        Input::It()->IsKeyPressed(sf::Keyboard::E)) {
+        
+        GameState::It()->ToggleFullEditor();
+    }
+
     if (GameState::It()->FullEditor() == false){
         sf::IntRect rect;
         rect.left = 0;

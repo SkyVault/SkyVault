@@ -90,9 +90,11 @@ void Editor::doUI
     // Camera control
     if (GameState::It()->FullEditor() && moving == nullptr) {
         static sf::Vector2f last_mouse{sf::Vector2f(0, 0)}; 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (Input::It()->IsKeyDown(sf::Keyboard::LControl) &&
+            sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             auto curr = sf::Mouse::getPosition();
-            auto delta = sf::Vector2f(curr.x, curr.y) - last_mouse;
+            auto delta = sf::Vector2f(curr.x, curr.y) - last_mouse; 
+            delta *= 0.3f;
             auto newPos = camera->View.getCenter() + delta * -1.0f;
             last_mouse = sf::Vector2f(curr.x, curr.y);
             camera->View.setCenter(newPos);
@@ -438,8 +440,6 @@ void Editor::Draw
                 my > body->Position.y && my < body->Position.y + body->Size.y) {
 
                 moving = entity.get(); 
-
-                std::cout << "Clicked entity\n";
             }
         }
     }

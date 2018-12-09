@@ -200,10 +200,10 @@ void EntityWorld::Update(const SkyTime& time) {
             }
         }
         
+        Entity* player = GetFirstWith<Player>().value_or(nullptr);
         if (GameState::It()->CurrentState == GameState::States::PLAYING_STATE) {
             
             // We need to make this better
-            Entity* player = GetFirstWith<Player>().value_or(nullptr);
             if (player && e->Has<Interaction>() && e->Has<Body>()){
                 e->Get<Interaction>()->Hot = false;
                 const auto player_body = player->Get<Body>();
@@ -215,7 +215,6 @@ void EntityWorld::Update(const SkyTime& time) {
             }
 
             // If the entity has a body, place him in the interaction grid
-#if 0
             if (e->Has<Body>()) {
                 const auto& body = e->Get<Body>();
                 
@@ -227,7 +226,7 @@ void EntityWorld::Update(const SkyTime& time) {
 
                 for (int yy = gy; yy <= gy2; yy++)
                     for (int xx = gx; xx <= gx2; xx++)
-                        this->grid[xx+yy*MAP_SIZE] = e.get(); // Use an int identifier
+                        this->grid[xx+yy*MAP_SIZE] = e->GetID(); // Use an int identifier
             }
         }
 
@@ -241,16 +240,13 @@ void EntityWorld::Update(const SkyTime& time) {
             const auto winner = std::get<1>(potential_interactions[0]);
             winner->Hot = true;
 
-            if (Input::It()->IsKeyPressed(sf::Keyboard::Z, true)) {
+            if (player && Input::It()->IsKeyPressed(sf::Keyboard::Z, true)) {
                 // Set the players velocity to zero, avoids sliding past entities
                 player->Get<PhysicsBody>()->Velocity = sf::Vector2f(0, 0);
 
                 winner->Interact();
             }
         }
-#else
-    }
-#endif
 
         if (e->remove) {
             delete entity_list[i];
@@ -270,7 +266,6 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
             }
         }
 
-#if 0
         if (e->Has<Interaction>() && e->Has<Body>()) {
             // Draw the interaction shape
             if (e->Get<Interaction>()->Hot){
@@ -281,8 +276,8 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
                 window->draw(shape);
             }
         }
-#endif
     }
+
 
     for (auto& [key, f] : filters) {
         f->PostRender(window);

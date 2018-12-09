@@ -64,6 +64,7 @@ private:
     sf::Clock editorClock;
 
     sf::Vector2f cursor;
+    sf::Vector2f placement_offset{sf::Vector2f(0, 0)};
 
     bool HoldingBillboardToBePlaced;
     sf::IntRect BillboardRect{sf::IntRect(0, 0, 0, 0)};

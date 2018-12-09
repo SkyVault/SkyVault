@@ -422,7 +422,7 @@ void Editor::Draw
         if (moving->Has<Body>()) {
             auto body = moving->Get<Body>(); 
 
-            body->Position = worldPos;
+            body->Position = worldPos + placement_offset;
         }
 
         if (Input::It()->IsMouseLeftReleased(1)) {
@@ -438,6 +438,11 @@ void Editor::Draw
 
             if (mx > body->Position.x && mx < body->Position.x + body->Size.x &&
                 my > body->Position.y && my < body->Position.y + body->Size.y) {
+
+                placement_offset = sf::Vector2f
+                    ( body->Position.x - mx
+                    , body->Position.y - my
+                    );
 
                 moving = entity.get(); 
             }

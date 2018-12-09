@@ -82,10 +82,12 @@ void LevelLayer::Update(const SkyTime& time){
     auto [x, y] = GameState::It()->GetWindowSize();
     sky->Update(x, y, time);
 
-    auto player = world->GetFirstWith<Player>();
-    if (player == nullptr) {
+    auto player_opt = world->GetFirstWith<Player>();
+    if (!player_opt) {
         return;
     }
+
+    auto player = player_opt.value();
 
     auto body = player->Get<Body>();
     const auto xx = static_cast<int>(((body->Position.x + (MAP_SIZE_PIXELS * 2)) / static_cast<float>(MAP_SIZE_PIXELS)));

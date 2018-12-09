@@ -31,7 +31,7 @@ float AI::GetDistToPlayer() {
     return dist_to_player;
 }
 
-void ColoredBlockAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai, std::shared_ptr<EntityWorld>& world) {
+void ColoredBlockAI(const SkyTime& time, Entity* self, AI* ai, std::shared_ptr<EntityWorld>& world) {
     auto sprite = self->Get<Renderable>();
 
     auto tags = self->GetTags();
@@ -48,7 +48,7 @@ void ColoredBlockAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai, 
 }
 
 // AI's
-void BasicEnemyAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai, std::shared_ptr<EntityWorld>& world) {
+void BasicEnemyAI(const SkyTime& time, Entity* self, AI* ai, std::shared_ptr<EntityWorld>& world) {
     if (ai->DoFirst()) { ai->CurrentState = AI::States::IDLE; return; }
 
     switch(ai->CurrentState) {

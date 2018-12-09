@@ -2,9 +2,10 @@
 
 QuestEngine::QuestEngine() {
     quests["FloppyDiskQuest"] = new Quest("FloppyDiskQuest", [](std::shared_ptr<EntityWorld>& world) {
-        auto player = world->GetFirstWith<Player>();
+        auto player_opt = world->GetFirstWith<Player>();
 
-        if (player == nullptr) return false;
+        if (!player_opt) return false;
+        auto player = player_opt.value();
 
         for (const auto& item : player->Get<Player>()->Invatory) {
             if (item.Name == "FloppyDisk")

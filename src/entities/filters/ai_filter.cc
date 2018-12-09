@@ -1,13 +1,16 @@
 #include "ai_filter.h"
 
-void AIFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& entity) {
+void AIFilter::Update(const SkyTime& time, Entity* entity) {
     auto ai = entity->Get<AI>();
 
     auto body = entity->Get<Body>();
     auto physics = entity->Get<PhysicsBody>();
     ai->bodyPosition = body->Position;
 
-    const auto player = ai->player_ref;
+    const auto player_opt = world->GetFirstWith<Player>();
+
+    if (!player_opt) return;
+    const auto player = player_opt.value();
 
     if (player != nullptr && body != nullptr) {
         const auto player_body = player->Get<Body>();
@@ -49,6 +52,6 @@ void AIFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& entity) {
     }
 }
 
-void AIFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) {
+void AIFilter::Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) {
 
 }

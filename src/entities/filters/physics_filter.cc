@@ -13,9 +13,11 @@ void PhysicsFilter::ClearSolids(){
 
 void PhysicsFilter::PreUpdate(const SkyTime& time) {
     //if (World == nullptr) return;
+
+    physicsBodiesIds = world->GetAllIdsWith<PhysicsBody>();
 }
 
-void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
+void PhysicsFilter::Update(const SkyTime& time, Entity* self) {
     var physics = self->Get<PhysicsBody>();
     var body = self->Get<Body>();
 
@@ -53,7 +55,12 @@ void PhysicsFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
                 } 
             }
 
-            for (auto* other : physicsBodies) {
+            for (int other_id : physicsBodiesIds) {
+                auto other_opt = world->GetEntity(other_id);
+
+                if (!other_opt) continue;
+                auto other = other_opt.value();
+
                 if (other->GetUUID() == self->GetUUID()) {continue;}
 
                 const auto other_body = other->Get<Body>();

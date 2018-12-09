@@ -15,7 +15,7 @@
 #include <cmath>
 
 struct AI;
-typedef std::function<void(const SkyTime&, std::unique_ptr<Entity>&, AI* ai, std::shared_ptr<EntityWorld>& world)> AiAction;
+typedef std::function<void(const SkyTime&, Entity*, AI* ai, std::shared_ptr<EntityWorld>& world)> AiAction;
 
 #ifndef MACROSTR
 #define MACROSTR(k) #k
@@ -80,12 +80,10 @@ private:
     sf::Vector2f bodyPosition{sf::Vector2f(0, 0)};
     sf::Vector2f targetLocation{sf::Vector2f(0, 0)};
 
-    Entity* player_ref{nullptr};
-
     float dist_to_player{0.0f};
 };
 
-void ColoredBlockAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai, std::shared_ptr<EntityWorld>& world);
-void BasicEnemyAI(const SkyTime& time, std::unique_ptr<Entity>& self, AI* ai, std::shared_ptr<EntityWorld>& world);
+void ColoredBlockAI(const SkyTime& time, Entity* self, AI* ai, std::shared_ptr<EntityWorld>& world);
+void BasicEnemyAI(const SkyTime& time, Entity* self, AI* ai, std::shared_ptr<EntityWorld>& world);
 
 #endif//SKYVAULT_AI_H

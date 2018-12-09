@@ -1,6 +1,6 @@
 #include "once_off_filter.h"
 
-void OnceOffFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& entity) { 
+void OnceOffFilter::Update(const SkyTime& time, Entity* entity) { 
     if (entity->Has<Laser>()) {
         auto laser = entity->Get<Laser>();
         
@@ -10,7 +10,7 @@ void OnceOffFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& entity)
     }
 }
 
-void OnceOffFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) {
+void OnceOffFilter::Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) {
     if (entity->Has<Laser>()) {
         auto laser = entity->Get<Laser>();
         auto body = entity->Get<Body>();

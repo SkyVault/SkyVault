@@ -55,7 +55,7 @@ struct Editor {
 private:
     std::shared_ptr<sol::state> lua;
 
-    Entity* moving{nullptr};
+    EntityID moving{-1};
 
     void doInGameTerminal();
     void doColors(std::shared_ptr<Sky>& sky);

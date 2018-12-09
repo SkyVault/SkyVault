@@ -29,16 +29,16 @@ struct Filter {
         return true;
     }
 
-    virtual void Load(std::unique_ptr<Entity>& entity) {}
+    virtual void Load(Entity* entity) {}
 
     virtual void PreUpdate(const SkyTime& time) {}
-    virtual void Update(const SkyTime& time, std::unique_ptr<Entity>& entity) {}
+    virtual void Update(const SkyTime& time, Entity* entity) {}
 
     // Doesnt get effected by pausing
-    virtual void ConstantUpdate(const SkyTime& time, std::unique_ptr<Entity>& entity) {}
+    virtual void ConstantUpdate(const SkyTime& time, Entity* entity) {}
 
-    virtual void Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) {}
-    virtual void Destroy(std::unique_ptr<Entity>& entity) {}
+    virtual void Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) {}
+    virtual void Destroy(Entity* entity) {}
 
     virtual void PostRender(std::unique_ptr<sf::RenderWindow>& window) {}
 

@@ -5,6 +5,7 @@
 #include "../entity_world.h"
 #include "../components/ai.h"
 #include "../components/body.h"
+#include "../components/player.h"
 #include "../components/physics_body.h"
 #include <SFML/Graphics.hpp>
 #include <cmath>
@@ -17,8 +18,8 @@ struct AIFilter : public Filter {
             typeid(Body)
             }), world(world) {}
 
-    void Update(const SkyTime& time, std::unique_ptr<Entity>& entity) override;
-    void Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) override;
+    void Update(const SkyTime& time, Entity* entity) override;
+    void Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) override;
 
 private:
     std::shared_ptr<EntityWorld> world;

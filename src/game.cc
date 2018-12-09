@@ -147,7 +147,7 @@ void Game::LoadContent() {
 
     Assets::It()->Add("tiles", texture);
 
-    world->Register<PhysicsFilter>();
+    world->Register<PhysicsFilter>(world);
     world->Register<RenderFilter>();
     world->Register<RenderAnimatedSpriteFilter>();
     world->Register<PlayerFilter>(camera);

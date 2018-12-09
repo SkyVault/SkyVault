@@ -21,9 +21,9 @@ struct PlayerFilter : public Filter {
     {}
 
 
-    void Load(std::unique_ptr<Entity>& entity) override;
-    void Update(const SkyTime& time, std::unique_ptr<Entity>& entity) override;
-    void Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) override;
+    void Load(Entity* entity) override;
+    void Update(const SkyTime& time, Entity* entity) override;
+    void Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) override;
 
     std::shared_ptr<Camera> camera;
 };

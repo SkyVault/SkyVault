@@ -27,11 +27,38 @@
  */
 
 // TODO(Dustin): Implement animated sprites
+EntityWorld::EntityWorld() {
+    entity_list = new Entity* [ENTITY_LIST_LENGTH];
+    for (int i = 0; i < ENTITY_LIST_LENGTH; i++)
+        entity_list[i] = nullptr; 
+}
+
+EntityWorld::~EntityWorld() {
+    for (int i = 0; i < entity_list_length; i++)
+        if (entity_list[i] != nullptr){
+            delete entity_list[i];
+        }
+    delete entity_list;
+}
 
 Entity* EntityWorld::Create() {
-    var entity = new Entity();
-    entities.push_back(std::unique_ptr<Entity>(entity));
+    var entity = new Entity(); 
+    int index = add_entity(entity); 
+    entity->entity_id = index;
     return entity;
+}
+
+int EntityWorld::add_entity(Entity* entity) {
+    for (int i = 0; i < entity_list_length; i++) {
+        if (entity_list[i] == nullptr) {
+            entity_list[i] = entity;
+            return i;
+        }
+    }
+
+    printf("ERROR:: Ran out of entity slots\n");
+
+    return -1;
 }
 
 void EntityWorld::OnRoomChange(std::function<void(std::string)> fn) {
@@ -120,36 +147,31 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
         });
     }
 
-    entities.push_back(std::unique_ptr<Entity>(entity));
+    //TODO(Dustin): Return index instead of pointer
+    int index = add_entity(entity);
+    entity->entity_id = index;
+
     return entity;
 }
 
 void EntityWorld::Update(const SkyTime& time) {
     // Clear the interaction grid
-    std::fill(grid.begin(), grid.end(), nullptr);
+    //std::fill(grid.begin(), grid.end(), nullptr);
 
     for (auto& [key, filter] : filters) {
         filter->PreUpdate(time);
-       
-        // NOTE(Dustin): @Hack @Refactor This is is a dirty hack that I must do so that
-        // this project doesn't come to a halt, basically to avoid circular dependancies
-        // and a huge re-archetecting of the engine, I need to pass all of the physics
-        // bodies to the physics filter from here
-        
-        if (dynamic_cast<PhysicsFilter*>(filter.get()) != nullptr){
-            auto* physicsFilter = dynamic_cast<PhysicsFilter*>(filter.get());
-            auto e = GetAllWith<PhysicsBody>();
-            physicsFilter->physicsBodies.clear();
-            for (auto& _e : e) physicsFilter->physicsBodies.push_back(_e);
-        }
     }
 
-    const auto player = GetFirstWith<Player>();
     constexpr auto margin{10.0f};
 
     std::vector<std::tuple<float, Interaction*>> potential_interactions;
 
-    for (auto& e : entities) {
+    //for (auto& e : entities) {
+    for (int i = 0; i < entity_list_length; i++) {
+        if (entity_list[i] == nullptr) continue;
+
+        auto e = entity_list[i];
+
         for (auto& [key, f] : filters) {
             if (f->Matches(e->GetMatchlist())) {
                 if (!e->loaded) f->Load(e);
@@ -163,10 +185,6 @@ void EntityWorld::Update(const SkyTime& time) {
         }
 
         e->loaded = true;
-
-        if (e->Has<AI>()) {
-            e->Get<AI>()->player_ref = player;
-        }
 
         if (e->Has<Player>()){
             // Test for intersection with the door
@@ -183,7 +201,10 @@ void EntityWorld::Update(const SkyTime& time) {
         }
         
         if (GameState::It()->CurrentState == GameState::States::PLAYING_STATE) {
-            if (player && e->Has<Interaction>() && e->Has<Body>()) {
+            
+            // We need to make this better
+            Entity* player = GetFirstWith<Player>().value_or(nullptr);
+            if (player && e->Has<Interaction>() && e->Has<Body>()){
                 e->Get<Interaction>()->Hot = false;
                 const auto player_body = player->Get<Body>();
                 const auto obody = e->Get<Body>();
@@ -194,6 +215,7 @@ void EntityWorld::Update(const SkyTime& time) {
             }
 
             // If the entity has a body, place him in the interaction grid
+#if 0
             if (e->Has<Body>()) {
                 const auto& body = e->Get<Body>();
                 
@@ -226,23 +248,29 @@ void EntityWorld::Update(const SkyTime& time) {
                 winner->Interact();
             }
         }
+#else
     }
+#endif
 
-    for (int i = entities.size() - 1; i >= 0; i--){
-        if (entities[i]->remove) {
-            entities.erase(entities.begin() + i);
+        if (e->remove) {
+            delete entity_list[i];
+            entity_list[i] = nullptr;
         }
-    }
+    } 
 }
 
 void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
-    for (auto& e : entities) {
+    for (int i = 0; i < entity_list_length; i++) {
+        if (entity_list[i] == nullptr) continue;
+
+        auto* e = entity_list[i];
         for (auto& [key, f] : filters) {
             if (f->Matches(e->GetMatchlist())) {
                 f->Render(window, e);
             }
         }
 
+#if 0
         if (e->Has<Interaction>() && e->Has<Body>()) {
             // Draw the interaction shape
             if (e->Get<Interaction>()->Hot){
@@ -253,6 +281,7 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
                 window->draw(shape);
             }
         }
+#endif
     }
 
     for (auto& [key, f] : filters) {
@@ -267,7 +296,7 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
 
     for (int y = 0; y < MAP_SIZE; y++) {
         for (int x = 0; x < MAP_SIZE; x++) {
-            if (grid[x + y * MAP_SIZE] != nullptr) {
+            if (grid[x + y * MAP_SIZE] != -1) {
                 shape.setSize(sf::Vector2f(grid_square, grid_square)); 
                 shape.setFillColor(sf::Color(255, 0, 0, 25));
                 shape.setPosition(sf::Vector2f(x * grid_square, y * grid_square));
@@ -301,13 +330,11 @@ void EntityWorld::AddDoor(const std::string& To, float x, float y, float width, 
 }
 
 void EntityWorld::ClearAll() {
-    std::remove_if
-        ( entities.begin()
-        , entities.end()
-        , [](const std::unique_ptr<Entity>& e){
-            // TODO(Dustin): Check entity persistance
-            return true; 
-        } );
-
+    for (int i = 0; i < entity_list_length; i++) {
+        if (entity_list[i]) {
+            //NOTE(Dustin): Might want to pass this through the filters...
+            delete entity_list[i];
+        }
+    }
     doors.clear();
 }

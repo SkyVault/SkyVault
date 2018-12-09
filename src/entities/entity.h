@@ -66,8 +66,11 @@ struct Entity {
     inline std::map<std::type_index, std::unique_ptr<Component>>& GetComponents() { return components; }
     inline std::vector<std::string>& GetComponentNames() {return component_names;}
 
+    inline int GetID() { return entity_id; }
+
 private:
     int uuid{0};
+    int entity_id{0};
     std::map<std::type_index, std::unique_ptr<Component>> components;
     std::vector<std::type_index> matchlist;
     std::vector<std::string> component_names;

@@ -88,7 +88,7 @@ void Editor::doUI
     ImGui::SFML::Render(*window);
 
     // Camera control
-    if (GameState::It()->FullEditor() && moving == nullptr) {
+    if (GameState::It()->FullEditor() && moving == -1) {
         static sf::Vector2f last_mouse{sf::Vector2f(0, 0)}; 
         if (Input::It()->IsKeyDown(sf::Keyboard::LControl) &&
             sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -149,9 +149,9 @@ void Editor::doEntityInspector
                     auto body = entity->Get<Body>();
                     const auto& btn_label = std::string{"Goto"};
                     if (ImGui::Button(btn_label.c_str())) {
-                        auto player = world->GetFirstWith<Player>();
-                        if (player) {
-                            player->Get<Body>()->Position = body->Position;
+                        auto player_opt = world->GetFirstWith<Player>();
+                        if (player_opt) {
+                            player_opt.value()->Get<Body>()->Position = body->Position;
                         }
                     }
 
@@ -417,17 +417,19 @@ void Editor::Draw
     //NOTE(Dustin): The use of a pointer is awful, what would be better
     // is an integer that we can use to query the entity, or maybe a shared
     // pointer
-    if (moving != nullptr) {
+    if (moving != -1) {
+        auto e_opt = world->GetEntity(moving);
+        if (e_opt) { 
+            auto e = e_opt.value();
+            if (e->Has<Body>()) {
+                auto body = e->Get<Body>(); 
+                body->Position = worldPos + placement_offset;
+            }
 
-        if (moving->Has<Body>()) {
-            auto body = moving->Get<Body>(); 
-
-            body->Position = worldPos + placement_offset;
+            if (Input::It()->IsMouseLeftReleased(1)) {
+                moving = -1;
+            } 
         }
-
-        if (Input::It()->IsMouseLeftReleased(1)) {
-            moving = nullptr;
-        } 
     } 
 
     for (const auto& entity : world->GetEntities()) {
@@ -444,7 +446,7 @@ void Editor::Draw
                     , body->Position.y - my
                     );
 
-                moving = entity.get(); 
+                moving = entity->GetID(); 
             }
         }
     }

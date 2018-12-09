@@ -2,11 +2,11 @@
 #include "../components/physics_body.h"
 #include "../../skyvault.h"
 
-void PlayerFilter::Load(std::unique_ptr<Entity>& entity) {
+void PlayerFilter::Load(Entity* entity) {
 
 }
 
-void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
+void PlayerFilter::Update(const SkyTime& time, Entity* self) {
     var body = self->Get<Body>();
     var player = self->Get<Player>();
     var physics = self->Get<PhysicsBody>();
@@ -65,6 +65,6 @@ void PlayerFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self) {
     } 
 }
 
-void PlayerFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) {
+void PlayerFilter::Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) {
 
 }

@@ -11,8 +11,8 @@ struct OnceOffFilter : public Filter {
     inline OnceOffFilter(std::shared_ptr<EntityWorld>& world)
     : Filter({typeid(Laser)}), world(world) {}
 
-    void Update(const SkyTime& time, std::unique_ptr<Entity>& entity) override;
-    void Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) override;
+    void Update(const SkyTime& time, Entity* entity) override;
+    void Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) override;
 
 private:
     std::shared_ptr<EntityWorld> world;

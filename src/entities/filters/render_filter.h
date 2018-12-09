@@ -13,8 +13,8 @@ struct RenderFilter : public Filter {
             typeid(Renderable)
             }) {}
 
-    void Update(const SkyTime& time, std::unique_ptr<Entity>& entity) override;
-    void Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) override;
+    void Update(const SkyTime& time, Entity* entity) override;
+    void Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) override;
 };
 
 struct RenderAnimatedSpriteFilter : public Filter {
@@ -23,8 +23,8 @@ struct RenderAnimatedSpriteFilter : public Filter {
             typeid(AnimatedSprite)
             }) {}
 
-    void Update(const SkyTime& time, std::unique_ptr<Entity>& entity) override;
-    void Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& entity) override;
+    void Update(const SkyTime& time, Entity* entity) override;
+    void Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) override;
 };
 
 #endif//SKYVAULT_RENDER_FILTER_H

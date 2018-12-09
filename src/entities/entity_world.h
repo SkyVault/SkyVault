@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <typeindex>
 #include <sol.hpp>
+#include <optional>
 
 #include "entity.h"
 #include "filter.h"
@@ -17,6 +18,10 @@
 #include "../skytime.h"
 #include "../skyvault.h"
 #include "../graphics/assets.h"
+
+#define ENTITY_LIST_LENGTH (2048)
+
+using EntityID = int;
 
 struct EntityWorld;
 struct Door : Body{
@@ -32,6 +37,8 @@ private:
 };
 
 struct EntityWorld {
+    EntityWorld();
+    ~EntityWorld();
 
     Entity* Create();
     Entity* Create(const sol::table& prefab);
@@ -52,48 +59,89 @@ struct EntityWorld {
     void Render(std::unique_ptr<sf::RenderWindow>& window);
     
     template<typename T>
-    Entity* GetFirstWith() {
-        for (auto& entity : entities) {
-            if (entity->Has<T>()) {
-                return entity.get();
+    std::optional<Entity*> GetFirstWith() {
+        for (int i = 0; i < entity_list_length; i++) {
+            if (entity_list[i] != nullptr) {
+                if (entity_list[i]->Has<T>()) {
+                    return std::optional<Entity*>{entity_list[i]};
+                } 
             }
         }
-        return nullptr;
+        return std::nullopt;
     }
 
     template<typename T>
     inline std::vector<Entity*> GetAllWith(){
         std::vector<Entity*> result;
-        for (auto& entity : entities) {
-            if (entity->Has<T>()) result.push_back(entity.get());
+        for (int i = 0; i < entity_list_length; i++) {
+            if (entity_list[i] != nullptr) {
+                if (entity_list[i]->Has<T>())
+                    result.push_back(entity_list[i]);
+            }
+        }
+
+        return result;
+    }
+
+    template<typename T>
+    inline std::vector<int> GetAllIdsWith(){
+        std::vector<int> result;
+        for (int i = 0; i < entity_list_length; i++) {
+            if (entity_list[i] != nullptr) {
+                if (entity_list[i]->Has<T>())
+                    result.push_back(entity_list[i]->entity_id);
+            }
         }
         return result;
     }
 
     inline std::vector<Entity*> GetAllWithTag(const std::string& tag){
         std::vector<Entity*> result;
-        for (auto& entity : entities) {
-            if (entity->HasTag(tag)) result.push_back(entity.get());
+        for (int i = 0; i < entity_list_length; i++) {
+            if (entity_list[i] != nullptr) {
+                if (entity_list[i]->HasTag(tag))
+                    result.push_back(entity_list[i]);
+            }
         }
         return result;
     }
 
-    inline std::vector<std::unique_ptr<Entity>>& GetEntities() { return entities; }
+    inline std::optional<Entity*> GetEntity(const int index) {
+        if (index == -1) return std::nullopt; 
+        if (index > entity_list_length) return std::nullopt; 
+        if (entity_list[index] == nullptr) return std::nullopt;
+        return std::optional<Entity*>{entity_list[index]};
+    } 
+
+    // This shouldn't be a function
+    inline std::vector<Entity*> GetEntities() {
+        auto result = std::vector<Entity*>();
+        for (int i = 0; i < entity_list_length; i++) {
+            if (entity_list[i] != nullptr)
+                result.push_back(entity_list[i]);
+        } 
+        return result;
+    }
     
     void AddDoor(const std::string& To, float x, float y, float width, float height);
     void ClearAll();
 
     void OnRoomChange(std::function<void(std::string)> fn);
 
-private:
+private: 
+    int add_entity(Entity* entity); // Returns the index of the entity
+
     std::map<std::type_index, std::unique_ptr<Filter>> filters;
-    std::vector<std::unique_ptr<Entity>> entities;
+
+    Entity** entity_list;
+    int entity_list_length{ENTITY_LIST_LENGTH};
+    int last_freed_place{0};
 
     std::vector<Door> doors;
     std::function<void(std::string)> on_room_change;
 
     // Interaction grid
-    std::array<Entity*, MAP_SIZE*MAP_SIZE> grid;
+    std::array<EntityID, MAP_SIZE*MAP_SIZE> grid;
 };
 
 #endif//SKYVAULT_ENTITY_WORLD_H

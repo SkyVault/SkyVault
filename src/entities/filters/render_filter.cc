@@ -2,11 +2,11 @@
 #include "../../skyvault.h"
 #include <iostream>
 
-void RenderFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& entity){
+void RenderFilter::Update(const SkyTime& time, Entity* entity){
 
 }
 
-void RenderFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& self){
+void RenderFilter::Render(std::unique_ptr<sf::RenderWindow>& window, Entity* self){
     var ren = self->Get<Renderable>();
     var body = self->Get<Body>();
     
@@ -34,7 +34,7 @@ void RenderFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique
 }
 
 
-void RenderAnimatedSpriteFilter::Update(const SkyTime& time, std::unique_ptr<Entity>& self){
+void RenderAnimatedSpriteFilter::Update(const SkyTime& time, Entity* self){
     var ren = self->Get<AnimatedSprite>();
 
     //if (ren == nullptr) {
@@ -50,7 +50,7 @@ void RenderAnimatedSpriteFilter::Update(const SkyTime& time, std::unique_ptr<Ent
     }
 }
 
-void RenderAnimatedSpriteFilter::Render(std::unique_ptr<sf::RenderWindow>& window, std::unique_ptr<Entity>& self){
+void RenderAnimatedSpriteFilter::Render(std::unique_ptr<sf::RenderWindow>& window, Entity* self){
     var ren = self->Get<AnimatedSprite>();
     var body = self->Get<Body>();
     

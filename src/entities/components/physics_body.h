@@ -46,6 +46,8 @@ struct PhysicsBody : public Component {
 
     inline bool CollidingWithSolid(){ return colliding_with_solid; }
 
+    //@TEMP
+    std::vector<int> entity_collisions;
 private:
     PhysicsTypes type{PHYSICS_STATIC};
     bool colliding_with_solid{false}; 

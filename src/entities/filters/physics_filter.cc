@@ -21,6 +21,12 @@ void PhysicsFilter::Update(const SkyTime& time, Entity* self) {
     var physics = self->Get<PhysicsBody>();
     var body = self->Get<Body>();
 
+    // Clear physics collisions
+    // TODO(Dustin): We should move this to the entity world, 
+    // because of the grid system, so that we dont loop through each
+    // physics body for each physics body in the game
+    physics->entity_collisions.clear();
+
     physics->colliding_with_solid = false;
 
     switch (physics->GetType()) {
@@ -67,15 +73,22 @@ void PhysicsFilter::Update(const SkyTime& time, Entity* self) {
                 const auto other_physics = other->Get<PhysicsBody>();
 
                 if (other_physics->GetType() == PHYSICS_DYNAMIC){
+                    bool collision{false};
                     if (xbody.Contains(*other_body)) {
+                        collision = true;
                         xbody = *body; 
                         physics->colliding_with_solid = true;
                     }
 
                     if (ybody.Contains(*other_body)) {
+                        collision = true;
                         ybody = *body;
                         physics->colliding_with_solid = true;
                     } 
+
+                    if (collision)
+                        physics->entity_collisions.push_back(other->GetID());
+               
                 } else if (other_physics->GetType() == PHYSICS_ITEM) {
                     bool contains{false};
                     if (xbody.Contains(*other_body)) {

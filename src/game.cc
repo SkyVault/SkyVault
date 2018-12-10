@@ -150,7 +150,7 @@ void Game::LoadContent() {
     world->Register<PhysicsFilter>(world);
     world->Register<RenderFilter>();
     world->Register<RenderAnimatedSpriteFilter>();
-    world->Register<PlayerFilter>(camera);
+    world->Register<PlayerFilter>(camera, world);
     world->Register<AIFilter>(world);
     world->Register<OnceOffFilter>(world);
 

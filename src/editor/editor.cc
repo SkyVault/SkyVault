@@ -87,17 +87,19 @@ void Editor::doUI
     // Render the editor
     ImGui::SFML::Render(*window);
 
-    // Camera control
+    // Camera control @drag
     if (GameState::It()->FullEditor() && moving == -1) {
         static sf::Vector2f last_mouse{sf::Vector2f(0, 0)}; 
         if (Input::It()->IsKeyDown(sf::Keyboard::LControl) &&
+
             sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             auto curr = sf::Mouse::getPosition();
             auto delta = sf::Vector2f(curr.x, curr.y) - last_mouse; 
-            delta *= 0.3f;
+            delta *= 0.7f;
             auto newPos = camera->View.getCenter() + delta * -1.0f;
             last_mouse = sf::Vector2f(curr.x, curr.y);
             camera->View.setCenter(newPos);
+
         } else {
             auto curr = sf::Mouse::getPosition();
             last_mouse = sf::Vector2f(curr.x, curr.y);

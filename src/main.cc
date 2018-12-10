@@ -29,6 +29,9 @@ TODO(Dustin): Global todos that we need to get done before release
     * [ ] Trigger zones (for the blocks and player)
     * [ ] Combat
         + [ ] Figure out what type of combat were going to use...
+
+    * [ ] Doors
+
  */
 
 std::unique_ptr<GameState> GameState::instance;

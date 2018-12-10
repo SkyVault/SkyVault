@@ -30,6 +30,21 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
         physics->Velocity.x += speed * time.dt * axis.x;
         physics->Velocity.y += speed * time.dt * axis.y;
 
+        // TODO(Dustin): Check for collision with movable object
+        if (physics->entity_collisions.size() > 0) {
+            for (auto id : physics->entity_collisions) {
+                auto e_opt = world->GetEntity(id);
+
+                if (!e_opt) continue;
+
+                auto other = e_opt.value();
+        
+                if (other->HasTag("Block")) {
+                    other->Get<PhysicsBody>()->Velocity = physics->Velocity * 0.5f;
+                }
+            }
+        }
+
         if (Input::It()->IsKeyPressed(sf::Keyboard::LShift)) {
             if (player->DashTimer <= 0.0f) {
                 auto v = physics->Velocity;

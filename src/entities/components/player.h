@@ -12,6 +12,7 @@ struct Player : public Component {
         ATTACKING,
         DASHING,
         MOVING,
+        DRAGGING,
     };
 
     float DashTimer{0.0f};

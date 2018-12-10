@@ -40,7 +40,13 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
                 auto other = e_opt.value();
         
                 if (other->HasTag("Block")) {
-                    other->Get<PhysicsBody>()->Velocity = physics->Velocity * 0.5f;
+                    auto obody = other->Get<Body>();
+
+                    // TODO(Dustin): Get the side that the player is on, then lock the block to only
+                    // move in that direction, or maybe clamp the other directions but make them move
+                    // slightly
+
+                    other->Get<PhysicsBody>()->Velocity = physics->Velocity * 0.2f; 
                 }
             }
         }

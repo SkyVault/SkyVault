@@ -11,6 +11,8 @@ enum LaserColor {
 };
 
 struct Laser : public Component {
+    inline Laser(LaserColor Color) : Color(Color) {}
+    inline Laser() {}
     LaserColor Color{Red}; 
     Cardinal Facing{West};
 };

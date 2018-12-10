@@ -62,7 +62,7 @@ void LevelLayer::Load(){
     {
         var laser = world->Create();
         laser->Add<Body>(sf::Vector2f(500 + 128 + 64, 400 + 128), sf::Vector2f(32 * 0.8f, 56 * 0.8f));
-        laser->Add<Laser>();
+        laser->Add<Laser>(LaserColor::Green);
         laser->Add<PhysicsBody>();
         laser->Add<Renderable>(Assets::It()->Get<sf::Texture>("moveable_block"), sf::IntRect(0, 0, 32, 56), sf::Vector2f(0, 0));
         laser->Get<Renderable>()->GetSprite().setScale(0.8f, 0.8f);

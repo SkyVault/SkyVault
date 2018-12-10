@@ -13,6 +13,7 @@
 #include "../entities/entity_world.h"
 #include "../entities/components/body.h"
 #include "../entities/components/player.h"
+#include "../entities/components/laser.h"
 #include "../entities/components/physics_body.h"
 #include "../entities/components/renderable.h"
 #include "../skyvault.h"

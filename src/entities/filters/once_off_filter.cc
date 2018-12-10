@@ -30,43 +30,46 @@ void OnceOffFilter::Render(std::unique_ptr<sf::RenderWindow>& window, Entity* en
             case LaserColor::Blue: shape.setFillColor(sf::Color::Blue); break;
         }
 
-        if (laser->Facing == Cardinal::West ||
-            laser->Facing == Cardinal::East) {
-        
-            auto center = body->Center();
-            auto dir = laser->Facing == Cardinal::West ? -1 : 1;
-            shape.setPosition(center);
+        auto center = body->Center();
+        auto dirx = 0;
+        auto diry = 0;
 
-            bool done = false;
-            for (int i = 0; i < 100; i++) {
-
-                if (done) break;
-                for (Entity* block : blocks) {
-                    auto body = block->Get<Body>();
-
-                    if (body->Contains(
-                        Body(shape.getPosition(),
-                        shape.getSize())
-                                )) {
-
-                        switch(laser->Color) {
-                            case LaserColor::Red: { if (!block->HasTag("Red")) block->Kill(); break; }
-                            case LaserColor::Green: { if (!block->HasTag("Green")) block->Kill(); break; }
-                            case LaserColor::Blue: { if (!block->HasTag("Blue")) block->Kill(); break; }
-                        }
-
-                        done = true;
-                    }
-                } 
-                if (done) break;
-
-                window->draw(shape); 
-
-                shape.setPosition(shape.getPosition() + sf::Vector2f(dir * shape.getSize().x, 0));
-            }
-
-        } else { 
+        std::cout << laser->Facing << std::endl;
+        switch(laser->Facing) {
+            case North: { diry = -1; break; }
+            case South: { diry = 1; break; } 
+            case East: { dirx = 1; break; }
+            case West: { dirx = -1; break; }
         }
 
+        shape.setPosition(center);
+
+        bool done = false;
+        for (int i = 0; i < 100; i++) {
+
+            if (done) break;
+            for (Entity* block : blocks) {
+                auto body = block->Get<Body>();
+
+                if (body->Contains(
+                    Body(shape.getPosition(),
+                    shape.getSize())
+                            )) {
+
+                    switch(laser->Color) {
+                        case LaserColor::Red: { if (!block->HasTag("Red")) block->Kill(); break; }
+                        case LaserColor::Green: { if (!block->HasTag("Green")) block->Kill(); break; }
+                        case LaserColor::Blue: { if (!block->HasTag("Blue")) block->Kill(); break; }
+                    }
+
+                    done = true;
+                }
+            } 
+            if (done) break;
+
+            window->draw(shape); 
+
+            shape.setPosition(shape.getPosition() + sf::Vector2f(dirx * shape.getSize().x, diry * shape.getSize().y));
+        } 
     }
 }

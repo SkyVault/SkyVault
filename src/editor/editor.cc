@@ -168,7 +168,35 @@ void Editor::doEntityInspector
                     auto it = name.begin();
                     while(*it >= '0' && *it <= '9' && it != name.end())
                         it++;
-                    ImGui::BulletText(std::string(it, name.end()).c_str());
+
+                    auto final_name = std::string(it, name.end());
+
+                    if (ImGui::TreeNode(final_name.c_str())) {
+                        if (final_name == "Laser") {
+                            static int color = 0;
+
+#if 0
+                            ImGui::RadioButton(("North##"+std::string{id++}).c_str(), &direction, 0); ImGui::SameLine();
+                            ImGui::RadioButton(("South##"+std::string{id++}).c_str(), &direction, 1); ImGui::SameLine();
+                            ImGui::RadioButton(("East##"+std::string{id++}).c_str(), &direction, 2); ImGui::SameLine();
+                            ImGui::RadioButton(("West##"+std::string{id++}).c_str(), &direction, 3); 
+#endif//
+                            if (ImGui::Button("North")) { entity->Get<Laser>()->Facing = North; }
+                            ImGui::SameLine();
+                            if (ImGui::Button("South")) { entity->Get<Laser>()->Facing = South; }
+                            if (ImGui::Button("West")) { entity->Get<Laser>()->Facing = West; }
+                            ImGui::SameLine();
+                            if (ImGui::Button("East")) { entity->Get<Laser>()->Facing = East; }
+            
+                            ImGui::RadioButton("Red", &color, 0); ImGui::SameLine();
+                            ImGui::RadioButton("Blue", &color, 1); ImGui::SameLine();
+                            ImGui::RadioButton("Green", &color, 2);
+
+                            entity->Get<Laser>()->Color = (LaserColor)color;
+                        }
+
+                        ImGui::TreePop();
+                    }
                 }
             }
         }

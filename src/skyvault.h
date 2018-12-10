@@ -32,10 +32,10 @@ enum GameStates {
 };
 
 enum Cardinal {
-    North,
-    West,
-    South,
-    East
+    North = 0,
+    West = 1,
+    South = 2,
+    East = 3
 };
 
 //static bool is_debugging {true};

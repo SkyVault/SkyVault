@@ -81,7 +81,7 @@ void Editor::doUI
     if (GameState::It()->FullEditor()){ 
         doColors(sky);
         doInGameTerminal();
-        doEntityInspector(world, window, tiledMap);
+        doEntityInspector(world, window, tiledMap, camera);
     }
 
     // Render the editor
@@ -111,6 +111,7 @@ void Editor::doEntityInspector
     ( std::shared_ptr<EntityWorld>& world
     , std::unique_ptr<sf::RenderWindow> &window
     , std::shared_ptr<TiledMap> &tiledMap
+    , std::shared_ptr<Camera>& camera
     ) {
 
     auto [wx, wy] = window->getSize();
@@ -139,6 +140,7 @@ void Editor::doEntityInspector
 
         const auto& entities = world->GetEntities();
 
+        int id = 1000;
         for(auto& entity : entities) {
             ImGui::Spacing();
 
@@ -154,12 +156,11 @@ void Editor::doEntityInspector
                 if (entity->Has<Body>()) {
             
                     auto body = entity->Get<Body>();
-                    const auto& btn_label = std::string{"Goto"};
+                    const auto btn_label = "Goto##"+std::to_string(id++);
                     if (ImGui::Button(btn_label.c_str())) {
-                        auto player_opt = world->GetFirstWith<Player>();
-                        if (player_opt) {
-                            player_opt.value()->Get<Body>()->Position = body->Position;
-                        }
+                        //Move camera to location
+                        
+                        camera->View.setCenter(body->Center());
                     }
 
                     float p[] = {body->Position.x, body->Position.y};

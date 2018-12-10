@@ -25,6 +25,7 @@
 #include <sol.hpp>
 #include <typeinfo>
 #include <iostream>
+#include <string>
 
 /*
     TODO(Dustin): 
@@ -52,6 +53,7 @@ struct Editor {
         ( std::shared_ptr<EntityWorld>& world
         , std::unique_ptr<sf::RenderWindow> &window
         , std::shared_ptr<TiledMap> &tiledMap
+        , std::shared_ptr<Camera>& camera
         );
 
     void Draw

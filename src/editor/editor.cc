@@ -143,6 +143,11 @@ void Editor::doEntityInspector
             ImGui::Spacing();
 
             auto str = "entity id: " + std::to_string(entity->GetUUID());
+
+            if (entity->GetUUID() == CurrentlySelectedEntity) {
+                str += " <--";
+            }
+
             if (ImGui::CollapsingHeader(str.c_str())){
                 auto& components = entity->GetComponentNames();
 
@@ -530,6 +535,7 @@ void Editor::Draw
         }
     } 
 
+    //@MovingEntities
     for (const auto& entity : world->GetEntities()) {
         if (!entity->Has<Body>()) { continue; }
         if (Input::It()->IsMouseLeftPressed(1)) { 
@@ -545,6 +551,7 @@ void Editor::Draw
                     );
 
                 moving = entity->GetID(); 
+                CurrentlySelectedEntity = entity->GetUUID();
             }
         }
     }

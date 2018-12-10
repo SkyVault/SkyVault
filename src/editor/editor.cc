@@ -349,11 +349,39 @@ void Editor::Draw
     , std::shared_ptr<TiledMap> &tiledMap
     , std::shared_ptr<EntityWorld> &world
     ) {
+
+    const auto& entities = world->GetEntities();
+
     // get the current mouse position in the window
     sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
 
     // convert it to world coordinates
     sf::Vector2f worldPos = window->mapPixelToCoords(pixelPos);
+
+    // Draw the editor controls over each entity
+    // delete / move 
+    for (const auto& entity : entities) {
+        if (entity->Has<Body>()) {
+            auto body = entity->Get<Body>();
+
+            sf::RectangleShape rect;
+            rect.setFillColor(sf::Color(0, 0, 0, 0));
+            rect.setOutlineColor(sf::Color(255, 0, 0, 100));
+            rect.setOutlineThickness(1);
+            rect.setPosition(body->Position + sf::Vector2f(0, body->Size.y) + sf::Vector2f(0, 4));
+            rect.setSize(sf::Vector2f(4, 4));
+
+            if (Input::It()->IsMouseLeftPressed(0)) {
+                const auto [mx, my] = worldPos;
+                if (mx > rect.getPosition().x && mx < rect.getPosition().x + rect.getSize().x &&
+                    my > rect.getPosition().y && my < rect.getPosition().y + rect.getSize().y) {
+                    entity->Kill();
+                }
+            }
+
+            window->draw(rect);
+        }
+    }
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
         if (HoldingBillboardToBePlaced){
@@ -447,7 +475,7 @@ void Editor::Draw
 
     sf::RectangleShape rect;
     rect.setFillColor(sf::Color(0, 0, 0, 0));
-    rect.setOutlineColor(sf::Color(255, 255, 255, 100));
+    rect.setOutlineColor(sf::Color(255, 0, 0, 100));
     rect.setOutlineThickness(1);
     
     for (const auto& billboard : billboards) {

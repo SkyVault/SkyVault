@@ -26,6 +26,13 @@
 #include <typeinfo>
 #include <iostream>
 
+/*
+    TODO(Dustin): 
+        - [X] Place entities by dragging and dropping 
+        - [ ] Place entity spawns by dragging and dropping 
+        - [ ] Allow for deletion of entities
+ */
+
 struct Editor {
     void Destroy(); // serializes out the table
 

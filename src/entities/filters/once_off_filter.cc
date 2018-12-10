@@ -34,7 +34,6 @@ void OnceOffFilter::Render(std::unique_ptr<sf::RenderWindow>& window, Entity* en
         auto dirx = 0;
         auto diry = 0;
 
-        std::cout << laser->Facing << std::endl;
         switch(laser->Facing) {
             case North: { diry = -1; break; }
             case South: { diry = 1; break; } 

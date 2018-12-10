@@ -68,9 +68,13 @@ private:
     sf::Vector2f placement_offset{sf::Vector2f(0, 0)};
 
     bool HoldingBillboardToBePlaced;
+    bool HoldingEntityToBePlaced;
+
     sf::IntRect BillboardRect{sf::IntRect(0, 0, 0, 0)};
+    sf::IntRect EntityRect{sf::IntRect(0, 0, 0, 0)};
 
     sol::table editor_save_data;
+    sol::table entity_prefab;
 
     sf::Vector2f EntityInspectorSize{0, 0};
 };

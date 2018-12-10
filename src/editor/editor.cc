@@ -215,22 +215,13 @@ void Editor::doEntityInspector
             ImGui::SameLine();
 
             if (ImGui::Button(("spawn##"+std::to_string(i++)).c_str())) {
-                auto e = world->Create(Assets::It()->GetPrefab(name));
-
-                if (e->Has<Body>()) {
-                    sf::Vector2f worldPos = 
-                        window->mapPixelToCoords(sf::Vector2i(cursor.x, cursor.y));
-
-                    e->Get<Body>()->Position = worldPos;
-                }
+                entity_prefab = Assets::It()->GetPrefab(name); 
+                HoldingEntityToBePlaced = true; 
             }
             
             ImGui::SameLine();
 
             if (ImGui::Button(("place##"+std::to_string(i++)).c_str())) {
-                // TODO(Dustin): Make it so the entity spawn is a drag and drop thing, 
-                // dont use the cursor
-
                 tiledMap->AddEntitySpawn(name, cursor.x, cursor.y);
             }
         }
@@ -380,6 +371,19 @@ void Editor::Draw
         }
     }
     
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (HoldingEntityToBePlaced) {
+            auto e = world->Create(entity_prefab);
+            if (e && e->Has<Body>()) {
+                e->Get<Body>()->Position = worldPos - (e->Get<Body>()->Size / 2.0f);
+            }
+
+            //Spawn the entity using the prefab -- worldPos
+
+            HoldingEntityToBePlaced = false;
+        }
+    }
+
     constexpr float radius{4.0f};
     sf::CircleShape circle;
     circle.setPosition(cursor - sf::Vector2f(radius, radius));
@@ -400,6 +404,42 @@ void Editor::Draw
         sprite.setColor(sf::Color(255, 255, 255, 100));
         sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)BillboardRect.width, (float)BillboardRect.height) * 0.5f);
         window->draw(sprite);
+    }
+
+    if (HoldingEntityToBePlaced) {
+        const auto [x, y] = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+        sf::Sprite sprite;
+
+        // TODO(Dustin): Handle animated sprites
+        const sol::table components = entity_prefab.get<sol::table>("components");
+        if (const sol::table SpriteData = components.get<sol::table>("Sprite")) {
+            auto texture = SpriteData.get<std::string>("texture");
+            if (const sol::table region = SpriteData.get<sol::table>("region")) {
+                EntityRect.left = (unsigned int)(int)region[1];
+                EntityRect.top = (unsigned int)(int)region[2];
+                EntityRect.width = (unsigned int)(int)region[3];
+                EntityRect.height = (unsigned int)(int)region[4];
+                sprite.setTextureRect(EntityRect);
+            }
+            sprite.setTexture(*Assets::It()->Get<sf::Texture>(texture));
+            sprite.setColor(sf::Color(255, 255, 255, 100));
+            sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)EntityRect.width, (float)EntityRect.height) * 0.5f);
+            window->draw(sprite); 
+        } else if (const sol::table SpriteData = components.get<sol::table>("Item")) { 
+            auto texture = SpriteData.get<std::string>("texture");
+            if (const sol::table region = SpriteData.get<sol::table>("region")) {
+                EntityRect.left = (unsigned int)(int)region[1];
+                EntityRect.top = (unsigned int)(int)region[2];
+                EntityRect.width = (unsigned int)(int)region[3];
+                EntityRect.height = (unsigned int)(int)region[4];
+                sprite.setTextureRect(EntityRect);
+            }
+            sprite.setTexture(*Assets::It()->Get<sf::Texture>(texture));
+            sprite.setColor(sf::Color(255, 255, 255, 100));
+            sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)EntityRect.width, (float)EntityRect.height) * 0.5f);
+            window->draw(sprite); 
+        }
+
     }
 
     const auto& billboards = tiledMap->GetBillboards();

@@ -36,8 +36,6 @@ struct Entity {
     void Add(Args&&... args) {
         components[typeid(T)] = std::make_unique<T>(std::forward<Args>(args)...);
         matchlist.push_back(typeid(T));
-
-        component_names.push_back(std::string{typeid(T).name()});
     }
 
     template<typename T>
@@ -64,7 +62,6 @@ struct Entity {
     inline bool Dead() { return remove; }
 
     inline std::map<std::type_index, std::unique_ptr<Component>>& GetComponents() { return components; }
-    inline std::vector<std::string>& GetComponentNames() {return component_names;}
 
     inline int GetID() { return entity_id; }
 
@@ -73,7 +70,6 @@ private:
     int entity_id{0};
     std::map<std::type_index, std::unique_ptr<Component>> components;
     std::vector<std::type_index> matchlist;
-    std::vector<std::string> component_names;
     std::vector<std::string> tags;
 
     bool loaded{false};

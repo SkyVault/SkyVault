@@ -151,8 +151,6 @@ void Editor::doEntityInspector
             }
 
             if (ImGui::CollapsingHeader(str.c_str())){
-                auto& components = entity->GetComponentNames();
-
                 if (entity->Has<Body>()) {
             
                     auto body = entity->Get<Body>();
@@ -169,8 +167,10 @@ void Editor::doEntityInspector
                     body->Position.y = p[1];
                 }
 
-                for (auto& m : components) {
-                    auto name = std::string{m};
+                auto& components = entity->GetComponents();
+
+                for (const auto& [type, _]: components) {
+                    auto name = std::string{type.name()};
                     auto it = name.begin();
                     while(*it >= '0' && *it <= '9' && it != name.end())
                         it++;

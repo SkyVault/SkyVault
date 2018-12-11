@@ -22,5 +22,8 @@ return {
 
     ["Laser"] = {
         tags = {},
+        components = {
+        
+        }
     },
 }

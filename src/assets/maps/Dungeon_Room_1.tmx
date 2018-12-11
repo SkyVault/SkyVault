@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.1" tiledversion="2018.09.12" orientation="orthogonal" renderorder="right-down" width="96" height="128" tilewidth="8" tileheight="8" infinite="0" nextlayerid="18" nextobjectid="21">
+<map version="1.2" tiledversion="2018.11.29" orientation="orthogonal" renderorder="right-down" width="96" height="128" tilewidth="8" tileheight="8" infinite="0" nextlayerid="18" nextobjectid="21">
  <properties>
   <property name="layer" value="0.0"/>
  </properties>
@@ -53,7 +53,7 @@
    <property name="layer" value="0.4"/>
   </properties>
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+3a6VLTUADF8Zu0oAJp3QZ4HUFcUHAd9XVU3AX1C/g6bG4s4hfwcTwZzORymzZJG9qS/H8zZ9IMl8KchnBvEmMAAAAAAAAAAABwFtQ8Y+pevB1RRpVzynnlgjLmDfq3LKd19TqrXLe2c8oN5aZyS7mtzCu7fAaF83xjfD993LjGTGQYh/y2MxzXd9T9XfrvStL53X49kqHXDxrz0Y/fx0uI/Z6IJZ3f7dfdvE/db/0Mu3lPdM/ue45zEwAMnc9NZz8w5ksQ77+sGbOkvFJeK2+Ut8o75b21RWefgpPdrqr3NeXA6f9AX//zf8yyet1UtpRt5ZvyXfmh/FR+Wdu8wrX1hjUX2inxGjrs/ncQdxtuD9X7UbP994Tj9tTrfsHH9rLmQit+69q6zGvoqPt+C9Rnw+l0T/v7Cf2X1WTDmCllutH/n72gfhetjn1nTTZagf6fqPenyrMB9G+7ps5nKrgmW1Xva8rXAfdflfON61C9Hyl/B338q/uZCvY/qTnOlDLdYa7TD8/V/Qun/yUvXlvUSrqGGJbzz7q637D631T3W168tiirYTn/uMd/mef7trTzT7jGXenD8ece/1W6Z9bUsX9Ruaw12BXlqnIp3G+czho30mm+H90zq4J76vm+8lC9P1IeKw/C/cbxvSrvFK67pM33d7S/W5H+09j3C2veydd5P5tA4xsZvme81lv/Sdc2zjL7/q17LzfPZ7CgsYsZx0/0cN5zr22UVZHzlHC+H91PSJvv89zdsaLmKdF8P7qfkCbrc3dlV8Q8ZcyP/46i6//Izv3/nPd/8rwf/x1F1/+RT9LzVR2fnXM6Do//ut86rt1zd+jMnSe5z87NJnTYblwvz90BAIDi8NzdYJ3Wc3cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUHX/AH3dAlAAwAAA
+   H4sIAAAAAAAAA+3a61LTQADF8U1aUKEt3gZ4HQp4QcHrqK8D1LugfAFfBwreuIhfwMfxZDCTZZu26YW0JP/fzJl2h6UwpyHsNjEGAAAAAAAAAAAAl0HBM6boRY8jyqhyRbmqXFPGvEH/ltm0rV5nlTnrcV65o9xV7in3lQXlgPeg7zzfGN9vP29cc0oJ5qFzewmO6wfq/iH9dyXu/G4/H0nQ60fN+eRHr+PFxH5NROLO7/bzbl6n6De+h928Jrpn9z3PuQkAhs6XCWdcNmajHI1XC8bUlNfKG+Wt8k55r3ywHtHa5/L5bjfV+5Zy7PR/rK//+T9nTb3WlV1lT/mmfFd+KD+VX9Zjp4K99Y61FtrP8B466P53Oeo2eDxR76cTzb8nmHeoXo/6fGyvaS207jfurbO8hw67T1tZfVacTg81PorpP6smK8ZMKdOV9H/2ovpdsjr2nT3ZaA76f6HeXyqvBtC/bUadV3O4J9tU71vK1wH3n5fzjetEvZ8qfwd9/Kv7ag77n9QaZ0qZbrHWScOyul9x+q950d6ikNE9xLCcf7bV/Y7Vf13d73rR3iKrhuX84x7/WV7v29qdf4I97noKx597/OfpmtmEjv3ryk3twW4pt5UbwbhyMXvcUKv1fnjNLA8eqefHylP1/kx5rjwJxpWza1XeBXzu0m69v6/xQU76b8e+Xljwzj/v9L0pa34lwfeMF3rrP+6zjcvMvn7rXsvt5D1Y1NylhPNLPZz33M82sqqf65RgvR9eT2i33ue+uzP9WqeE6/3wekI7Se+7y7p+rFPG/OjvKPz8H8m5/587/Z+84Ed/R+Hn/+hM3P1VLe+dczoOjv+i3ziv2X13aM1dJ7n3zs3GdNhsXi/33QEAgP7hvrvBuqj77gAAAAAAAAAAAAAAAAAAAAAAAAAgbV7JGF8pKMUS47THM0pVmVXmGKc+XlZWlFWlxjj18bayo9SVXcapjwEAAAAAAAAAAAAAAAAAAAAAAIBh9g9e59YNAMAAAA==
   </data>
  </layer>
  <objectgroup id="12" name="Solids" visible="0">

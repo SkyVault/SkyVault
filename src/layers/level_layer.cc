@@ -18,7 +18,7 @@ void LevelLayer::Load(){
     auto* physics_filter = world->GetFilter<PhysicsFilter>();
 
     tiledMap->Destroy();
-    tiledMap->loadFromFile("assets/maps/Dungeon_Room_1.tmx", physics_filter, world, lua);
+    tiledMap->loadFromFile("assets/maps/MainStreet.tmx", physics_filter, world, lua);
     tiledMap->setScale(1.0f, 1.0f);
 
     {
@@ -37,28 +37,6 @@ void LevelLayer::Load(){
         other->Add<AI>(BasicEnemyAI);
     }
     
-#if 0
-    {
-        var block = world->Create();
-        block->AddTags("Red");
-        block->AddTags("Block");
-        block->Add<Body>(sf::Vector2f(500 + 64, 400 + 128), sf::Vector2f(32, 56));
-        block->Add<AI>(ColoredBlockAI);
-        block->Add<PhysicsBody>();
-        block->Add<Renderable>(Assets::It()->Get<sf::Texture>("moveable_block"), sf::IntRect(0, 0, 32, 56), sf::Vector2f(0, 0));
-    }
-    
-    {
-        var block = world->Create();
-        block->AddTags("Green");
-        block->AddTags("Block");
-        block->Add<Body>(sf::Vector2f(500 - 64, 400 + 128 + 32), sf::Vector2f(32, 56));
-        block->Add<AI>(ColoredBlockAI);
-        block->Add<PhysicsBody>();
-        block->Add<Renderable>(Assets::It()->Get<sf::Texture>("moveable_block"), sf::IntRect(0, 0, 32, 56), sf::Vector2f(0, 0));
-    }
-#endif
-
     {
         var laser = world->Create();
         laser->Add<Body>(sf::Vector2f(500 + 128 + 64, 400 + 128), sf::Vector2f(32 * 0.8f, 56 * 0.8f));

@@ -76,6 +76,10 @@ void Editor::doUI
         if (ImGui::Button("Toggle No Clip")) {
             GameState::It()->ToggleNoClip();
         }
+
+        if (ImGui::Button("Pop Layer")) {
+            GameState::It()->PopLayer(true);
+        }
     ImGui::End();
 
     if (GameState::It()->FullEditor()){ 

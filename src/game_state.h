@@ -86,12 +86,17 @@ public:
     }
 
     //NOTE(Dustin): We dont destroy or create any memory
-    inline Layer* PopLayer() {
+    inline Layer* PopLayer(bool dontDestroy=true) {
         if (layer_stack.size() == 0) {
             std::cout << "GameState::PopLayer:: Layer stack is empty!" << std::endl;
             return nullptr;
+        } else {
         }
+
         auto* layer = layer_stack[layer_stack.size()-1];
+        if (!dontDestroy) {
+            layer->Destroy();
+        }
         layer_stack.pop_back();
         return layer;
     }

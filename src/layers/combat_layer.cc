@@ -2,11 +2,15 @@
 
 void CombatLayer::Load() { 
     GameState::It()->CurrentState = GameState::States::COMBAT_STATE;
+
+    camera->View.setCenter(sf::Vector2f(0, 0));
 }
 
 void CombatLayer::Update(const SkyTime& time) {
     auto [x, y] = GameState::It()->GetWindowSize();
     sky->Update(x, y, time); 
+
+    camera->View.setCenter(sf::Vector2f(0, 0));
 }
 
 void CombatLayer::Render(std::unique_ptr<sf::RenderWindow>& window) {
@@ -24,6 +28,7 @@ void CombatLayer::Render(std::unique_ptr<sf::RenderWindow>& window) {
     
 }
 
-void CombatLayer::Destroy() {
-
+void CombatLayer::Destroy() { 
+    std::cout << "Destroying combat layer" << std::endl;
+    GameState::It()->CurrentState = GameState::States::PLAYING_STATE;
 }

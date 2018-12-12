@@ -31,6 +31,7 @@ void LevelLayer::Load(){
 
     {
         var other = world->Create();
+        other->AddTags("Enemy");
         other->Add<Body>(sf::Vector2f(500 + 32, 400 - 32), sf::Vector2f(32,16));
         other->Add<PhysicsBody>();
         other->Add<Renderable>(Assets::It()->Get<sf::Texture>("enemies"), sf::IntRect(0, 16, 32, 32), sf::Vector2f(0, -16));

@@ -137,6 +137,8 @@ private:
     int entity_list_length{ENTITY_LIST_LENGTH};
     int last_freed_place{0};
 
+    std::vector<Entity*> combat_entities;
+
     std::vector<Door> doors;
     std::function<void(std::string)> on_room_change;
 

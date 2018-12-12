@@ -49,6 +49,12 @@ Entity* EntityWorld::Create() {
 }
 
 int EntityWorld::add_entity(Entity* entity) {
+
+    if (GameState::It()->CurrentState == GameState::States::COMBAT_STATE) { 
+        combat_entities.push_back(entity);
+        return -1;
+    } 
+
     for (int i = 0; i < entity_list_length; i++) {
         if (entity_list[i] == nullptr) {
             entity_list[i] = entity;
@@ -157,6 +163,11 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
 void EntityWorld::Update(const SkyTime& time) {
     // Clear the interaction grid
     //std::fill(grid.begin(), grid.end(), nullptr);
+ 
+    if (GameState::It()->CurrentState == GameState::States::COMBAT_STATE) {
+        // Update combat entities
+        return;
+    }
 
     for (auto& [key, filter] : filters) {
         filter->PreUpdate(time);
@@ -256,6 +267,11 @@ void EntityWorld::Update(const SkyTime& time) {
 }
 
 void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
+    if (GameState::It()->CurrentState == GameState::States::COMBAT_STATE) {
+        // Draw combat entities
+        return;
+    }
+
     for (int i = 0; i < entity_list_length; i++) {
         if (entity_list[i] == nullptr) continue;
 

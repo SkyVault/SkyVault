@@ -38,8 +38,19 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
                 if (!e_opt) continue;
 
                 auto other = e_opt.value();
-        
-                if (other->HasTag("Block")) {
+
+                if (other->HasTag("Enemy")) {
+
+                    // Enter combat with enemy
+                    GameState::It()->PushLayer(
+                            new CombatLayer(
+                                world,
+                                camera,
+                                lua,
+                                sky
+                            )); 
+
+                } else if (other->HasTag("Block")) {
                     auto obody = other->Get<Body>();
 
                     // TODO(Dustin): Get the side that the player is on, then lock the block to only
@@ -75,7 +86,7 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
 
     // Update camera
     if (GameState::It()->FullEditor() == false &&
-        GameState::It()->CurrentState != GameState::States::CUTSCENE_STATE) {
+        GameState::It()->NormalMode()) {
         constexpr auto smoothing{0.08f};
         
         const auto track_point = 

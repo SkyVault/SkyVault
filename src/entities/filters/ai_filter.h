@@ -7,6 +7,7 @@
 #include "../components/body.h"
 #include "../components/player.h"
 #include "../components/physics_body.h"
+#include "../../game_state.h"
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <memory>

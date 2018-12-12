@@ -1,6 +1,10 @@
 #include "ai_filter.h"
 
 void AIFilter::Update(const SkyTime& time, Entity* entity) {
+
+    // Stop the ai from running during a cutscene or combat
+    if (!GameState::It()->NormalMode()) return;
+
     auto ai = entity->Get<AI>();
 
     auto body = entity->Get<Body>();
@@ -52,6 +56,5 @@ void AIFilter::Update(const SkyTime& time, Entity* entity) {
     }
 }
 
-void AIFilter::Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) {
-
+void AIFilter::Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) { 
 }

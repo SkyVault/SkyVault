@@ -38,7 +38,8 @@ public:
 	X(PLAYING_STATE)\
 	X(PAUSED_STATE)\
 	X(DIALOG_STATE)\
-    X(CUTSCENE_STATE)
+    X(CUTSCENE_STATE)\
+    X(COMBAT_STATE)
 
     enum States {
 #define X(Enum) Enum,
@@ -69,8 +70,16 @@ public:
     inline void ToggleNoClip() { noClip = !noClip; }
     inline bool IsNoClip(){return noClip;}
 
-    inline void PushLayer(Layer* layer) {
-        if (layer_stack.size() > 0)
+    // If this returns true, the player and ai are allowed to move and
+    // control the camera, else the engine will override that control.
+    inline bool NormalMode() { 
+        return 
+            CurrentState != GameState::States::CUTSCENE_STATE   &&
+            CurrentState != GameState::States::COMBAT_STATE;
+    }
+
+    inline void PushLayer(Layer* layer, bool dontDestroy=false) {
+        if (layer_stack.size() > 0 && !dontDestroy)
             layer_stack[layer_stack.size()-1]->Destroy();
         layer_stack.insert(layer_stack.begin(), layer);
         layer->Load();

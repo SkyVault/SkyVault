@@ -1,7 +1,11 @@
 #ifndef SKYVAULT_COMBAT_H
 #define SKYVAULT_COMBAT_H
 
+#include <vector>
+#include <memory>
 #include <SFML/Graphics.hpp>
+
+#include "../entities/combat_entity.h"
 #include "../utilities/input.h"
 #include "../graphics/gui.h"
 #include "layer.h"
@@ -30,6 +34,11 @@ private:
     std::shared_ptr<Camera> camera;
     std::shared_ptr<sol::state> lua;
     std::shared_ptr<Sky> sky;
+
+    std::unique_ptr<CombatPlayer> player;
+    std::vector<std::unique_ptr<CombatEntity>> enemies;
+
+    bool players_turn{true};
 };
 
 #endif//SKYVAULT_COMBAT_H

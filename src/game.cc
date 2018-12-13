@@ -180,7 +180,7 @@ void Game::LoadContent() {
         lerp_circles.push_back(std::move(circ));
     } 
 
-    int y = 100 + (16 * (int)ELASTIC);
+    int y = 100 + (16 * (int)ELASTIC) + 40;
     for (int i = LINEAR; i < ELASTIC; i++) {
         auto circ = new LerpCircle{sf::CircleShape(), 0.0f};
         circ->circle.setPosition(sf::Vector2f(10, y + 16 * i));

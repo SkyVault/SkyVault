@@ -51,8 +51,6 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
                             )); 
 
                 } else if (other->HasTag("Block")) {
-                    auto obody = other->Get<Body>();
-
                     // TODO(Dustin): Get the side that the player is on, then lock the block to only
                     // move in that direction, or maybe clamp the other directions but make them move
                     // slightly
@@ -87,8 +85,6 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
     // Update camera
     if (GameState::It()->FullEditor() == false &&
         GameState::It()->NormalMode()) {
-        constexpr auto smoothing{0.08f};
-        
         const auto track_point = 
             body->Center() 
             + physics->Velocity * 0.50f;

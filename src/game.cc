@@ -160,15 +160,55 @@ void Game::LoadContent() {
 
     editor = std::make_unique<Editor>();
     editor->initUI(window, lua);
+
+    for (int i = LINEAR; i < ELASTIC; i++) {
+        auto circ = new LerpCircle{sf::CircleShape(), 0.0f};
+        circ->circle.setPosition(sf::Vector2f(10, 100 + 16 * i));
+        circ->circle.setRadius(8);
+        circ->circle.setFillColor(sf::Color(
+                rand_int(0, 255),
+                rand_int(0, 255),
+                rand_int(0, 255),
+                255
+                ));
+
+        Tween::It()->AddFloatInterp(
+            new TweenTypeFloat(&circ->x, 800.0f, 10, (InterpolationTypes)i, (InterpolationTypes)i))(
+                [&]() {
+                    std::cout << "Done with Tween" << std::endl;
+                });
+        lerp_circles.push_back(std::move(circ));
+    } 
+
+    int y = 100 + (16 * (int)ELASTIC);
+    for (int i = LINEAR; i < ELASTIC; i++) {
+        auto circ = new LerpCircle{sf::CircleShape(), 0.0f};
+        circ->circle.setPosition(sf::Vector2f(10, y + 16 * i));
+        circ->circle.setRadius(8);
+        circ->circle.setFillColor(sf::Color(
+                rand_int(0, 255),
+                rand_int(0, 255),
+                rand_int(0, 255),
+                255
+                ));
+
+        Tween::It()->AddFloatInterp(
+            new TweenTypeFloat(&circ->x, 800.0f, 10, LINEAR, (InterpolationTypes)i))(
+                [&]() {
+                    std::cout << "Done with Tween" << std::endl;
+                });
+        lerp_circles.push_back(std::move(circ));
+    } 
 }
 
 void Game::Update(const SkyTime& time) {
     // Update the whole game
     world->Update(time);
     gui->Update(time);
+    Tween::It()->Update(time);
     GameState::It()->Update(time);
     QuestEngine::It()->Update(time, world);
-    tiledMap->Update(time);
+    tiledMap->Update(time); 
 
     auto p = world->GetFirstWith<Player>();
     if (p == nullptr) return;
@@ -207,6 +247,11 @@ void Game::Render() {
             editor->Draw(window, tiledMap, world);
     }
     window->setView(window->getDefaultView());
+
+    for (auto* c : lerp_circles) {
+        c->circle.setPosition(c->x, c->circle.getPosition().y);
+        window->draw(c->circle);
+    }
 
     gui->Render(window);
 }

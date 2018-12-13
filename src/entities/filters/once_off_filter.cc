@@ -2,8 +2,6 @@
 
 void OnceOffFilter::Update(const SkyTime& time, Entity* entity) { 
     if (entity->Has<Laser>()) {
-        auto laser = entity->Get<Laser>();
-        
         // Handling Laser types 
 
 

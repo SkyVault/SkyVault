@@ -56,7 +56,7 @@ inline int rand_int(int min, int max) {
         first = false;
     }
 
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(1,6); // distribution in range [1, 6]
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(min, max); // distribution in range [1, 6]
     return dist6(rng);
 }
 

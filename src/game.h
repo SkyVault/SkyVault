@@ -8,11 +8,13 @@
 #include <mutex>
 #include <vector>
 #include <map>
+#include <tuple>
 
 #include "skyvault.h"
 #include "entities/entity_world.h"
 #include "graphics/tiled_map.h"
 #include "graphics/camera.h"
+#include "graphics/tween.h"
 #include "graphics/art.h"
 #include "graphics/sky.h"
 #include "graphics/gui.h"
@@ -20,6 +22,11 @@
 
 #include "editor/editor.h"
 #include "game_state.h"
+
+struct LerpCircle {
+    sf::CircleShape circle;
+    float x;
+};
 
 struct Game {
     Game();
@@ -54,6 +61,10 @@ private:
 
     float timer{0.0};
     long ticks{0};
+
+    float TweenTestFloat = 3.0f;
+
+    std::vector<LerpCircle*> lerp_circles;
 };
 
 #endif//SKYVAULT_GAME_H

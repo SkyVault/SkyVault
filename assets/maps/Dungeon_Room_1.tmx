@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="2018.11.29" orientation="orthogonal" renderorder="right-down" width="96" height="128" tilewidth="8" tileheight="8" infinite="0" nextlayerid="18" nextobjectid="21">
+ <properties>
+  <property name="layer" value="0.0"/>
+ </properties>
+ <tileset firstgid="1" name="dungeon_tiles" tilewidth="8" tileheight="8" tilecount="4096" columns="64">
+  <image source="../images/dungeon_tiles.png" width="512" height="512"/>
+  <tile id="256" terrain="0,0,0,0"/>
+  <tile id="260" terrain="0,0,,"/>
+  <tile id="321" terrain="0,0,0,"/>
+  <tile id="330" terrain="0,0,,0"/>
+  <tile id="448" terrain="0,,0,"/>
+  <tile id="451" terrain=",,,0"/>
+  <tile id="452" terrain=",,0,"/>
+  <tile id="459" terrain=",0,,0"/>
+  <tile id="515" terrain=",0,,"/>
+  <tile id="516" terrain="0,,,"/>
+  <tile id="897" terrain="0,,0,0"/>
+  <tile id="906" terrain=",0,0,0"/>
+  <tile id="963" terrain=",,0,0"/>
+ </tileset>
+ <layer id="13" name="GrassBottom" width="96" height="128">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3aWWrDMBSFYQca0mRjGTaWAbquDKvqfSsYp46t4Vj3/oLvrUTqUTgyclarrluJbb667ttsze5Lv55o9pb5wRzNifyrO1vmF3M1N/Kv7m6ZP8zTvMi/un7/cx7U1e9/zoO6+v3PeVBXv/85D7Q4D7Q4D/68GyXnjHQezB0l1xTpPFhi/n2ez4MW8vd8HrSQv+fzoIX8PZ8HLeTfR/9r10z/5/vcOWum/7X50//a/Ol/bf70f7nP/WTOzdq+/2Zrdmt9htHy31vmB3M0J/Kvnv/ZMr+Yq7mRf/X875b5wzzNi/yr50//a/OP1v/KtQz9XZTnf/Xa3vH0/J+6R4p983T/01r+P87u/1vI3/P73xbyH3v/u3e+B+r8Pb//zZ1/ifk9v/+dmr9i/v/6X51NhPyj9f3S8o/W90P5K+eP1vdD+dc8b6M/76vz9/x7z9z5j40580V/3lfnH/15P+cezJkrpe9LrkutVv4pfe85/xz78snnpfR9xPyn7sHYGOr73EOdV4v7knOocyH/OJY41JlE3wN1HtH3Qp2Bmnqo//8lGbvvjH7/Wdonv2+IfP9Z2th9Z/T7z9LG7ju5/8xrat/T/3lN7Xv6P6+pfU//5zW17+n/NKl9T/+nSe17+j9Nat/T/2lS+57+T0O/a9HvWvS7Fv1eF32vRd9r0fda9H1Z3OdocZ+jxX2OFvc5ZdHfWvS3Fv2tRX/XQ79r0e9a9LsW/Q4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH4BuUuuHADAAAA=
+  </data>
+ </layer>
+ <layer id="14" name="GrassTop" width="96" height="128">
+  <properties>
+   <property name="layer" value="0.1"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3XW0rDUBSG0d2SN03UOiy1ah1WLw6sUXBG7oLQBnpBOJ6CXQt+8hIIfDmENgIAAAAAAAAAAACAS9G221HXbvtzvof5KGIxqv/cmg61PrSv3KrSu1hn+17/wT5yn5X6X40jrsd1nnUuv+3fdhFdV+75fZPvtNledz1k+0f9B3vK9tOC/Y+ZZ/uF/oMts/2qUv91tu/1jy53k7vP3VVqfylOfm9y09xz7s1/geL2Nb/dnPPc5Oe8T3Lv2v+JfWf9Jfeam22u2X7mm/MvLZvT91DWsd/7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ0je3K8H9AMAAAA==
+  </data>
+ </layer>
+ <layer id="15" name="CliffsAndStairs" width="96" height="128">
+  <properties>
+   <property name="layer" value="0.2"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3a2W4TMRQGYCuLoLQg0ZdiKSDRl2K9aV8KynLRPhEnFxHIlLGnqZlM/H3SkeMoySgnv2eikVMCAABgHzxepfQk6jjqZPV7Tjt/9ln/28r7ms/1v62z6OWrqNdRb1Z/z//1PPdD/qcl/9OS/2nJ/7Tkf1qt8n+xSOlyUR571yr/19Hbm0V57J38T0v+p3XX/Jd+t6fLlE6X5XHoM46zY24f5257zVz+o901/6Xf7W309nxZHoc+4yw75vZx7rbXzOU/Wqv8X0RvL5flUf7b5P86enuzLI/y3+j8H3VaMcp/o/N/1HnFWMr/ofd/n+7/5MeYSw93MZT/n9n3P+mgH/9bnrm85wAAANCLoftztDd0f472SvforY+2xtyjtz7u36fo4+eZ5P8Q9x19jz7+mEn+e9t3tF0b+7IeDjH/Q7ZrY1/WQ2/5Lxl7vdjMn61Teh71Iurletz7a/fd9WLs9WIzfxc9fx/1Ierjetz7a/fd9WLs9WEz/xI9/xp1FfVtZP5r9931Yuz1YTN/ED1/GHUU9Whk/mv33fWqZj3sdP5f1e2761XNetgl/7X77gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGBOfgGlbbWKAMAAAA==
+  </data>
+ </layer>
+ <layer id="16" name="GroundShadows" width="96" height="128">
+  <properties>
+   <property name="layer" value="0.3"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3aTUrDQBQH8LShuYHW6+gdWr2OdSHo2o/r2I2Ka7XH8RUXfiSZdpoUsf39IDDwwiP8AzOLeUUBAAAAAAAAAO0ORkVxOGqvj6N2lKjTzSSynSbyPY3amfy35iayvU3kexe1+1F9nduHZq+R2Vsit/eoLUb1dW4fmh1Usf9X7fVx1I6q+jq3D80mkdk0kdtp1M6q+jq3D81uIrPbRG53Ubuv6uvcPjR7jczeErm9R20Rz2X5tU71uSg/370qt/O9++ox8nyK5zmeWfkz5+vyq/79PbZj/ivnF1kDAAAA/JnUnWEXD4OimA/677trUneGXQyGRTEc9t9316TuDJc2/T/Hkf2J/FdK3Rkurfo/bew/61mV/6p6G/tPP1J3uild9x9zd59+3+muex6cR/azDvmbu2u26XmQK2fubp9seh7kypm72yebnge5cubu9klqxqdPOXN39C9n7o7+rTt3BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/JBxvOkvUAwAAA
+  </data>
+ </layer>
+ <layer id="17" name="TopGround" width="96" height="128">
+  <properties>
+   <property name="layer" value="0.4"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3a61LTQADF8U1aUKEt3gZ4HQp4QcHrqK8D1LugfAFfBwreuIhfwMfxZDCTZZu26YW0JP/fzJl2h6UwpyHsNjEGAAAAAAAAAAAAl0HBM6boRY8jyqhyRbmqXFPGvEH/ltm0rV5nlTnrcV65o9xV7in3lQXlgPeg7zzfGN9vP29cc0oJ5qFzewmO6wfq/iH9dyXu/G4/H0nQ60fN+eRHr+PFxH5NROLO7/bzbl6n6De+h928Jrpn9z3PuQkAhs6XCWdcNmajHI1XC8bUlNfKG+Wt8k55r3ywHtHa5/L5bjfV+5Zy7PR/rK//+T9nTb3WlV1lT/mmfFd+KD+VX9Zjp4K99Y61FtrP8B466P53Oeo2eDxR76cTzb8nmHeoXo/6fGyvaS207jfurbO8hw67T1tZfVacTg81PorpP6smK8ZMKdOV9H/2ovpdsjr2nT3ZaA76f6HeXyqvBtC/bUadV3O4J9tU71vK1wH3n5fzjetEvZ8qfwd9/Kv7ag77n9QaZ0qZbrHWScOyul9x+q950d6ikNE9xLCcf7bV/Y7Vf13d73rR3iKrhuX84x7/WV7v29qdf4I97noKx597/OfpmtmEjv3ryk3twW4pt5UbwbhyMXvcUKv1fnjNLA8eqefHylP1/kx5rjwJxpWza1XeBXzu0m69v6/xQU76b8e+Xljwzj/v9L0pa34lwfeMF3rrP+6zjcvMvn7rXsvt5D1Y1NylhPNLPZz33M82sqqf65RgvR9eT2i33ue+uzP9WqeE6/3wekI7Se+7y7p+rFPG/OjvKPz8H8m5/587/Z+84Ed/R+Hn/+hM3P1VLe+dczoOjv+i3ziv2X13aM1dJ7n3zs3GdNhsXi/33QEAgP7hvrvBuqj77gAAAAAAAAAAAAAAAAAAAAAAAAAgbV7JGF8pKMUS47THM0pVmVXmGKc+XlZWlFWlxjj18bayo9SVXcapjwEAAAAAAAAAAAAAAAAAAAAAAIBh9g9e59YNAMAAAA==
+  </data>
+ </layer>
+ <objectgroup id="12" name="Solids" visible="0">
+  <object id="1" x="112" y="176" width="64" height="48"/>
+  <object id="2" x="256" y="176" width="24" height="48"/>
+  <object id="3" x="280" y="184" width="40" height="48"/>
+  <object id="4" x="320" y="176" width="24" height="48"/>
+  <object id="5" x="256" y="144" height="32"/>
+  <object id="6" x="176" y="144" height="32"/>
+  <object id="7" x="72" y="320" width="40" height="48"/>
+  <object id="8" x="112" y="328" width="8" height="40"/>
+  <object id="9" x="120" y="336" width="8" height="32"/>
+  <object id="10" x="128" y="336" width="48" height="48"/>
+  <object id="11" x="176" y="344" width="8" height="40"/>
+  <object id="12" x="184" y="376" width="8" height="8"/>
+  <object id="14" x="192" y="376" width="24" height="40"/>
+  <object id="15" x="216" y="384" width="8" height="32"/>
+  <object id="16" x="224" y="384" width="192" height="48"/>
+  <object id="17" x="96" y="248" width="48" height="24"/>
+  <object id="18" x="112" y="224" width="32" height="24"/>
+  <object id="19" x="66.625" y="231.667" width="46.375" height="4.95833"/>
+  <object id="20" x="66.6667" y="235.667" width="6" height="85"/>
+ </objectgroup>
+</map>

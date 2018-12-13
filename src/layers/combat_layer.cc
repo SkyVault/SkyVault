@@ -52,6 +52,10 @@ void CombatLayer::Update(const SkyTime& time) {
     sky->Update(x, y, time); 
 
     camera->View.setCenter(sf::Vector2f(0, 0));
+
+    if (Input::It()->IsKeyPressed(sf::Keyboard::Enter)) {
+        this->players_turn = !this->players_turn;
+    }
 }
 
 void CombatLayer::Render(std::unique_ptr<sf::RenderWindow>& window) {
@@ -72,7 +76,6 @@ void CombatLayer::Render(std::unique_ptr<sf::RenderWindow>& window) {
                     ? "Your Turn"
                     : "Their Turn");
 
-            constexpr auto size = 0.0f;
             auto text = sf::Text();
             text.setFont(*font);
             text.setString(turn_text); 
@@ -86,16 +89,14 @@ void CombatLayer::Render(std::unique_ptr<sf::RenderWindow>& window) {
             bg.setFillColor(sf::Color(0x83, 0x76, 0x9C));
 
             text.setPosition(
-                    (bg.getPosition() + bg.getSize() * 0.5f) - 
-                    sf::Vector2f(text_width * 0.5f, text_height));
+                (bg.getPosition() + bg.getSize() * 0.5f) - 
+                sf::Vector2f(text_width * 0.5f, text_height));
 
             window->draw(bg);
             window->draw(text);
         } 
 
     window->setView(camera->View);
-
-    auto [ww, wh] = window->getSize();
 
     player->Draw(window);
 

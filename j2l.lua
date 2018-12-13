@@ -5,8 +5,8 @@
 -- It uses hardcoded paths, so that should be refactored at some point
 --]]
 
-local json = require "src/assets/scripts/json"
-local serpent = require "src/assets/scripts/serpent"
+local json = require "assets/scripts/json"
+local serpent = require "assets/scripts/serpent"
 
 require "lfs"
 
@@ -34,13 +34,13 @@ function isN(a)
     return tonumber(a) ~= nil
 end
 
-for file in lfs.dir "src/assets/images/" do
+for file in lfs.dir "assets/images/" do
     local dest = string.find(file, ".", 1, true)
     local ext = string.sub(file, dest+1, #file)
     local name = string.sub(file, 1, dest-1)
     
     if ext == "json" then
-        local jdata = readAll("src/assets/images/"..file)
+        local jdata = readAll("assets/images/"..file)
         local ltable = json.decode(jdata)
 
         local final = {[name] = {
@@ -66,7 +66,7 @@ for file in lfs.dir "src/assets/images/" do
             }
         end
 
-        local outfile = io.open("src/assets/data/animations/" .. name .. ".lua", "w")
+        local outfile = io.open("assets/data/animations/" .. name .. ".lua", "w")
         outfile:write("return " .. serpent.block(final, {comment=false, compact=true}))
         outfile:close()
     end

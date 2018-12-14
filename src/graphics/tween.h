@@ -24,6 +24,8 @@ back    = "p * p * (2.7 * p - 1.7)",
 elastic = "-(2^(10 * (p - 1)) * math.sin((p - 1.075) * (math.pi * 2) / .3))"
 */
 
+constexpr float ERROR_MARGIN {0.001f};
+
 enum InterpolationTypes { 
     LINEAR,
     QUAD,
@@ -49,7 +51,7 @@ namespace Interpolation {
 }
 struct TweenTypeFloat {
 
-    float* value; 
+    float value; 
     float goal;
     float start; 
     float percent{0.0f};
@@ -61,8 +63,10 @@ struct TweenTypeFloat {
 
     std::function<void()> oncomplete;
 
+    bool isDone();
+
     inline TweenTypeFloat
-        ( float* value
+        ( float value
         , float goal
         , float timeSeconds
         , InterpolationTypes type_in=LINEAR
@@ -71,7 +75,7 @@ struct TweenTypeFloat {
     {
         this->value = value;
         this->goal = goal;
-        this->start = *value;
+        this->start = value;
         this->type_in = type_in;
         this->type_out = type_out;
         this->timeSeconds = timeSeconds;

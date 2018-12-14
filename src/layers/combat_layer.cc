@@ -13,8 +13,6 @@ void CombatLayer::Load() {
     const float cw = scale_x * ww * 0.5f;
     const float ch = scale_y * wh * 0.5f;
 
-    constexpr float HALF_X_DIST = 200.0f;
-
     // Player 
     player = std::make_unique<CombatPlayer>();
 
@@ -33,8 +31,6 @@ void CombatLayer::Load() {
             );
 
     // Enemies
-    
-    constexpr float ENEMY_MARGIN{16.f};
 
     int total_height{0};
     for (int i = 0; i < 3; i++) {
@@ -73,9 +69,20 @@ void CombatLayer::HandleEnemiesTurn(const SkyTime& time) {
     auto& e = enemies[turn_of_current_enemy];
 
     // AI
-
-
-    turn_of_current_enemy++;
+    
+    switch(e->state) {
+        case COMBAT_IDLE: {
+            e->moving_towards_player = true;
+            e->state = COMBAT_ATTACKING; break;
+            break;
+        } 
+        case COMBAT_ATTACK_ENDED: {
+            e->state = COMBAT_IDLE;
+            turn_of_current_enemy++; 
+            break;
+        } 
+        default: break;
+    }
 }
 
 void CombatLayer::Update(const SkyTime& time) {
@@ -86,6 +93,65 @@ void CombatLayer::Update(const SkyTime& time) {
 
     if (Input::It()->IsKeyPressed(sf::Keyboard::Enter)) {
         ToggleTurn();
+    }
+
+    // Enemies positioning
+    { 
+        const auto [ww, wh] = GameState::It()->GetWindowSize();
+        auto scale_x = camera->View.getSize().x/static_cast<float>(ww);
+        auto scale_y = camera->View.getSize().y/static_cast<float>(wh);
+
+        const float cw = scale_x * ww * 0.5f;
+        const float ch = scale_y * wh * 0.5f;
+
+        int total_height{0};
+        for (auto& enemy : enemies) {
+            //enemy->Position = sf::Vector2f((camera->View.getSize().x) - 200, 100 + (i * (enemy->Size.y * 1.1f))); 
+            total_height += enemy->Size.y + ENEMY_MARGIN;
+        }
+
+        constexpr float ENEMY_MARGIN{16.f};
+        const int half_height = total_height * 0.5f;
+
+        float cursor_y{ch - half_height};
+        for (auto& e : enemies) { 
+
+            switch(e->state) {
+                case COMBAT_IDLE: break;
+                case COMBAT_ATTACKING: { 
+                    if (e->moving_towards_player) {
+                        e->target_position = player->Position + player->Size * 0.5f; 
+                        float dist = sqrtf(
+                                powf(e->Position.x - e->target_position.x, 2) +
+                                powf(e->Position.y - e->target_position.y, 2)
+                                );
+                        if (dist < 1.5f) {
+                            e->moving_towards_player = false;
+                        }
+                    } else {
+                        e->target_position = sf::Vector2f(
+                            cw + HALF_X_DIST,
+                            cursor_y
+                            ); 
+                        float dist = sqrtf(
+                                powf(e->Position.x - e->target_position.x , 2) +
+                                powf(e->Position.y - e->target_position.y , 2)
+                                );
+                        if (dist < 0.5f) {
+                            e->Position = e->target_position;
+                            e->state = COMBAT_ATTACK_ENDED;
+                        } 
+                    }
+                    e->Position.x = Interpolation::Lerp(e->Position.x, e->target_position.x, time.dt * 10.0f);
+                    e->Position.y = Interpolation::Lerp(e->Position.y, e->target_position.y, time.dt * 10.0f); 
+                    break;
+                }
+                default: break;
+            }
+        
+            cursor_y += e->Size.y + ENEMY_MARGIN;
+        }
+
     }
 
     if (!players_turn) HandleEnemiesTurn(time);

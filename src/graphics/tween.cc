@@ -1,11 +1,14 @@
 #include "tween.h"
 
+bool TweenTypeFloat::isDone() {
+    return value >= goal - ERROR_MARGIN;
+}
+
 void Tween::Update(const SkyTime& time) {
     auto it = tweens.begin();
     while (it != tweens.end()) {
         auto* tween = *it;
-        constexpr float ERROR_MARGIN {0.001f};
-        if (*tween->value >= tween->goal - ERROR_MARGIN) {
+        if (tween->isDone()) {
             std::invoke(tween->oncomplete);
             it = tweens.erase(it);
         } else {
@@ -53,7 +56,7 @@ void Tween::Update(const SkyTime& time) {
                     tween->goal,
                     p); 
 
-            *tween->value = v;
+            tween->value = v;
 
             ++it;
         }

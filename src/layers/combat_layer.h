@@ -16,7 +16,10 @@
 #include "../game_state.h"
 #include "../skyvault.h"
 
+constexpr float ENEMY_MARGIN{16.f};
 constexpr float COMBAT_ACTION_BUTTON_SIZE {16};
+constexpr float HALF_X_DIST = 200.0f; 
+
 struct CombatActionButton {
     inline CombatActionButton(const sf::Vector2f& _position, std::function<void()> _onClick) : onClick(_onClick) {
         shape.setPosition(_position);

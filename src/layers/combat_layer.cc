@@ -27,33 +27,11 @@ void CombatLayer::Load() {
     combat_action_buttons.push_back(
             std::make_unique<CombatActionButton>(
                 player->Position + sf::Vector2f(32 + 8, 0),
-                [](){ std::cout << "Pressed combat action button\n"; }
-                ) 
+                [&](){ 
+                    ToggleTurn();
+                }) 
             );
 
-    combat_action_buttons.push_back(
-            std::make_unique<CombatActionButton>(
-                player->Position + sf::Vector2f(32 + 8, 0),
-                [](){ std::cout << "Pressed combat action button 2\n"; }
-                ) 
-            );
-
-    combat_action_buttons.push_back(
-            std::make_unique<CombatActionButton>(
-                player->Position + sf::Vector2f(32 + 8, 0),
-                [](){ std::cout << "Pressed combat action button 2\n"; }
-                ) 
-            );
-    
-
-    combat_action_buttons.push_back(
-            std::make_unique<CombatActionButton>(
-                player->Position + sf::Vector2f(32 + 8, 0),
-                [](){ std::cout << "Pressed combat action button 2\n"; }
-                ) 
-            );
-    
-    
     // Enemies
     
     constexpr float ENEMY_MARGIN{16.f};
@@ -78,6 +56,28 @@ void CombatLayer::Load() {
     }
 }
 
+void CombatLayer::OnPlayerTurn() {
+    
+}
+
+void CombatLayer::OnEnemiesTurn() {
+    turn_of_current_enemy = 0;
+} 
+
+void CombatLayer::HandleEnemiesTurn(const SkyTime& time) {
+    if (turn_of_current_enemy >= enemies.size()) {
+        ToggleTurn();
+        return;
+    }
+
+    auto& e = enemies[turn_of_current_enemy];
+
+    // AI
+
+
+    turn_of_current_enemy++;
+}
+
 void CombatLayer::Update(const SkyTime& time) {
     auto [x, y] = GameState::It()->GetWindowSize();
     sky->Update(x, y, time); 
@@ -85,25 +85,49 @@ void CombatLayer::Update(const SkyTime& time) {
     camera->View.setCenter(sf::Vector2f(0, 0));
 
     if (Input::It()->IsKeyPressed(sf::Keyboard::Enter)) {
-        this->players_turn = !this->players_turn;
+        ToggleTurn();
     }
+
+    if (!players_turn) HandleEnemiesTurn(time);
 
     // Set the positions of the combat buttons
     const auto [px, py] = player->Position + player->Size * 0.5f;
-    
-    constexpr float COMBAT_BUTTON_MARGIN {16.0f};
-    const float total_size = 
-        (combat_action_buttons.size() * (COMBAT_ACTION_BUTTON_SIZE + COMBAT_BUTTON_MARGIN)); 
 
-    int index = 0; 
-    float cursor{0.0f};
-    for (const auto& cab : combat_action_buttons) {
-        cab->shape.setPosition(sf::Vector2f(
-                     px + COMBAT_ACTION_BUTTON_SIZE + 8 + (sinf(index) * 32.f),
-                     py - (total_size * 0.5f) + ((COMBAT_BUTTON_MARGIN + COMBAT_BUTTON_MARGIN) * index)
-                    ));
+    constexpr float SPEED{200.0f};
 
-        ++index;
+    auto lerp_cab = [&](std::unique_ptr<CombatActionButton>& cab){
+        auto [cx, cy] = cab->shape.getPosition(); 
+        cx = Interpolation::Lerp(cx, cab->target.x, (time.dt * time.dt) * SPEED);
+        cy = Interpolation::Lerp(cy, cab->target.y, (time.dt * time.dt) * SPEED);
+
+        auto target_alpha = players_turn ? 1.0f : 0.0f;
+        cab->alpha = Interpolation::Lerp(cab->alpha, target_alpha, (time.dt * time.dt) * SPEED);
+
+        cab->shape.setPosition(cx, cy); 
+    };
+
+    if (players_turn) {
+        constexpr float COMBAT_BUTTON_MARGIN {16.0f};
+        const float total_size = 
+            (combat_action_buttons.size() * (COMBAT_ACTION_BUTTON_SIZE + COMBAT_BUTTON_MARGIN)); 
+
+        int index = 0; 
+        for (auto& cab : combat_action_buttons) {
+            cab->target = (sf::Vector2f(
+                         px + COMBAT_ACTION_BUTTON_SIZE + 8 + (sinf(index) * 32.f),
+                         py - (total_size * 0.5f) + ((COMBAT_BUTTON_MARGIN + COMBAT_BUTTON_MARGIN) * index)
+                        ));
+
+            lerp_cab(cab);
+
+            ++index;
+        }
+    } else {
+        for (auto& cab : combat_action_buttons) {
+            cab->target = sf::Vector2f(px, py);
+
+            lerp_cab(cab);
+        } 
     }
 }
 
@@ -177,6 +201,8 @@ void CombatLayer::Render(std::unique_ptr<sf::RenderWindow>& window) {
 
     // Draw ui buttons
     for (const auto& cab : combat_action_buttons) {
+        auto color = cab->shape.getFillColor();
+        cab->shape.setFillColor(sf::Color(color.r, color.g, color.b, (unsigned int)(255.0f * cab->alpha)));
         window->draw(cab->shape);
     }
 }

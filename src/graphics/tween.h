@@ -40,9 +40,12 @@ enum InterpolationTypes {
 // Interpolation functions
 namespace Interpolation {
     template <typename T, typename std::enable_if<std::is_arithmetic<T>::value>::type* = nullptr>
-    static T Lerp(T a, T b, float t) {
+    static T LerpPercent(T a, T b, float t) {
         return a * (1 - t) + b * t;
     } 
+
+    template <typename T, typename std::enable_if<std::is_arithmetic<T>::value>::type* = nullptr>
+    static T Lerp(T a, T b, float t) { return a + (b - a) * t; } 
 }
 struct TweenTypeFloat {
 

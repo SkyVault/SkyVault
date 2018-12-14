@@ -11,6 +11,7 @@
 #include "../utilities/input.h"
 #include "../graphics/gui.h"
 #include "layer.h"
+#include "../graphics/tween.h"
 #include "level_layer.h"
 #include "../game_state.h"
 #include "../skyvault.h"
@@ -20,6 +21,8 @@ struct CombatActionButton {
     inline CombatActionButton(const sf::Vector2f& _position, std::function<void()> _onClick) : onClick(_onClick) {
         shape.setPosition(_position);
         shape.setSize(sf::Vector2f(COMBAT_ACTION_BUTTON_SIZE, COMBAT_ACTION_BUTTON_SIZE));
+        
+        target = _position;
 
         // Temparary color
         shape.setFillColor(sf::Color(
@@ -30,6 +33,10 @@ struct CombatActionButton {
     }
 
     sf::RectangleShape shape;
+
+    sf::Vector2f target;
+
+    float alpha{1.0f};
 
     std::function<void()> onClick;
 };
@@ -51,6 +58,18 @@ struct CombatLayer : public Layer {
     void Render(std::unique_ptr<sf::RenderWindow>& window) override;
     void Destroy() override;
 
+    inline void ToggleTurn() {
+        players_turn = !players_turn;
+        if (players_turn) 
+            OnPlayerTurn();
+        else
+            OnEnemiesTurn();
+    }
+
+    void HandleEnemiesTurn(const SkyTime& time);
+    void OnPlayerTurn();
+    void OnEnemiesTurn();
+
 private:
     std::shared_ptr<EntityWorld> world;
     std::shared_ptr<Camera> camera;
@@ -63,6 +82,8 @@ private:
     std::vector<std::unique_ptr<CombatActionButton>> combat_action_buttons;
 
     bool players_turn{true};
+
+    unsigned int turn_of_current_enemy{0};
 };
 
 #endif//SKYVAULT_COMBAT_H

@@ -174,9 +174,7 @@ void Game::LoadContent() {
 
         Tween::It()->AddFloatInterp(
             new TweenTypeFloat(&circ->x, 800.0f, 10, (InterpolationTypes)i, (InterpolationTypes)i))(
-                [&]() {
-                    std::cout << "Done with Tween" << std::endl;
-                });
+                [&]() { });
         lerp_circles.push_back(std::move(circ));
     } 
 

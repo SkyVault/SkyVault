@@ -23,6 +23,37 @@ void CombatLayer::Load() {
             ch
             ) - ((player->Size * 0.5f) + sf::Vector2f(HALF_X_DIST, 0));
     
+    // Create combat action buttons
+    combat_action_buttons.push_back(
+            std::make_unique<CombatActionButton>(
+                player->Position + sf::Vector2f(32 + 8, 0),
+                [](){ std::cout << "Pressed combat action button\n"; }
+                ) 
+            );
+
+    combat_action_buttons.push_back(
+            std::make_unique<CombatActionButton>(
+                player->Position + sf::Vector2f(32 + 8, 0),
+                [](){ std::cout << "Pressed combat action button 2\n"; }
+                ) 
+            );
+
+    combat_action_buttons.push_back(
+            std::make_unique<CombatActionButton>(
+                player->Position + sf::Vector2f(32 + 8, 0),
+                [](){ std::cout << "Pressed combat action button 2\n"; }
+                ) 
+            );
+    
+
+    combat_action_buttons.push_back(
+            std::make_unique<CombatActionButton>(
+                player->Position + sf::Vector2f(32 + 8, 0),
+                [](){ std::cout << "Pressed combat action button 2\n"; }
+                ) 
+            );
+    
+    
     // Enemies
     
     constexpr float ENEMY_MARGIN{16.f};
@@ -55,6 +86,24 @@ void CombatLayer::Update(const SkyTime& time) {
 
     if (Input::It()->IsKeyPressed(sf::Keyboard::Enter)) {
         this->players_turn = !this->players_turn;
+    }
+
+    // Set the positions of the combat buttons
+    const auto [px, py] = player->Position + player->Size * 0.5f;
+    
+    constexpr float COMBAT_BUTTON_MARGIN {16.0f};
+    const float total_size = 
+        (combat_action_buttons.size() * (COMBAT_ACTION_BUTTON_SIZE + COMBAT_BUTTON_MARGIN)); 
+
+    int index = 0; 
+    float cursor{0.0f};
+    for (const auto& cab : combat_action_buttons) {
+        cab->shape.setPosition(sf::Vector2f(
+                     px + COMBAT_ACTION_BUTTON_SIZE + 8 + (sinf(index) * 32.f),
+                     py - (total_size * 0.5f) + ((COMBAT_BUTTON_MARGIN + COMBAT_BUTTON_MARGIN) * index)
+                    ));
+
+        ++index;
     }
 }
 
@@ -98,10 +147,37 @@ void CombatLayer::Render(std::unique_ptr<sf::RenderWindow>& window) {
 
     window->setView(camera->View);
 
+    sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
+
+    // convert it to world coordinates
+    sf::Vector2f worldPos = window->mapPixelToCoords(pixelPos);
+
+    if (this->players_turn) { 
+        auto [mx, my] = worldPos;
+
+        if (Input::It()->IsMouseLeftPressed(0)) {
+            for (const auto& cab : combat_action_buttons) {
+                const auto [x, y] = cab->shape.getPosition();
+                const auto [w, h] = cab->shape.getSize();
+                    
+                if (mx > x && mx < x + w &&
+                    my > y && my < y + h) {
+
+                    std::invoke(cab->onClick);
+                }
+            }
+        }
+    }
+
     player->Draw(window);
 
     for (auto& enemy : enemies) {
         enemy->Draw(window);
+    }
+
+    // Draw ui buttons
+    for (const auto& cab : combat_action_buttons) {
+        window->draw(cab->shape);
     }
 }
 

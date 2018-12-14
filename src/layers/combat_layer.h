@@ -1,8 +1,10 @@
 #ifndef SKYVAULT_COMBAT_H
 #define SKYVAULT_COMBAT_H
 
+#include <functional>
 #include <vector>
 #include <memory>
+#include <cmath>
 #include <SFML/Graphics.hpp>
 
 #include "../entities/combat_entity.h"
@@ -11,6 +13,26 @@
 #include "layer.h"
 #include "level_layer.h"
 #include "../game_state.h"
+#include "../skyvault.h"
+
+constexpr float COMBAT_ACTION_BUTTON_SIZE {16};
+struct CombatActionButton {
+    inline CombatActionButton(const sf::Vector2f& _position, std::function<void()> _onClick) : onClick(_onClick) {
+        shape.setPosition(_position);
+        shape.setSize(sf::Vector2f(COMBAT_ACTION_BUTTON_SIZE, COMBAT_ACTION_BUTTON_SIZE));
+
+        // Temparary color
+        shape.setFillColor(sf::Color(
+            rand_int(0, 255),
+            rand_int(0, 255),
+            rand_int(0, 255)
+                    ));
+    }
+
+    sf::RectangleShape shape;
+
+    std::function<void()> onClick;
+};
 
 struct CombatLayer : public Layer {
     inline CombatLayer( 
@@ -37,6 +59,8 @@ private:
 
     std::unique_ptr<CombatPlayer> player;
     std::vector<std::unique_ptr<CombatEntity>> enemies;
+
+    std::vector<std::unique_ptr<CombatActionButton>> combat_action_buttons;
 
     bool players_turn{true};
 };

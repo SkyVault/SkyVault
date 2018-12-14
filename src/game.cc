@@ -248,10 +248,12 @@ void Game::Render() {
     }
     window->setView(window->getDefaultView());
 
+#if 0
     for (auto* c : lerp_circles) {
         c->circle.setPosition(c->x, c->circle.getPosition().y);
         window->draw(c->circle);
     }
+#endif//    
 
     gui->Render(window);
 }

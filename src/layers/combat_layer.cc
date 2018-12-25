@@ -31,6 +31,22 @@ void CombatLayer::Load() {
                 }) 
             );
 
+    combat_action_buttons.push_back(
+            std::make_unique<CombatActionButton>(
+                player->Position + sf::Vector2f(32 + 8, 0),
+                [&](){ 
+                    
+                }) 
+            );
+
+    combat_action_buttons.push_back(
+            std::make_unique<CombatActionButton>(
+                player->Position + sf::Vector2f(32 + 8, 0),
+                [&](){ 
+                    GameState::It()->PopLayer();
+                }) 
+            );
+
     // Enemies
 
     int total_height{0};
@@ -328,8 +344,7 @@ void CombatLayer::Render(std::unique_ptr<sf::RenderWindow>& window) {
 }
 
 void CombatLayer::Destroy() { 
-    std::cout << "Destroying combat layer" << std::endl;
-    GameState::It()->CurrentState = GameState::States::PLAYING_STATE;
-
+    std::cout << "Destroying combat layer" << std::endl; 
     enemies.clear();
+    GameState::It()->CurrentState = GameState::States::PLAYING_STATE;
 }

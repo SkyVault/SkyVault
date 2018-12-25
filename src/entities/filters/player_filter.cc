@@ -42,6 +42,9 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
                 if (other->HasTag("Enemy")) {
 
                     // Enter combat with enemy
+                    // Temp: 
+                    other->Kill();
+
                     GameState::It()->PushLayer(
                             new CombatLayer(
                                 world,

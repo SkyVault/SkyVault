@@ -70,6 +70,7 @@ struct CombatLayer : public Layer {
     }
 
     void HandleEnemiesTurn(const SkyTime& time);
+    void HandlePlayersTurn(const SkyTime& time);
     void OnPlayerTurn();
     void OnEnemiesTurn();
 

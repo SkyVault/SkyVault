@@ -26,7 +26,8 @@ void CombatLayer::Load() {
             std::make_unique<CombatActionButton>(
                 player->Position + sf::Vector2f(32 + 8, 0),
                 [&](){ 
-                    ToggleTurn();
+                    player->moving_towards_target = true;
+                    player->state = COMBAT_ATTACKING;
                 }) 
             );
 
@@ -52,8 +53,17 @@ void CombatLayer::Load() {
     }
 }
 
-void CombatLayer::OnPlayerTurn() {
-    
+void CombatLayer::OnPlayerTurn() { }
+
+void CombatLayer::HandlePlayersTurn(const SkyTime& time) { 
+    switch(player->state) {
+        case COMBAT_ATTACK_ENDED: {
+            player->state = COMBAT_IDLE;
+            ToggleTurn();
+            break;
+        } 
+        default: break;
+    }
 }
 
 void CombatLayer::OnEnemiesTurn() {
@@ -72,7 +82,7 @@ void CombatLayer::HandleEnemiesTurn(const SkyTime& time) {
     
     switch(e->state) {
         case COMBAT_IDLE: {
-            e->moving_towards_player = true;
+            e->moving_towards_target= true;
             e->state = COMBAT_ATTACKING; break;
             break;
         } 
@@ -95,14 +105,15 @@ void CombatLayer::Update(const SkyTime& time) {
         ToggleTurn();
     }
 
+    const auto [ww, wh] = GameState::It()->GetWindowSize();
+    auto scale_x = camera->View.getSize().x/static_cast<float>(ww);
+    auto scale_y = camera->View.getSize().y/static_cast<float>(wh);
+
+    const float cw = scale_x * ww * 0.5f;
+    const float ch = scale_y * wh * 0.5f;
+
     // Enemies positioning
     { 
-        const auto [ww, wh] = GameState::It()->GetWindowSize();
-        auto scale_x = camera->View.getSize().x/static_cast<float>(ww);
-        auto scale_y = camera->View.getSize().y/static_cast<float>(wh);
-
-        const float cw = scale_x * ww * 0.5f;
-        const float ch = scale_y * wh * 0.5f;
 
         int total_height{0};
         for (auto& enemy : enemies) {
@@ -119,14 +130,14 @@ void CombatLayer::Update(const SkyTime& time) {
             switch(e->state) {
                 case COMBAT_IDLE: break;
                 case COMBAT_ATTACKING: { 
-                    if (e->moving_towards_player) {
+                    if (e->moving_towards_target) {
                         e->target_position = player->Position + player->Size * 0.5f; 
                         float dist = sqrtf(
                                 powf(e->Position.x - e->target_position.x, 2) +
                                 powf(e->Position.y - e->target_position.y, 2)
                                 );
-                        if (dist < 1.5f) {
-                            e->moving_towards_player = false;
+                        if (dist < 0.5f) {
+                            e->moving_towards_target= false;
                         }
                     } else {
                         e->target_position = sf::Vector2f(
@@ -155,6 +166,7 @@ void CombatLayer::Update(const SkyTime& time) {
     }
 
     if (!players_turn) HandleEnemiesTurn(time);
+    else HandlePlayersTurn(time);
 
     // Set the positions of the combat buttons
     const auto [px, py] = player->Position + player->Size * 0.5f;
@@ -173,6 +185,48 @@ void CombatLayer::Update(const SkyTime& time) {
     };
 
     if (players_turn) {
+        // Handling combat states
+        {
+            switch(player->state) {
+                case COMBAT_ATTACKING: {
+
+                    if (player->moving_towards_target) { 
+                        auto& target = enemies[0];
+                        player->target_position = target->Position + target->Size * 0.5f; 
+                        float dist = sqrtf(
+                                powf(player->Position.x - player->target_position.x, 2) +
+                                powf(player->Position.y - player->target_position.y, 2)
+                                );
+                        if (dist < 0.5f) {
+                            player->moving_towards_target = false;
+                        }
+                    } else { 
+                        player->target_position = sf::Vector2f(
+                                cw,
+                                ch
+                                ) - ((player->Size * 0.5f) + sf::Vector2f(HALF_X_DIST, 0));
+
+                        float dist = sqrtf(
+                                powf(player->Position.x - player->target_position.x, 2) +
+                                powf(player->Position.y - player->target_position.y, 2)
+                                );
+                        if (dist < 0.5f) {
+                            player->Position = player->target_position;
+                            player->state = COMBAT_ATTACK_ENDED;
+                        }
+                    }
+
+                    player->Position.x = Interpolation::Lerp(player->Position.x, player->target_position.x, time.dt * 10.0f);
+                    player->Position.y = Interpolation::Lerp(player->Position.y, player->target_position.y, time.dt * 10.0f); 
+
+                    break;
+                }
+
+                default: break;
+            }
+        }
+
+        // Handle button combat button positions
         constexpr float COMBAT_BUTTON_MARGIN {16.0f};
         const float total_size = 
             (combat_action_buttons.size() * (COMBAT_ACTION_BUTTON_SIZE + COMBAT_BUTTON_MARGIN)); 

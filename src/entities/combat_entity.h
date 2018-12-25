@@ -34,7 +34,7 @@ struct CombatEntity {
     sf::Vector2f LerpTarget{sf::Vector2f(0, 0)};
 
     CombatState state{COMBAT_IDLE};
-    bool moving_towards_player{true};
+    bool moving_towards_target{true};
 
     sf::Vector2f target_position;
 

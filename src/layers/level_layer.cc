@@ -18,7 +18,7 @@ void LevelLayer::Load(){
     auto* physics_filter = world->GetFilter<PhysicsFilter>();
 
     tiledMap->Destroy();
-    tiledMap->loadFromFile("assets/maps/Dungeon_Room_1.tmx", physics_filter, world, lua);
+    tiledMap->loadFromFile("assets/maps/Dungeon_Room_2.tmx", physics_filter, world, lua);
     tiledMap->setScale(1.0f, 1.0f);
 
     {
@@ -45,6 +45,12 @@ void LevelLayer::Load(){
         laser->Add<PhysicsBody>();
         laser->Add<Renderable>(Assets::It()->Get<sf::Texture>("moveable_block"), sf::IntRect(0, 0, 32, 56), sf::Vector2f(0, 0));
         laser->Get<Renderable>()->GetSprite().setScale(0.8f, 0.8f);
+    }
+
+    {
+        var craigory = world->Create();
+        craigory->Add<Body>(sf::Vector2f(470, 485), sf::Vector2f(43, 37));
+        craigory->Add<ShopKeeper>();
     }
 
     auto cursor = 0.0f;

@@ -16,6 +16,9 @@ cannot be infected by the virus.
 
 The virus is vampiric. 
 
+You are the only person that is immune, and you must go and find the plague 
+doctors all over the world to help them research their strain of the virus.
+
 ### Medicine Gameplay
 
 Got to think of a creative way to administer medicine, each color has a slightly different minigame?? 

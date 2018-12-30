@@ -22,7 +22,14 @@ struct Filter {
     }
 
     // this could be very much faster 
-    auto Matches(std::vector<std::type_index>& ids) {
+    auto Matches(std::vector<std::type_index>& ids) { 
+        if (Any_Filter.size() > 0) {
+            for (const auto& id : ids) {
+                if (std::find(Any_Filter.begin(), Any_Filter.end(), id) != Any_Filter.end())
+                    return true;
+            }
+        }
+
         for (const auto& t : filter)
             if (std::find(ids.begin(), ids.end(), t) == ids.end())
                 return false;
@@ -42,12 +49,12 @@ struct Filter {
 
     virtual void PostRender(std::unique_ptr<sf::RenderWindow>& window) {}
 
+    std::vector<std::type_index> Any_Filter; 
 protected:
     EntityWorld* World{nullptr};
 
 private:
     std::vector<std::type_index> filter;
-
 };
 
 #endif//SKYVAULT_FILTER_H

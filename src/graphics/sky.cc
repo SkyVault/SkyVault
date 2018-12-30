@@ -2,6 +2,8 @@
 #include "../skyvault.h"
 #include <iostream>
 
+//#define DRAW_CLOUDS
+
 Sky::Sky() {
     noiseTexture.loadFromFile("assets/images/noise.png");
     cloudTexture.loadFromFile("assets/images/clouds.png");
@@ -53,6 +55,7 @@ void Sky::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
     target.draw(background, &shader);
 
+#ifdef DRAW_CLOUDS
     sf::Sprite cloud;
     cloud.setTexture(cloudTexture);
     for(const auto& c : cloudStates) {
@@ -60,4 +63,5 @@ void Sky::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         cloud.setScale(c.Scale);
         target.draw(cloud);
     }
+#endif//DRAW_CLOUDS
 }

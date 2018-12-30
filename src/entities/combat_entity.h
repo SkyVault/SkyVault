@@ -4,9 +4,19 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <vector>
-#include "../graphics/animation.h"
+#include <optional>
 
+
+#include "../graphics/animation.h" 
+#include "../graphics/tween.h"
 #include "../skytime.h"
+
+enum CombatState {
+    COMBAT_IDLE,
+    COMBAT_ATTACK_START,
+    COMBAT_ATTACKING,
+    COMBAT_ATTACK_ENDED,
+};
 
 struct CombatEntity {
     sf::Vector2f Size{sf::Vector2f(32, 64)};
@@ -20,6 +30,13 @@ struct CombatEntity {
         shape.setFillColor(sf::Color::Red);
         window->draw(shape);
     }
+
+    sf::Vector2f LerpTarget{sf::Vector2f(0, 0)};
+
+    CombatState state{COMBAT_IDLE};
+    bool moving_towards_target{true};
+
+    sf::Vector2f target_position;
 
 private:
     sf::Sprite sprite;

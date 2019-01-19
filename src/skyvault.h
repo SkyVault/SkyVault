@@ -74,4 +74,9 @@ inline bool file_exists(const std::string& name) {
     return f.good();
 }
 
+#ifndef log
+#define log(FMT, ...) fprintf(stderr, "[LOG] (%s:%d) " FMT "\n",\
+        __FILE__,__LINE__,##_VA_ARGS__)
+#endif//log
+
 #endif//SKY_VAULT_H

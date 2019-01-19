@@ -37,3 +37,5 @@ tags
 *vgcore*
 src/imgui.ini
 src/bin/release/SkyVault
+bin/*
+./des

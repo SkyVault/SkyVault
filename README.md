@@ -2,4 +2,4 @@
 
 Game written in C++
 
-[Scrot](./screenshot.png)
+![Scrot](./screenshot.png)

@@ -83,7 +83,7 @@ public:
 
     static auto* It() {
         std::call_once(Input::onceFlag, [] () {
-            instance.reset(new Input());     
+            instance.reset(new Input());
         });
 
         return instance.get();
@@ -101,21 +101,23 @@ public:
     bool IsMouseLeftPressed(int mouse_button);
 
     bool IsMouseLeftUp(int mouse_button);
-    bool IsMouseLeftReleased(int mouse_button); 
+    bool IsMouseLeftReleased(int mouse_button);
+
+    inline float GetMouseWheelDelta() { return mouse_wheel_delta; }
 
     sf::Vector2f GetMovementAxis() {
         // NOTE(Dustin): This can be done much more efficiently
         // but I dont know if its worth it at the moment.
-        
+
         auto left = IsKeyDown(sf::Keyboard::Left);
         auto right = IsKeyDown(sf::Keyboard::Right);
         auto up = IsKeyDown(sf::Keyboard::Up);
         auto down = IsKeyDown(sf::Keyboard::Down);
         // Check joystick
-        
+
         sf::Vector2f joyStickDir(0, 0);
 
-        sf::Vector2f keyDir(0, 0); 
+        sf::Vector2f keyDir(0, 0);
         if (left)    keyDir.x = -1;
         if (right)   keyDir.x =  1;
         if (up)      keyDir.y = -1;
@@ -136,6 +138,8 @@ private:
     MouseState left_mouse_button;
     MouseState right_mouse_button;
     MouseState middle_mouse_button;
+
+    float mouse_wheel_delta{0.0f};
 
     //std::map<ActionTypes, int> keyboard_mappings; // Used for remapping of keys and buttons
     //std::map<ActionTypes, int> button_mappings;

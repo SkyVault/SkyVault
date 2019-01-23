@@ -405,11 +405,13 @@ void Editor::Draw
     // TODO(Dustin): use isMousePressed
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         if (HoldingBillboardToBePlaced) {
+
             tiledMap->AddBillboard(
                     BillboardRect,
                     worldPos - sf::Vector2f((float)BillboardRect.width,
                     (float)BillboardRect.height) * 0.5f,
                     PlaceAsForeground);
+
             HoldingBillboardToBePlaced = false;
         }
     }

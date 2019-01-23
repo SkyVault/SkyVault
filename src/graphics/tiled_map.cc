@@ -390,6 +390,11 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         auto position = billboard->Sprite.getPosition();
         Art::It()->Draw(billboard->Sprite, position.y);
     }
+
+    for (const auto& billboard : foreground_billboards) {
+        auto position = billboard->Sprite.getPosition();
+        Art::It()->Draw(billboard->Sprite, 1000);
+    }
 }
 
 void TiledMap::Update(const SkyTime& time) {

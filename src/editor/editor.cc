@@ -109,6 +109,17 @@ void Editor::doUI
             last_mouse = sf::Vector2f(curr.x, curr.y);
         }
     }
+
+    // Camera zoom!
+    auto delta = Input::It()->GetMouseWheelDelta();
+
+    if (delta != 0.0f) {
+        if (delta < 0.0f) {
+            camera->View.zoom(1.1f);
+        } else {
+            camera->View.zoom(0.9f);
+        }
+    }
 }
 
 void Editor::doEntityInspector
@@ -492,7 +503,7 @@ void Editor::Draw
 
     sf::RectangleShape rect;
     rect.setFillColor(sf::Color(0, 0, 0, 0));
-    rect.setOutlineColor(sf::Color(255, 0, 0, 100));
+    rect.setOutlineColor(sf::Color(255, 0, 0, 20));
     rect.setOutlineThickness(1);
 
     for (const auto& billboard : billboards) {

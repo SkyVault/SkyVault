@@ -28,9 +28,9 @@
 #include <string>
 
 /*
-    TODO(Dustin): 
-        - [X] Place entities by dragging and dropping 
-        - [ ] Place entity spawns by dragging and dropping 
+    TODO(Dustin):
+        - [X] Place entities by dragging and dropping
+        - [ ] Place entity spawns by dragging and dropping
         - [ ] Allow for deletion of entities
  */
 
@@ -75,6 +75,8 @@ private:
 
     sf::Vector2f cursor;
     sf::Vector2f placement_offset{sf::Vector2f(0, 0)};
+
+    sf::Vector2f cam_size;
 
     bool HoldingBillboardToBePlaced;
     bool HoldingEntityToBePlaced;

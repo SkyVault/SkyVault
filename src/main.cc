@@ -12,11 +12,11 @@
 
 /*
 TODO(Dustin): Global todos that we need to get done before release
-    
+
 - [O] Camera
     * [X] Clamp camera to room
     * [X] Smooth camera follow
-    * [X] Pan camera from editor 
+    * [X] Pan camera from editor
 - [ ] Graphics
     * [ ] Simple phong shading
     * [ ] Water distortion
@@ -49,7 +49,7 @@ std::once_flag Assets::onceFlag;
 
 std::unique_ptr<Input> Input::instance;
 std::once_flag Input::onceFlag;
- 
+
 std::unique_ptr<QuestEngine> QuestEngine::instance;
 std::once_flag QuestEngine::onceFlag;
 

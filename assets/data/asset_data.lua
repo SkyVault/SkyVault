@@ -7,5 +7,6 @@ return {
         ["items"] = "assets/images/sprites14c.png",
         ["moveable_block"] = "assets/images/moveable_block.png",
         ["shop-sprites"] = "assets/images/shop-sprites.png",
+        ["blender_test"] = "assets/images/blender_test.png",
     }
 }

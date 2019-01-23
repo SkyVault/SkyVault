@@ -56,15 +56,15 @@ void Game::LoadContent() {
 
     lua->script(R"(
         function getTableAddress(t)
-            return tostring(t) 
+            return tostring(t)
         end
     )");
 
     lua->script(R"(
         function serialize(t)
-            assert(type(t) == "table") 
+            assert(type(t) == "table")
             return serpent.block(t, {comment = false})
-        end 
+        end
     )");
 
     lua->script(R"(
@@ -82,15 +82,15 @@ void Game::LoadContent() {
     // Set up the quest engine in lua
     // TODO(Dustin): Move this somewhere else
     (*lua)["QuestEngine_StartQuest"] = [](std::string str){
-        QuestEngine::It()->StartQuest(str); 
+        QuestEngine::It()->StartQuest(str);
     };
 
     (*lua)["QuestEngine_WorkingOnQuest"] = [](std::string str) {
-        return QuestEngine::It()->WorkingOnQuest(str); 
+        return QuestEngine::It()->WorkingOnQuest(str);
     };
 
     (*lua)["QuestEngine_IsCompleted"] = [](std::string str) {
-        return QuestEngine::It()->IsCompleted(str); 
+        return QuestEngine::It()->IsCompleted(str);
     };
 
     (*lua)["Gui_DoDialog"] = [&](std::string which) {
@@ -106,8 +106,8 @@ void Game::LoadContent() {
     //TODO(Dustin): Refactor into the assets singleton
     sol::table textures_data = asset_data["textures"];
     textures_data.for_each([&](sol::object const& key, sol::object const& value){
-        const auto skey = key.as<std::string>(); 
-        const auto spath = value.as<std::string>(); 
+        const auto skey = key.as<std::string>();
+        const auto spath = value.as<std::string>();
 
         auto* texture = new sf::Texture();
         if (!texture->loadFromFile(spath)) {
@@ -130,7 +130,7 @@ void Game::LoadContent() {
         if (!font->loadFromFile("assets/fonts/arcade.ttf")){
             std::cout << "Failed to load the arcade font\n";
         }
-        const_cast<sf::Texture&>(font->getTexture(42)).setSmooth(false); 
+        const_cast<sf::Texture&>(font->getTexture(42)).setSmooth(false);
         Assets::It()->Add("arcade", font);
     }
 
@@ -139,7 +139,7 @@ void Game::LoadContent() {
         if (!font->loadFromFile("assets/fonts/DejaVuSans.ttf")){
             std::cout << "Failed to load the DejaVuSans font\n";
         }
-        //const_cast<sf::Texture&>(font->getTexture(42)).setSmooth(false); 
+        //const_cast<sf::Texture&>(font->getTexture(42)).setSmooth(false);
         Assets::It()->Add("dialog", font);
     }
 
@@ -159,7 +159,7 @@ void Game::LoadContent() {
     camera->View.zoom(0.5f);
 
     editor = std::make_unique<Editor>();
-    editor->initUI(window, lua); 
+    editor->initUI(window, lua);
 }
 
 void Game::Update(const SkyTime& time) {
@@ -169,7 +169,7 @@ void Game::Update(const SkyTime& time) {
     Tween::It()->Update(time);
     GameState::It()->Update(time);
     QuestEngine::It()->Update(time, world);
-    tiledMap->Update(time); 
+    tiledMap->Update(time);
 
     auto p = world->GetFirstWith<Player>();
     if (p == nullptr) return;
@@ -183,7 +183,7 @@ void Game::Update(const SkyTime& time) {
 
     if (Input::It()->IsKeyDown(sf::Keyboard::LControl) &&
         Input::It()->IsKeyPressed(sf::Keyboard::E)) {
-        
+
         GameState::It()->ToggleFullEditor();
     }
 
@@ -214,7 +214,7 @@ void Game::Render() {
         c->circle.setPosition(c->x, c->circle.getPosition().y);
         window->draw(c->circle);
     }
-#endif//    
+#endif//
 
     gui->Render(window);
 }
@@ -224,7 +224,7 @@ void Game::RunLoop() {
 
     while (running) {
         running = window->isOpen();
-        
+
         Input::It()->Update();
 
         sf::Event event;
@@ -235,9 +235,9 @@ void Game::RunLoop() {
 
             switch (event.type) {
                 case sf::Event::Closed: {
-                    running = false; 
+                    running = false;
                     window->close();
-                    break;                             
+                    break;
                 }
                 default:
                     break;
@@ -247,13 +247,13 @@ void Game::RunLoop() {
         let dt = clock.restart().asSeconds();
         var fps = 0.f;
 
-        if (dt != 0.0) 
+        if (dt != 0.0)
             fps = 1.f / dt;
 
         // This is what we pass by constant reference to each loop that requires it
         SkyTime time = {
             dt,
-            fps, 
+            fps,
             timer,
             ticks
         };
@@ -276,7 +276,7 @@ void Game::RunLoop() {
 
         ticks++;
         timer += dt;
-    } 
+    }
 }
 
 void Game::DestroyContent() {
@@ -291,7 +291,7 @@ void Game::Run() {
     );
 
     window->setFramerateLimit(60);
-    window->setPosition(sf::Vector2i(400, 80));
+    window->setPosition(sf::Vector2i(30, 30));
     GameState::It()->SetWindowSize(window->getSize());
 
     LoadContent();
@@ -299,10 +299,10 @@ void Game::Run() {
     RunLoop();
 
     DestroyContent();
-   
+
     //TODO(Dustin): @Refactor
-    // Lame that we have to call this here, but the destructor 
-    // does not get called at the end of the program if 
+    // Lame that we have to call this here, but the destructor
+    // does not get called at the end of the program if
     // force killed
     tiledMap->Destroy();
 

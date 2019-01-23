@@ -331,8 +331,23 @@ void CombatLayer::Render(std::unique_ptr<sf::RenderWindow>& window) {
 
     player->Draw(window);
 
+    int i = 0;
     for (auto& enemy : enemies) {
-        enemy->Draw(window);
+
+        if (attack_indicator == i) {
+            auto pos = enemy->Position -
+                sf::Vector2f(0, 10.0f); 
+
+            sf::RectangleShape shape;
+            shape.setPosition(pos);
+            shape.setSize(sf::Vector2f(10, 10));
+            shape.setFillColor(sf::Color(255, 150, 0));
+            window->draw(shape);
+
+        }
+
+        enemy->Draw(window); 
+        ++i;
     }
 
     // Draw ui buttons

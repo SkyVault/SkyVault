@@ -79,6 +79,8 @@ private:
     bool HoldingBillboardToBePlaced;
     bool HoldingEntityToBePlaced;
 
+    bool PlaceAsForeground{false};
+
     EntityID CurrentlySelectedEntity{-1};
 
     sf::IntRect BillboardRect{sf::IntRect(0, 0, 0, 0)};

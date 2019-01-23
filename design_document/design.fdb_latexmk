@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1547329280 "design.tex" "design.pdf" "design" 1547329280
+["pdflatex"] 1547949549 "design.tex" "design.pdf" "design" 1547949550
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1543696176 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1543696176 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "/usr/share/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1543696176 1324 c910af8c371558dc20f2d7822f66fe64 ""
@@ -21,11 +21,11 @@
   "/usr/share/texmf-dist/tex/latex/base/article.cls" 1543696176 19823 fcbc01552b07b608574cbf8e1977e0c0 ""
   "/usr/share/texmf-dist/tex/latex/base/size10.clo" 1543696176 8294 b0f177401f895563eb19304d2389582d ""
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1543696176 33301 a3134070eacafb10b1f371612ce2650d ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1546962792 334148 1b9d30ff8c861d6082e3e9bfccd8d7eb ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1546962791 7910427 9ba2adaaac2c58fd58d90a88b6a78253 ""
-  "design.aux" 1547329280 958 6439d295ddc045426b6f4833dd774826 ""
-  "design.tex" 1547329278 462 80c297b9d50dcefddd288dc83db52167 ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1547748042 2842348 edc1b8bc31b681518c3c925a1db894a8 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1547748032 7910428 8dfbd21144aa904023e03c4362028fce ""
+  "design.aux" 1547949550 1037 6f6cb0ef00670d747512e91a41737987 ""
+  "design.tex" 1547949542 1028 ea99cc57ff937d41743180abfe699379 ""
   (generated)
+  "design.log"
   "design.aux"
   "design.pdf"
-  "design.log"

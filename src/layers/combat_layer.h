@@ -85,6 +85,8 @@ private:
 
     std::vector<std::unique_ptr<CombatActionButton>> combat_action_buttons;
 
+    int attack_indicator{0};
+
     bool players_turn{true};
 
     unsigned int turn_of_current_enemy{0};

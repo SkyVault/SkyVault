@@ -44,7 +44,7 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
     auto* child = map_xml->FirstChildElement();
     while(child != nullptr){
         let name = child->Value();
-        
+
         if (strcmp(name, "properties") == 0) {
             // Handle properties of the map
         } else if (strcmp(name, "tileset") == 0) {
@@ -65,18 +65,18 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
                         std::cout << "Tiled map failed to load tileset image: " << source << std::endl;
                     }
                 }
-            
+
                 tilesets.push_back(tileset);
             }
         } else if (strcmp(name, "layer") == 0) {
             // Push a new tile layer
-            
+
             let id = std::string{child->Attribute("id")};
             let name = std::string{child->Attribute("name")};
-            
+
             let data = child->FirstChildElement("data");
             auto text = std::string{data->GetText()};
-            std::vector<unsigned char> decompressed; 
+            std::vector<unsigned char> decompressed;
             decompressed.resize(width*height*4);
 
             const auto encoding = std::string{data->Attribute("encoding")};
@@ -88,7 +88,7 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
                     return false;
                 }
 
-                text = trim(text); 
+                text = trim(text);
                 text = base64_decode(text);
 
                 isCompressed = gzip::is_compressed(text.data(), text.size());
@@ -97,7 +97,7 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
                 int i = 0;
                 for (unsigned char c : s)
                     decompressed[i++] = c;
-            }          
+            }
 
             var* layer = new TiledLayer();
             layer->name = name;
@@ -108,7 +108,7 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
             layer->vertices.resize(width * height * 4);
 
             if (!isCompressed) {
-                var stream = std::stringstream(text); 
+                var stream = std::stringstream(text);
                 int i = 0;
                 while (stream >> i) {
                     layer->data[ptr++] = i;
@@ -118,12 +118,12 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
             } else {
                 int ptr = 0;
                 for (auto i = 0u; i < (decompressed.size()); i+=4u) {
-                    layer->data[ptr++] = 
-                          decompressed[i + 0] 
-                        | decompressed[i + 1] << 8 
-                        | decompressed[i + 2] << 16 
+                    layer->data[ptr++] =
+                          decompressed[i + 0]
+                        | decompressed[i + 1] << 8
+                        | decompressed[i + 2] << 16
                         | decompressed[i + 3] << 24;
-                } 
+                }
             }
 
             for (auto i = 0; i < width; i++) {
@@ -181,21 +181,21 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
 
                     if (type == "Door") {
                         // Spawn a door entity
-                        const auto properties = objectXml->FirstChildElement("properties"); 
+                        const auto properties = objectXml->FirstChildElement("properties");
                         if (properties == nullptr){
                             std::cout << "Door is missing properties" << std::endl;
                         } else {
                             if (const auto to = properties->FirstChildElement("property")){
                                 const auto _to = std::string{to->Attribute("value")};
                                 world->AddDoor
-                                    ( _to 
+                                    ( _to
                                     , ox
                                     , oy
                                     , owidth
                                     , oheight );
                             } else {
                                 std::cout << "Door is missing goto property" << std::endl;
-                            } 
+                            }
                         }
                     }
 
@@ -208,7 +208,7 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
 
     // TODO(Dustin): We are going to need to rewrite the majority of this.
     // It's very dangerous and needs to be rewritten to be safer.
-   
+
     // Load billboards and entities
     std::string pcopy = path;
     auto beg = path.begin();
@@ -217,7 +217,7 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
         if (*end == '.'){ break; }
         --end;
     }
-    
+
     std::string file_name = std::string(beg, end);
     const std::string data_file_path = file_name + ".data.lua";
 
@@ -225,9 +225,9 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
 
         std::string code = R"(
 return {
-    billboard_regions = {}, 
-    billboards = {}, 
-    solids = {}, 
+    billboard_regions = {},
+    billboards = {},
+    solids = {},
     entities = {},
 }
         )";
@@ -242,7 +242,7 @@ return {
         }
         return true;
     };
-    
+
     if (!file_exists(data_file_path)) {
         std::ofstream file(data_file_path);
         if (!file) {
@@ -266,14 +266,14 @@ return {
         // Load the entities
         if (meta_data["entities"].valid()) {
             auto entities_table = meta_data.get<sol::table>("entities");
-            
-            entities_table.for_each([&](const sol::object& key, const sol::object& value){ 
+
+            entities_table.for_each([&](const sol::object& key, const sol::object& value){
                 const auto entity_table = value.as<sol::table>();
                 const auto which = entity_table.get<std::string>(1);
                 const auto x = entity_table.get<float>(2);
                 const auto y = entity_table.get<float>(3);
 
-                const std::string uuid = (*lua)["getTableAddress"](entity_table); 
+                const std::string uuid = (*lua)["getTableAddress"](entity_table);
                 auto sh = std::make_shared<EntitySpawn>();
                 sh->Position = sf::Vector2f(x, y);
                 sh->EntityName = which;
@@ -288,7 +288,7 @@ return {
                 }
             });
         } else {
-            std::cout << "Error::TiledMap::loadTiledMap:: Failed to load the entities from the data script, entities table entry is invalid, map: " << path << std::endl; 
+            std::cout << "Error::TiledMap::loadTiledMap:: Failed to load the entities from the data script, entities table entry is invalid, map: " << path << std::endl;
         }
 
         // Load the billboards
@@ -316,7 +316,7 @@ return {
                 billboards.push_back(sh);
             });
         } else {
-            std::cout << "Error::TiledMap::loadTiledMap:: Failed to load the billboards from the data script, billboards table entry is invalid, map: " << path << std::endl; 
+            std::cout << "Error::TiledMap::loadTiledMap:: Failed to load the billboards from the data script, billboards table entry is invalid, map: " << path << std::endl;
         }
     }
 
@@ -324,7 +324,7 @@ return {
     return true;
 }
 
-void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position){
+void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position, bool foreground){
     if (meta_data["billboards"].valid()) {
         auto t  = meta_data.get<sol::table>("billboards");
         sol::table b = lua->create_table();
@@ -334,7 +334,7 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position){
         b[1 + 3] = region.height;
         b[1 + 4] = position.x;
         b[1 + 5] = position.y;
-        t.add(b); 
+        t.add(b);
 
         sf::Sprite sprite;
         sprite.setTexture(tilesets[0].image);
@@ -342,10 +342,13 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position){
         sprite.setPosition(position);
 
         const std::string uuid = (*lua)["getTableAddress"](t);
-        auto sh = std::make_shared<Billboard>(sprite); 
+        auto sh = std::make_shared<Billboard>(sprite);
         sh->Uuid = uuid;
 
-        billboards.push_back(sh);
+        if (!foreground)
+            billboards.push_back(sh);
+        else
+            foreground_billboards.push_back(sh);
     }
 }
 
@@ -359,7 +362,7 @@ void TiledMap::AddEntitySpawn(const std::string& which, float x, float y) {
     e[1 + 0] = which;
     e[1 + 1] = x;
     e[1 + 2] = y;
-    t.add(e); 
+    t.add(e);
 
     es->Uuid = (*lua)["getTableAddress"](t);
 
@@ -385,8 +388,8 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     for (const auto& billboard : billboards) {
         auto position = billboard->Sprite.getPosition();
-        Art::It()->Draw(billboard->Sprite, position.y); 
-    } 
+        Art::It()->Draw(billboard->Sprite, position.y);
+    }
 }
 
 void TiledMap::Update(const SkyTime& time) {
@@ -446,9 +449,9 @@ std::string TiledMap::base64_decode(std::string const& encoded_string) {
     const std::string base64_chars =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz"
-        "0123456789+/";            
-        
-    auto is_base64 = 
+        "0123456789+/";
+
+    auto is_base64 =
         [](unsigned char c)->bool {
         return (static_cast<bool>(isalnum(c)) || (c == '+') || (c == '/'));
     };
@@ -501,14 +504,14 @@ std::string TiledMap::base64_decode(std::string const& encoded_string) {
 void TiledMap::Destroy() {
     // TODO(Dustin): We are going to need to rewrite the majority of this.
     // It's very dangerous and needs to be rewritten to be safer.
-    
+
     if (layers.size() == 0) return;
     for (auto* layer : layers)
         delete layer;
 
     billboards.clear();
     entity_spawns.clear();
-    
+
     // Write the meta_data back to the file
     if (!lua) return;
     // TODO(Dustin): Explicitly handle errors and

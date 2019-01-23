@@ -22,13 +22,13 @@ void Editor::initUI(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<s
     this->lua = lua;
     this->lua->set_function("print", [](const char *  y){ std::cout << y << std::endl; });
     this->lua->set_function("noclip", [](){
-        GameState::It()->ToggleNoClip(); 
+        GameState::It()->ToggleNoClip();
         std::cout << "Toggled No clip to (" << (GameState::It()->IsNoClip() ? "true" : "false") << ")\n";
     });
 
     editor_save_data = lua->script_file("assets/data/editor_save_data.lua");
     if (editor_save_data.get<bool>("is_open")) {
-        GameState::It()->ToggleFullEditor();        
+        GameState::It()->ToggleFullEditor();
     }
 }
 
@@ -50,12 +50,12 @@ void Editor::doUI
     ImGui::Begin("Sky Vault"); // begin window
         // Menu bar
 
-        if (ImGui::BeginMenuBar()) { 
-            if (ImGui::BeginMenu("File")) { 
+        if (ImGui::BeginMenuBar()) {
+            if (ImGui::BeginMenu("File")) {
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("Edit")) { 
+            if (ImGui::BeginMenu("Edit")) {
                 ImGui::EndMenu();
             }
 
@@ -82,7 +82,7 @@ void Editor::doUI
         }
     ImGui::End();
 
-    if (GameState::It()->FullEditor()){ 
+    if (GameState::It()->FullEditor()){
         doColors(sky);
         doInGameTerminal();
         doEntityInspector(world, window, tiledMap, camera);
@@ -93,12 +93,12 @@ void Editor::doUI
 
     // Camera control @drag
     if (GameState::It()->FullEditor() && moving == -1) {
-        static sf::Vector2f last_mouse{sf::Vector2f(0, 0)}; 
+        static sf::Vector2f last_mouse{sf::Vector2f(0, 0)};
         if (Input::It()->IsKeyDown(sf::Keyboard::LControl) &&
 
             sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             auto curr = sf::Mouse::getPosition();
-            auto delta = sf::Vector2f(curr.x, curr.y) - last_mouse; 
+            auto delta = sf::Vector2f(curr.x, curr.y) - last_mouse;
             delta *= 0.7f;
             auto newPos = camera->View.getCenter() + delta * -1.0f;
             last_mouse = sf::Vector2f(curr.x, curr.y);
@@ -131,14 +131,14 @@ void Editor::doEntityInspector
 
     ImGui::SetWindowPos
         ( ImVec2(windowPos.x, windowPos.y)
-        , true   
-        ); 
-    
+        , true
+        );
+
     ImGui::SetWindowSize
         ( ImVec2(ww * 0.20f, wh)
         , true
         );
-    
+
     if (ImGui::TreeNode("Inspector")) {
         ImGui::BeginGroup();
 
@@ -156,17 +156,17 @@ void Editor::doEntityInspector
 
             if (ImGui::CollapsingHeader(str.c_str())){
                 if (entity->Has<Body>()) {
-            
+
                     auto body = entity->Get<Body>();
                     const auto btn_label = "Goto##"+std::to_string(id++);
                     if (ImGui::Button(btn_label.c_str())) {
                         //Move camera to location
-                        
+
                         camera->View.setCenter(body->Center());
                     }
 
                     float p[] = {body->Position.x, body->Position.y};
-                    ImGui::DragFloat2(std::string{"Position##"+entity->GetUUID()}.c_str(), p);
+                    ImGui::DragFloat2(std::string{"Position##"+std::to_string(entity->GetUUID())}.c_str(), p);
                     body->Position.x = p[0];
                     body->Position.y = p[1];
                 }
@@ -189,7 +189,7 @@ void Editor::doEntityInspector
                             ImGui::RadioButton(("North##"+std::string{id++}).c_str(), &direction, 0); ImGui::SameLine();
                             ImGui::RadioButton(("South##"+std::string{id++}).c_str(), &direction, 1); ImGui::SameLine();
                             ImGui::RadioButton(("East##"+std::string{id++}).c_str(), &direction, 2); ImGui::SameLine();
-                            ImGui::RadioButton(("West##"+std::string{id++}).c_str(), &direction, 3); 
+                            ImGui::RadioButton(("West##"+std::string{id++}).c_str(), &direction, 3);
 #endif//
                             if (ImGui::Button("North")) { entity->Get<Laser>()->Facing = North; }
                             ImGui::SameLine();
@@ -197,7 +197,7 @@ void Editor::doEntityInspector
                             if (ImGui::Button("West")) { entity->Get<Laser>()->Facing = West; }
                             ImGui::SameLine();
                             if (ImGui::Button("East")) { entity->Get<Laser>()->Facing = East; }
-            
+
                             ImGui::RadioButton("Red", &color, 0); ImGui::SameLine();
                             ImGui::RadioButton("Blue", &color, 1); ImGui::SameLine();
                             ImGui::RadioButton("Green", &color, 2);
@@ -225,10 +225,10 @@ void Editor::doEntityInspector
             ImGui::SameLine();
 
             if (ImGui::Button(("spawn##"+std::to_string(i++)).c_str())) {
-                entity_prefab = Assets::It()->GetPrefab(name); 
-                HoldingEntityToBePlaced = true; 
+                entity_prefab = Assets::It()->GetPrefab(name);
+                HoldingEntityToBePlaced = true;
             }
-            
+
             ImGui::SameLine();
 
             if (ImGui::Button(("place##"+std::to_string(i++)).c_str())) {
@@ -240,6 +240,7 @@ void Editor::doEntityInspector
     }
 
     if (ImGui::TreeNode("Billboards")) {
+        ImGui::Checkbox("Foreground", &PlaceAsForeground);
         ImGui::BeginGroup();
 
         const auto meta = tiledMap->GetMetaData();
@@ -249,7 +250,7 @@ void Editor::doEntityInspector
 
             int i = 99;
             bt.for_each([&](sol::object const& key, sol::object const& value) {
-                ImGui::PushID(i++); 
+                ImGui::PushID(i++);
 
                 const auto tab = value.as<sol::table>();
                 const auto x = (int)tab[1];
@@ -270,7 +271,7 @@ void Editor::doEntityInspector
 
                 if (ImGui::ImageButton(sprite)) {
                     std::cout << "REEEEEEEEEEE" << std::endl;
-                    
+
                     HoldingBillboardToBePlaced = true;
                     BillboardRect = region;
 
@@ -278,7 +279,7 @@ void Editor::doEntityInspector
 
                 if (i % 3 != 0) ImGui::SameLine();
 
-                ImGui::PopID(); 
+                ImGui::PopID();
             });
         }
 
@@ -291,7 +292,7 @@ void Editor::doEntityInspector
 void Editor::doInGameTerminal() {
     ImGui::SetNextWindowSize(ImVec2(520, 256));
     ImGui::SetNextWindowPos(ImVec2(0, 0));
-    
+
     ImGui::Begin("Console");
 
     static char buff[256];
@@ -301,7 +302,7 @@ void Editor::doInGameTerminal() {
     ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar); // Leave room for 1 separator + 1 InputText
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1));
-    
+
     for (const auto& cmd : command_history) {
         ImVec4 col = ImVec4(1.0, 1.0, 1.0, 1.0);
         if (cmd.find("[ERROR]") != std::string::npos) {
@@ -335,16 +336,16 @@ void Editor::doInGameTerminal() {
         command_history.push_back(command);
 
         std::string sentence{output.str()};
-        std::stringstream ss(sentence);        
+        std::stringstream ss(sentence);
         std::string to;
         while (std::getline(ss, to, '\n')) {
-            command_history.push_back(to); 
+            command_history.push_back(to);
         }
 
         std::cout.rdbuf(pre);
 
         memset(buff, 0, sizeof(buff));
-        
+
         reclaim_focus = true;
     }
 
@@ -369,7 +370,7 @@ void Editor::Draw
     sf::Vector2f worldPos = window->mapPixelToCoords(pixelPos);
 
     // Draw the editor controls over each entity
-    // delete / move 
+    // delete / move
     for (const auto& entity : entities) {
         if (entity->Has<Body>()) {
             auto body = entity->Get<Body>();
@@ -404,11 +405,15 @@ void Editor::Draw
     // TODO(Dustin): use isMousePressed
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         if (HoldingBillboardToBePlaced) {
-            tiledMap->AddBillboard(BillboardRect, worldPos - sf::Vector2f((float)BillboardRect.width, (float)BillboardRect.height) * 0.5f);
+            tiledMap->AddBillboard(
+                    BillboardRect,
+                    worldPos - sf::Vector2f((float)BillboardRect.width,
+                    (float)BillboardRect.height) * 0.5f,
+                    PlaceAsForeground);
             HoldingBillboardToBePlaced = false;
         }
     }
-    
+
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         if (HoldingEntityToBePlaced) {
             auto e = world->Create(entity_prefab);
@@ -462,8 +467,8 @@ void Editor::Draw
             sprite.setTexture(*Assets::It()->Get<sf::Texture>(texture));
             sprite.setColor(sf::Color(255, 255, 255, 100));
             sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)EntityRect.width, (float)EntityRect.height) * 0.5f);
-            window->draw(sprite); 
-        } else if (const sol::table SpriteData = components.get<sol::table>("Item")) { 
+            window->draw(sprite);
+        } else if (const sol::table SpriteData = components.get<sol::table>("Item")) {
             auto texture = SpriteData.get<std::string>("texture");
             if (const sol::table region = SpriteData.get<sol::table>("region")) {
                 EntityRect.left = (unsigned int)(int)region[1];
@@ -475,7 +480,7 @@ void Editor::Draw
             sprite.setTexture(*Assets::It()->Get<sf::Texture>(texture));
             sprite.setColor(sf::Color(255, 255, 255, 100));
             sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)EntityRect.width, (float)EntityRect.height) * 0.5f);
-            window->draw(sprite); 
+            window->draw(sprite);
         }
 
     }
@@ -487,14 +492,14 @@ void Editor::Draw
     rect.setFillColor(sf::Color(0, 0, 0, 0));
     rect.setOutlineColor(sf::Color(255, 0, 0, 100));
     rect.setOutlineThickness(1);
-    
+
     for (const auto& billboard : billboards) {
         const auto region = billboard->Sprite.getTextureRect();
         rect.setSize(sf::Vector2f(region.width, region.height));
         rect.setPosition(billboard->Sprite.getPosition());
         window->draw(rect);
 
-        constexpr auto SIZE{4u}; 
+        constexpr auto SIZE{4u};
 
         rect.setSize(sf::Vector2f(SIZE, SIZE));
         rect.setPosition
@@ -521,30 +526,30 @@ void Editor::Draw
     text.setFont(*font);
     text.setFillColor(sf::Color(0, 255, 255, 100));
     text.setScale(0.2f, 0.2f);
- 
+
     //NOTE(Dustin): The use of a pointer is awful, what would be better
     // is an integer that we can use to query the entity, or maybe a shared
     // pointer
     if (moving != -1) {
         auto e_opt = world->GetEntity(moving);
-        if (e_opt) { 
+        if (e_opt) {
             auto e = e_opt.value();
             if (e->Has<Body>()) {
-                auto body = e->Get<Body>(); 
+                auto body = e->Get<Body>();
                 body->Position = worldPos + placement_offset;
             }
 
             if (Input::It()->IsMouseLeftReleased(1)) {
                 moving = -1;
-            } 
+            }
         }
-    } 
+    }
 
     //@MovingEntities
     for (const auto& entity : world->GetEntities()) {
         if (!entity->Has<Body>()) { continue; }
-        if (Input::It()->IsMouseLeftPressed(1)) { 
-            auto body = entity->Get<Body>(); 
+        if (Input::It()->IsMouseLeftPressed(1)) {
+            auto body = entity->Get<Body>();
             const auto [mx, my] = worldPos;
 
             if (mx > body->Position.x && mx < body->Position.x + body->Size.x &&
@@ -555,7 +560,7 @@ void Editor::Draw
                     , body->Position.y - my
                     );
 
-                moving = entity->GetID(); 
+                moving = entity->GetID();
                 CurrentlySelectedEntity = entity->GetUUID();
             }
         }
@@ -566,7 +571,7 @@ void Editor::Draw
         rect.setPosition(entity_spawn->Position);
         window->draw(rect);
 
-        constexpr auto SIZE{4u}; 
+        constexpr auto SIZE{4u};
 
         text.setString(entity_spawn->EntityName);
         text.setPosition(entity_spawn->Position + sf::Vector2f(2, 2));
@@ -626,5 +631,5 @@ void Editor::doColors(std::shared_ptr<Sky>& sky) {
         ImGui::ColorEdit3("Low Color##3", (float*)&sky->Lowsky);
     //}
 
-    ImGui::End(); 
+    ImGui::End();
 }

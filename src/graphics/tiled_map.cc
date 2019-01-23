@@ -398,7 +398,7 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     for (const auto& billboard : foreground_billboards) {
         auto position = billboard->Sprite.getPosition();
-        Art::It()->Draw(billboard->Sprite, 1000);
+        Art::It()->Draw(billboard->Sprite, 1000 + position.y);
     }
 }
 
@@ -434,6 +434,7 @@ void TiledMap::Update(const SkyTime& time) {
         }
     }
 
+    // TODO(Dustin): Refactor
     if (billboards.size() == 1)  {
         if (billboards[0]->ShouldRemove){
             auto t = meta_data.get<sol::table>("billboards");
@@ -448,6 +449,26 @@ void TiledMap::Update(const SkyTime& time) {
                 auto t = meta_data.get<sol::table>("billboards");
                 RemoveBillboardFromMetaData(t,*it);
                 it = billboards.erase(it);
+                return;
+            }
+            ++it;
+        }
+    }
+
+    if (foreground_billboards.size() == 1)  {
+        if (foreground_billboards[0]->ShouldRemove){
+            auto t = meta_data.get<sol::table>("billboards");
+            RemoveBillboardFromMetaData(t,foreground_billboards[0]);
+            foreground_billboards.clear();
+        }
+    } else {
+        // TODO(Dustin): Find out why we need to return
+        auto it = foreground_billboards.begin();
+        while (it != foreground_billboards.end()){
+            if ((*it)->ShouldRemove){
+                auto t = meta_data.get<sol::table>("billboards");
+                RemoveBillboardFromMetaData(t,*it);
+                it = foreground_billboards.erase(it);
                 return;
             }
             ++it;

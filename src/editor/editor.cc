@@ -30,6 +30,8 @@ void Editor::initUI(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<s
     if (editor_save_data.get<bool>("is_open")) {
         GameState::It()->ToggleFullEditor();
     }
+
+    ImGui::StyleColorsLight();
 }
 
 void Editor::processEvent(sf::Event& event) {

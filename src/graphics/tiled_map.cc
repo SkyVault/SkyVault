@@ -303,6 +303,7 @@ return {
                 const auto rh = billboard_table.get<int>(4);
                 const auto x = billboard_table.get<float>(5);
                 const auto y = billboard_table.get<float>(6);
+                const auto fore = billboard_table.get<bool>(7);
 
                 sf::Sprite sprite;
                 sprite.setTexture(tilesets[0].image);
@@ -313,7 +314,10 @@ return {
                 auto sh = std::make_shared<Billboard>(sprite);
                 sh->Uuid = uuid;
 
-                billboards.push_back(sh);
+                if (!fore)
+                    billboards.push_back(sh);
+                else
+                    foreground_billboards.push_back(sh);
             });
         } else {
             std::cout << "Error::TiledMap::loadTiledMap:: Failed to load the billboards from the data script, billboards table entry is invalid, map: " << path << std::endl;
@@ -334,6 +338,7 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position, bo
         b[1 + 3] = region.height;
         b[1 + 4] = position.x;
         b[1 + 5] = position.y;
+        b[1 + 6] = foreground;
         t.add(b);
 
         sf::Sprite sprite;
@@ -540,7 +545,15 @@ void TiledMap::Destroy() {
 }
 
 std::vector<std::shared_ptr<Billboard>> TiledMap::GetBillboards(){
-    return billboards;
+    std::vector<std::shared_ptr<Billboard>> all_billboards;
+
+    for (auto& b : billboards)
+        all_billboards.push_back(b);
+
+    for (auto& b : foreground_billboards)
+        all_billboards.push_back(b);
+
+    return all_billboards;
 }
 
 std::vector<std::shared_ptr<EntitySpawn>> TiledMap::GetEntitySpawns() {

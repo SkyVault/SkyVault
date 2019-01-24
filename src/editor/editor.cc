@@ -503,36 +503,46 @@ void Editor::Draw
     const auto& billboards = tiledMap->GetBillboards();
     const auto& entity_spawns = tiledMap->GetEntitySpawns();
 
+    const auto [mx, my] = worldPos; // Mouse in world coords
+
     sf::RectangleShape rect;
-    rect.setFillColor(sf::Color(0, 0, 0, 0));
-    rect.setOutlineColor(sf::Color(255, 0, 0, 20));
+    rect.setOutlineColor(sf::Color(0, 255, 255, 70));
     rect.setOutlineThickness(1);
 
+    constexpr auto BTN_SIZE{4u};
+
     for (const auto& billboard : billboards) {
+        rect.setFillColor(sf::Color(0, 0, 0, 0));
+
         const auto region = billboard->Sprite.getTextureRect();
-        rect.setSize(sf::Vector2f(region.width, region.height));
-        rect.setPosition(billboard->Sprite.getPosition());
-        window->draw(rect);
+        const auto [bx, by] = billboard->Sprite.getPosition();
 
-        constexpr auto SIZE{4u};
+        // Only draw the billboards box if mouse is within it
+        if (mx > bx && mx < bx + region.width &&
+                my > by && my < by + region.height) {
+            rect.setSize(sf::Vector2f(region.width, region.height));
+            rect.setPosition(billboard->Sprite.getPosition());
 
-        rect.setSize(sf::Vector2f(SIZE, SIZE));
-        rect.setPosition
-            ( billboard->Sprite.getPosition()
-            - sf::Vector2f(0, SIZE + 1));
+            window->draw(rect);
 
-        if (Input::It()->IsMouseLeftPressed(sf::Mouse::Left)) {
-            const auto [mx, my] = worldPos;
-            const auto [bx, by] = rect.getPosition();
+            rect.setSize(sf::Vector2f(BTN_SIZE, BTN_SIZE));
+            rect.setPosition(billboard->Sprite.getPosition());
 
-            if (mx > bx && mx < bx + SIZE &&
-                my > by && my < by + SIZE) {
+            if (mx > bx && mx < bx + BTN_SIZE &&
+                my > by && my < by + BTN_SIZE) {
 
-                billboard->ShouldRemove = true;
-            }
+                rect.setFillColor(sf::Color(200, 255, 255));
+
+                if (Input::It()->IsMouseLeftPressed(sf::Mouse::Left)) {
+                    const auto [bx, by] = rect.getPosition();
+
+
+                        billboard->ShouldRemove = true;
+                    }
+                }
+
+            window->draw(rect);
         }
-
-        window->draw(rect);
     }
 
     auto font = Assets::It()->Get<sf::Font>("dialog");

@@ -103,6 +103,10 @@ public:
     bool IsMouseLeftUp(int mouse_button);
     bool IsMouseLeftReleased(int mouse_button);
 
+    void ResetLeftMousePressed() {
+        left_mouse_button.last = left_mouse_button.state = false;
+    }
+
     inline float GetMouseWheelDelta() { return mouse_wheel_delta; }
 
     sf::Vector2f GetMovementAxis() {

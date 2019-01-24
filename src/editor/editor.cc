@@ -416,7 +416,8 @@ void Editor::Draw
     }
 
     // TODO(Dustin): use isMousePressed
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    if (Input::It()->IsMouseLeftPressed(0) &&
+        !Input::It()->IsKeyDown(sf::Keyboard::LControl)) {
         if (HoldingBillboardToBePlaced) {
 
             tiledMap->AddBillboard(
@@ -515,7 +516,7 @@ void Editor::Draw
         rect.setFillColor(sf::Color(0, 0, 0, 0));
 
         const auto region = billboard->Sprite.getTextureRect();
-        const auto [bx, by] = billboard->Sprite.getPosition();
+        auto [bx, by] = billboard->Sprite.getPosition();
 
         // Only draw the billboards box if mouse is within it
         if (mx > bx && mx < bx + region.width &&
@@ -528,18 +529,44 @@ void Editor::Draw
             rect.setSize(sf::Vector2f(BTN_SIZE, BTN_SIZE));
             rect.setPosition(billboard->Sprite.getPosition());
 
+            // Delete button
             if (mx > bx && mx < bx + BTN_SIZE &&
                 my > by && my < by + BTN_SIZE) {
 
-                rect.setFillColor(sf::Color(200, 255, 255));
+                rect.setFillColor(sf::Color(255, 111, 255));
+
+                if (Input::It()->IsMouseLeftPressed(sf::Mouse::Left)) {
+                    billboard->ShouldRemove = true;
+                }
+            }
+
+            window->draw(rect);
+
+            rect.setFillColor(sf::Color(0, 0, 0, 0));
+
+            rect.setPosition
+                ( billboard->Sprite.getPosition()
+                + sf::Vector2f(BTN_SIZE + 4, 0)
+                );
+
+            bx += BTN_SIZE + 4;
+
+            // Move button
+            if (mx > bx && mx < bx + BTN_SIZE &&
+                my > by && my < by + BTN_SIZE) {
+
+                rect.setFillColor(sf::Color(111, 222, 255));
 
                 if (Input::It()->IsMouseLeftPressed(sf::Mouse::Left)) {
                     const auto [bx, by] = rect.getPosition();
 
+                    billboard->ShouldRemove = true;
+                    HoldingBillboardToBePlaced = true;
+                    BillboardRect = billboard->Sprite.getTextureRect();
+                    Input::It()->ResetLeftMousePressed();
 
-                        billboard->ShouldRemove = true;
-                    }
                 }
+            }
 
             window->draw(rect);
         }

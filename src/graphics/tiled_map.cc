@@ -347,6 +347,7 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position, bo
         sprite.setPosition(position);
 
         const std::string uuid = (*lua)["getTableAddress"](t);
+        std::cout << "UUID: " << uuid << std::endl;
         auto sh = std::make_shared<Billboard>(sprite);
         sh->Uuid = uuid;
 
@@ -422,12 +423,12 @@ void TiledMap::Update(const SkyTime& time) {
         }
     } else {
         // TODO(Dustin): Find out why we need to return
-        auto it =entity_spawns.begin();
-        while (it !=entity_spawns.end()){
+        auto it = entity_spawns.begin();
+        while (it != entity_spawns.end()){
             if ((*it)->ShouldRemove){
                 auto t = meta_data.get<sol::table>("entities");
                 RemoveBillboardFromMetaData(t,*it);
-                it =entity_spawns.erase(it);
+                it = entity_spawns.erase(it);
                 return;
             }
             ++it;

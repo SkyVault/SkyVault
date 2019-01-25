@@ -30,6 +30,12 @@ void LevelLayer::Load(){
     }
 
     {
+        var test_emitter = world->Create();
+        test_emitter->Add<Body>(sf::Vector2f(500 + 64, 400), sf::Vector2f(16, 16));
+        test_emitter->Add<ParticleEmitter>();
+    }
+
+    {
         var other = world->Create();
         other->AddTags("Enemy");
         other->Add<Body>(sf::Vector2f(500 + 32, 400 - 32), sf::Vector2f(32,16));

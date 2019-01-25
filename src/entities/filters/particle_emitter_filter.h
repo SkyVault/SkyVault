@@ -3,6 +3,7 @@
 #endif//SKYVAULT_PARTICLE_FILTER
 
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 #include "../components/particle_emitter.h"
 #include "../components/body.h"
@@ -17,4 +18,7 @@ struct ParticleEmitterFilter: public Filter {
 
     void Update(const SkyTime& time, Entity* entity) override;
     void Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) override;
+
+private:
+    std::vector<std::unique_ptr<Particle>> particles;
 };

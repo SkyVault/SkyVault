@@ -17,6 +17,7 @@
 #include "../entities/components/laser.h"
 #include "../entities/components/shop_keeper.h"
 #include "../entities/components/interaction.h"
+#include "../entities/components/particle_emitter.h"
 #include "../graphics/tiled_map.h"
 #include "../graphics/camera.h"
 #include "../graphics/sky.h"
@@ -27,7 +28,7 @@
 #include "../game_state.h"
 
 struct LevelLayer: public Layer {
-    inline LevelLayer( 
+    inline LevelLayer(
         const std::shared_ptr<EntityWorld>& world,
         const std::shared_ptr<Camera>& camera,
         const std::shared_ptr<sol::state>& lua,

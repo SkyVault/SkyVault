@@ -278,16 +278,16 @@ void Editor::doEntityInspector
                 const auto region = sf::IntRect(x, y, w, h);
 
                 sf::Sprite sprite;
-                sprite.setTexture(*Assets::It()->Get<sf::Texture>("tiles"));
+
+                auto ts = tiledMap->GetFirstTileset();
+
+                sprite.setTexture(*Assets::It()->Get<sf::Texture>(ts.name));
                 sprite.setTextureRect(region);
                 sprite.setScale(scale, scale);
 
                 if (ImGui::ImageButton(sprite)) {
-                    std::cout << "REEEEEEEEEEE" << std::endl;
-
                     HoldingBillboardToBePlaced = true;
                     BillboardRect = region;
-
                 }
 
                 if (i % 3 != 0) ImGui::SameLine();
@@ -458,7 +458,9 @@ void Editor::Draw
     if (HoldingBillboardToBePlaced) {
         const auto [x, y] = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
         sf::Sprite sprite;
-        sprite.setTexture(*Assets::It()->Get<sf::Texture>("tiles"));
+
+        auto ts = tiledMap->GetFirstTileset();
+        sprite.setTexture(*Assets::It()->Get<sf::Texture>(ts.name));
         sprite.setTextureRect(BillboardRect);
         sprite.setColor(sf::Color(255, 255, 255, 100));
         sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)BillboardRect.width, (float)BillboardRect.height) * 0.5f);

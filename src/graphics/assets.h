@@ -25,14 +25,14 @@ private:
 public:
     static auto* It() {
         std::call_once(Assets::onceFlag, [] () {
-            instance.reset(new Assets());     
+            instance.reset(new Assets());
         });
 
         return instance.get();
     }
 
     inline void GiveLua(std::shared_ptr<sol::state>& lua) {
-        this->lua = lua; 
+        this->lua = lua;
     }
 
     void LoadPrefabs();
@@ -69,7 +69,7 @@ public:
             std::cout << "Cannot find dialog: " << name << std::endl;
             return sol::table();
         }
-        return dialogs[name]; 
+        return dialogs[name];
     }
 
     Animation* GetAnimation(const std::string& name) {

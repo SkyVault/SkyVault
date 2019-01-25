@@ -45,6 +45,9 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
                     // Temp:
                     other->Kill();
 
+                    // Avoid moving once exiting the combat layer
+                    physics->Velocity = sf::Vector2f(0, 0);
+
                     GameState::It()->PushLayer(
                             new CombatLayer(
                                 world,

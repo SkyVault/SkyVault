@@ -83,9 +83,14 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
             bool isCompressed{false};
 
             if (encoding == "base64") {
-                if (std::string{data->Attribute("compression")} != "gzip") {
-                    std::cout << "(Error)::TiledMap::loadFromFile:: We only support csv and gzip encoding, the map: " << path << " uses: " << encoding << ".\n";
-                    return false;
+                if (data->Attribute("compression") != nullptr) {
+                    if (std::string{data->Attribute("compression")} != "gzip") {
+                        std::cout << "(Error)::TiledMap::loadFromFile:: We only support csv and gzip encoding, the map: " << path << " uses: " << encoding << ".\n";
+                        return false;
+                    }
+                } else {
+                    std::cout << "Currently we only support gzip compressed base64, not raw base64 (ABORTING)\n";
+                    assert(0);
                 }
 
                 text = trim(text);

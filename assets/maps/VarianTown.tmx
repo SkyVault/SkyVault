@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="2018.12.22" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="1">
+ <tileset firstgid="1" name="town-tiles" tilewidth="8" tileheight="8" tilecount="4096" columns="64">
+  <image source="../images/town-tiles.png" width="512" height="512"/>
+ </tileset>
+ <layer id="1" name="BuildingWalls" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3XWWrDUAwF0HTutjqm2+q4r47rqn7eT7AbW08moTkHLsEQQ7Aj63q1AgAAAAAAIOs18ha5iFzO+DyLnO/g9/532fvRzqPWd+Qnso48zPhs51GrPXc8r/bDXeR+NX8+2nnUantg7v3QA5bR9sDc65rdO+bqb73/c72sVm/f1ctq9fZd+6NWb9+1P2r19l37o5b9sYzsde3dH0eR48hJ5HTC8aHsj+x1HbuPY9/f3B9XkevITeR2wvGh7I/q+Rj7/ub+eIw8RZ4jLxOOD2V/ZOdjrF9tm492Xc3HsGxvHetX2+aj3X/zMSzbW3vn4z3yEfmMfE041q+WnQ+G9fZW7xG12nMn+z7gPaJWe+5k+46eVKvtj2zf0ZNqmY/9Yj72S+s72fcB7xEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAu/MLOHL81kCcAAA=
+  </data>
+ </layer>
+ <layer id="2" name="BuildingFront" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3Y3UrDMBgA0LSZL6b4Yg4fzE7fy5RRKCxNk3SbIOdALhbWm377/hYCAAAAAAAARw1DCGM6MZ3TsP+Zx4oxhMu4/70pxeIiHg83xmtMTnH7O0OK15hOrIgbx5Vich6usXgVi6d6i7e1a6lR3+rUn1jnyV6NMgc8x5InrTVqyaX52Q+1rds9fufrXPpKZxrrZjZuHZ13c/2+ZmYj78i8W+r3ufmAOj3zbs1OIk/a9faP2n6/5AntXjJ1J3c3M++W3eP9vGfuc3e0O3fsA5+Zd5+7o8167mnZB34y7z53R73c3FMz58z5tNU/zEd9psJ/saV9YMmnrf5hj2jXuw+sn9vqH/aIdr37wPq5Uv+wR7TpnXftEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPwXvwWVeMVAnAAA
+  </data>
+ </layer>
+ <layer id="3" name="BuildingShadow" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3TwQmAQAwAQTuw/3K0MitQ9ORkhZl3XtlkWQAAAAAAAHhrX+/Pbg9mGaNHix4terTo0TLaQ8c59GjRo0WPFj1a9GjRo8Ve5/j6znW8pkeLHi16tOjRokeLvcI5/9GiR4seLXq06NGiBwAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/HFGW5wRAnAAA
+  </data>
+ </layer>
+</map>

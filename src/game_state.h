@@ -55,7 +55,7 @@ public:
 
     static auto* It() {
         std::call_once(GameState::onceFlag, [] () {
-            instance.reset(new GameState());     
+            instance.reset(new GameState());
         });
 
         return instance.get();
@@ -72,8 +72,8 @@ public:
 
     // If this returns true, the player and ai are allowed to move and
     // control the camera, else the engine will override that control.
-    inline bool NormalMode() { 
-        return 
+    inline bool NormalMode() {
+        return
             CurrentState != GameState::States::CUTSCENE_STATE   &&
             CurrentState != GameState::States::COMBAT_STATE;
     }
@@ -81,8 +81,8 @@ public:
     inline void PushLayer(Layer* layer, bool dontDestroy=false) {
         if (layer_stack.size() > 0 && !dontDestroy)
             layer_stack[layer_stack.size()-1]->Destroy();
-        layer_stack.insert(layer_stack.begin(), layer);
         layer->Load();
+        layer_stack.push_back(layer);
     }
 
     //NOTE(Dustin): We dont destroy or create any memory
@@ -103,14 +103,14 @@ public:
 
     inline void Update(const SkyTime& time) {
         if (layer_stack.size() == 0) return;
-        layer_stack[0]->Update(time);
+        layer_stack[layer_stack.size() - 1]->Update(time);
     }
 
     inline void Render(std::unique_ptr<sf::RenderWindow>& window) {
         window_size = window->getSize();
         if (layer_stack.size() == 0) return;
 
-        layer_stack[0]->Render(window);
+        layer_stack[layer_stack.size() - 1]->Render(window);
     }
 
     inline sf::Vector2u GetWindowSize() { return window_size; }

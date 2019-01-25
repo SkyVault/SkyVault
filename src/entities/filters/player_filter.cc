@@ -12,7 +12,7 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
     var physics = self->Get<PhysicsBody>();
 
     constexpr float speed{900.0f};
-    
+
     switch(player->State.CurrentState()) {
     case Player::State::DASHING: {
         physics->Friction = 0.002f;
@@ -42,7 +42,7 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
                 if (other->HasTag("Enemy")) {
 
                     // Enter combat with enemy
-                    // Temp: 
+                    // Temp:
                     other->Kill();
 
                     GameState::It()->PushLayer(
@@ -51,14 +51,14 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
                                 camera,
                                 lua,
                                 sky
-                            )); 
+                            ), true); // True means that the layer wont get destroyed
 
                 } else if (other->HasTag("Block")) {
                     // TODO(Dustin): Get the side that the player is on, then lock the block to only
                     // move in that direction, or maybe clamp the other directions but make them move
                     // slightly
 
-                    other->Get<PhysicsBody>()->Velocity = physics->Velocity * 0.2f; 
+                    other->Get<PhysicsBody>()->Velocity = physics->Velocity * 0.2f;
                 }
             }
         }
@@ -88,12 +88,12 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
     // Update camera
     if (GameState::It()->FullEditor() == false &&
         GameState::It()->NormalMode()) {
-        const auto track_point = 
-            body->Center() 
+        const auto track_point =
+            body->Center()
             + physics->Velocity * 0.50f;
 
         camera->Track(track_point);
-    } 
+    }
 }
 
 void PlayerFilter::Render(std::unique_ptr<sf::RenderWindow>& window, Entity* entity) {

@@ -8,5 +8,6 @@ return {
         ["moveable_block"] = "assets/images/moveable_block.png",
         ["shop-sprites"] = "assets/images/shop-sprites.png",
         ["blender_test"] = "assets/images/blender_test.png",
+        ["town-tiles"] = "assets/images/town-tiles.png",
     }
 }

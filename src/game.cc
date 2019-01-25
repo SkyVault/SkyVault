@@ -9,6 +9,7 @@
 #include "entities/filters/player_filter.h"
 #include "entities/filters/ai_filter.h"
 #include "entities/filters/once_off_filter.h"
+#include "entities/filters/particle_emitter_filter.h"
 #include "utilities/input.h"
 #include "utilities/quest_engine.h"
 #include "graphics/animation.h"
@@ -153,6 +154,7 @@ void Game::LoadContent() {
     world->Register<PlayerFilter>(camera, world, lua, sky);
     world->Register<AIFilter>(world);
     world->Register<OnceOffFilter>(world);
+    world->Register<ParticleEmitterFilter>();
 
     GameState::It()->PushLayer(new MenuLayer(world, camera, lua, gui, sky, tiledMap));
 

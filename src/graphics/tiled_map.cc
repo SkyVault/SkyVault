@@ -351,7 +351,7 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position, bo
         sprite.setTextureRect(region);
         sprite.setPosition(position);
 
-        const std::string uuid = (*lua)["getTableAddress"](t);
+        const std::string uuid = (*lua)["getTableAddress"](b);
         std::cout << "UUID: " << uuid << std::endl;
         auto sh = std::make_shared<Billboard>(sprite);
         sh->Uuid = uuid;
@@ -455,7 +455,7 @@ void TiledMap::Update(const SkyTime& time) {
                 auto t = meta_data.get<sol::table>("billboards");
                 RemoveBillboardFromMetaData(t,*it);
                 it = billboards.erase(it);
-                return;
+                continue;
             }
             ++it;
         }

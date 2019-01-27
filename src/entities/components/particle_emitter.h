@@ -3,8 +3,10 @@
 
 #include "../component.h"
 #include "../../skytime.h"
+#include "../../graphics/tween.h"
 
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 struct Particle {
     sf::Vector2f Position{sf::Vector2f()};
@@ -16,7 +18,9 @@ struct Particle {
     sf::Color TargetColor{sf::Color::White};
 
     float Life{0.0f};
+    float StartingLife{0.0f};
     float Rotation{0.0f};
+    float Scaler{0.0f};
 };
 
 struct ParticleEmitterFilter;
@@ -28,15 +32,16 @@ struct ParticleEmitter : public Component {
     sf::FloatRect Region{sf::FloatRect(-10, -10, 10, 10)};
 
     float Radius{64.0f};
+    sf::Vector2f ScalerRange{sf::Vector2f(0.0f, 0.0f)};
 
-    sf::FloatRect VelocityBounds{sf::FloatRect(-10, 10, -10, 10)};
+    sf::FloatRect VelocityBounds{sf::FloatRect(-10, 10, -5, -30)};
 
-    sf::Vector2f SizeBounds{sf::Vector2f(4, 32)};
+    sf::Vector2f SizeBounds{sf::Vector2f(4, 10)};
     sf::Vector2f LifeRange{sf::Vector2f(0.25f, 2.0f)};
 
     sf::Color Color{sf::Color::White};
 
-    sf::Vector2i ParticleNumber{sf::Vector2i(1, 1)};
+    sf::Vector2i ParticleNumber{sf::Vector2i(1, 3)};
 
     float MaxTime{0.2f};
 

@@ -233,6 +233,7 @@ return {
     billboard_regions = {},
     billboards = {},
     solids = {},
+    doors = {},
     entities = {},
 }
         )";

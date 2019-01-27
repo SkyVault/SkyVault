@@ -189,6 +189,7 @@ return {
       false
     }
   },
+  doors = {},
   entities = {},
   solids = {}
 }

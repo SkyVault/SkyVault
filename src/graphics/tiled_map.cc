@@ -375,7 +375,7 @@ void TiledMap::AddEntitySpawn(const std::string& which, float x, float y) {
     e[1 + 2] = y;
     t.add(e);
 
-    es->Uuid = (*lua)["getTableAddress"](t);
+    es->Uuid = (*lua)["getTableAddress"](e);
 
     entity_spawns.push_back(es);
 }

@@ -82,6 +82,8 @@ struct TiledMap : public sf::Drawable, public sf::Transformable {
     void AddBillboard(const sf::IntRect& region, sf::Vector2f position, bool foreground=false);
     void AddEntitySpawn(const std::string& which, float x, float y);
 
+    void AddDoor(std::shared_ptr<EntityWorld>& world, std::string to, float x, float y, float w, float h);
+
     std::vector<std::shared_ptr<Billboard>> GetBillboards();
     std::vector<std::shared_ptr<EntitySpawn>> GetEntitySpawns();
 

@@ -62,6 +62,13 @@ struct Editor {
         , std::shared_ptr<EntityWorld>& world
         );
 
+    enum HoldingState {
+        None,
+        Entity,
+        Billboard,
+        Door
+    };
+
 private:
     std::shared_ptr<sol::state> lua;
 

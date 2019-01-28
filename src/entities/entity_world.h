@@ -27,10 +27,15 @@ struct EntityWorld;
 struct Door : Body{
     friend EntityWorld;
 
-    inline Door(std::string _to, float x, float y, float w, float h):
+    inline Door(std::string _uuid, std::string _to, float x, float y, float w, float h):
         Body(x, y, w, h),
-        To(_to){}
+        To(_to),
+        Uuid(_uuid)
+    {}
     std::string To{""};
+
+    // This is the lua table address used for removing
+    std::string Uuid{""};
 
 private:
     bool last{false};
@@ -45,7 +50,7 @@ struct EntityWorld {
 
     template <typename T, typename... Args>
     void Register(Args&&... args) {
-        filters[typeid(T)] = (std::make_unique<T>(std::forward<Args>(args)...)); 
+        filters[typeid(T)] = (std::make_unique<T>(std::forward<Args>(args)...));
         filters[typeid(T)]->World = this;
     }
 
@@ -57,14 +62,14 @@ struct EntityWorld {
 
     void Update(const SkyTime& time);
     void Render(std::unique_ptr<sf::RenderWindow>& window);
-    
+
     template<typename T>
     std::optional<Entity*> GetFirstWith() {
         for (int i = 0; i < entity_list_length; i++) {
             if (entity_list[i] != nullptr) {
                 if (entity_list[i]->Has<T>()) {
                     return std::optional<Entity*>{entity_list[i]};
-                } 
+                }
             }
         }
         return std::nullopt;
@@ -107,11 +112,11 @@ struct EntityWorld {
     }
 
     inline std::optional<Entity*> GetEntity(const int index) {
-        if (index == -1) return std::nullopt; 
-        if (index > entity_list_length) return std::nullopt; 
+        if (index == -1) return std::nullopt;
+        if (index > entity_list_length) return std::nullopt;
         if (entity_list[index] == nullptr) return std::nullopt;
         return std::optional<Entity*>{entity_list[index]};
-    } 
+    }
 
     // This shouldn't be a function
     inline std::vector<Entity*> GetEntities() {
@@ -119,16 +124,20 @@ struct EntityWorld {
         for (int i = 0; i < entity_list_length; i++) {
             if (entity_list[i] != nullptr)
                 result.push_back(entity_list[i]);
-        } 
+        }
         return result;
     }
-    
-    void AddDoor(const std::string& To, float x, float y, float width, float height);
+
+    void AddDoor(const std::string& Uuid, const std::string& To, float x, float y, float width, float height);
+    inline auto& GetDoors() {
+        return doors;
+    }
+
     void ClearAll();
 
     void OnRoomChange(std::function<void(std::string)> fn);
 
-private: 
+private:
     int add_entity(Entity* entity); // Returns the index of the entity
 
     std::map<std::type_index, std::unique_ptr<Filter>> filters;

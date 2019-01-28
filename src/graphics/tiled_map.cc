@@ -185,23 +185,9 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
                     const auto type = std::string{objectXml->Attribute("type")};
 
                     if (type == "Door") {
-                        // Spawn a door entity
-                        const auto properties = objectXml->FirstChildElement("properties");
-                        if (properties == nullptr){
-                            std::cout << "Door is missing properties" << std::endl;
-                        } else {
-                            if (const auto to = properties->FirstChildElement("property")){
-                                const auto _to = std::string{to->Attribute("value")};
-                                world->AddDoor
-                                    ( _to
-                                    , ox
-                                    , oy
-                                    , owidth
-                                    , oheight );
-                            } else {
-                                std::cout << "Door is missing goto property" << std::endl;
-                            }
-                        }
+                        std::cout
+                            << "We don't load doors using the tiled map anymore, please use the in game editor."
+                            << "\n";
                     }
 
                 }
@@ -297,6 +283,25 @@ return {
             std::cout << "Error::TiledMap::loadTiledMap:: Failed to load the entities from the data script, entities table entry is invalid, map: " << path << std::endl;
         }
 
+        // Load the doors
+        if (meta_data["doors"].valid()) {
+            auto doors_table = meta_data.get<sol::table>("doors");
+            doors_table.for_each([&](const sol::object& key, const sol::object& value) {
+
+                const auto door_table = value.as<sol::table>();
+                const auto dx = door_table.get<float>(1);
+                const auto dy = door_table.get<float>(2);
+                const auto dw = door_table.get<float>(3);
+                const auto dh = door_table.get<float>(4);
+                const auto to = door_table.get<std::string>(5);
+
+                const auto uuid = (*lua)["getTableAddress"](door_table);
+
+                // Create the doors entity
+                world->AddDoor(uuid, to, dx, dy, dw, dh);
+            });
+        }
+
         // Load the billboards
         if (meta_data["billboards"].valid()){
             auto billboards_table = meta_data.get<sol::table>("billboards");
@@ -353,7 +358,6 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position, bo
         sprite.setPosition(position);
 
         const std::string uuid = (*lua)["getTableAddress"](b);
-        std::cout << "UUID: " << uuid << std::endl;
         auto sh = std::make_shared<Billboard>(sprite);
         sh->Uuid = uuid;
 
@@ -362,6 +366,20 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position, bo
         else
             foreground_billboards.push_back(sh);
     }
+}
+
+void TiledMap::AddDoor(std::shared_ptr<EntityWorld>& world, std::string to, float x, float y, float w, float h) {
+    auto t  = meta_data.get<sol::table>("doors");
+    sol::table d = lua->create_table();
+    d[1 + 0] = x;
+    d[1 + 1] = y;
+    d[1 + 2] = w;
+    d[1 + 3] = h;
+    d[1 + 4] = to;
+    t.add(d);
+
+    const std::string uuid = (*lua)["getTableAddress"](d);
+    world->AddDoor(uuid, to, x, y, w, h);
 }
 
 void TiledMap::AddEntitySpawn(const std::string& which, float x, float y) {

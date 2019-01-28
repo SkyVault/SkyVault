@@ -299,6 +299,16 @@ void Editor::doEntityInspector
         ImGui::EndGroup();
     }
 
+    if (ImGui::TreeNode("Doors")) {
+        if (ImGui::Button("New Door")) {
+
+        }
+
+        ImGui::BeginGroup();
+
+        ImGui::EndGroup();
+    }
+
     ImGui::End();
 }
 

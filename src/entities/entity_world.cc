@@ -16,13 +16,13 @@
 
 #include "../game_state.h"
 #include "../skyvault.h"
- 
+
 /*
-    NOTE(Dustin): 
-    Now I'm thinking that all over the entity system we want to see which entities 
+    NOTE(Dustin):
+    Now I'm thinking that all over the entity system we want to see which entities
     intersect each other, so we probably should just do that here in the entity world
     though there are some interesting issues with that, one of which is that this code
-    doesnt really allow for modularity. So its harder to move this code to a new project 
+    doesnt really allow for modularity. So its harder to move this code to a new project
     because it assumes that collisions need to be checked.
  */
 
@@ -30,7 +30,7 @@
 EntityWorld::EntityWorld() {
     entity_list = new Entity* [ENTITY_LIST_LENGTH];
     for (int i = 0; i < ENTITY_LIST_LENGTH; i++)
-        entity_list[i] = nullptr; 
+        entity_list[i] = nullptr;
 }
 
 EntityWorld::~EntityWorld() {
@@ -42,18 +42,18 @@ EntityWorld::~EntityWorld() {
 }
 
 Entity* EntityWorld::Create() {
-    var entity = new Entity(); 
-    int index = add_entity(entity); 
+    var entity = new Entity();
+    int index = add_entity(entity);
     entity->entity_id = index;
     return entity;
 }
 
 int EntityWorld::add_entity(Entity* entity) {
 
-    if (GameState::It()->CurrentState == GameState::States::COMBAT_STATE) { 
+    if (GameState::It()->CurrentState == GameState::States::COMBAT_STATE) {
         combat_entities.push_back(entity);
         return -1;
-    } 
+    }
 
     for (int i = 0; i < entity_list_length; i++) {
         if (entity_list[i] == nullptr) {
@@ -68,7 +68,7 @@ int EntityWorld::add_entity(Entity* entity) {
 }
 
 void EntityWorld::OnRoomChange(std::function<void(std::string)> fn) {
-    this->on_room_change = fn; 
+    this->on_room_change = fn;
 }
 
 Entity* EntityWorld::Create(const sol::table& prefab) {
@@ -93,7 +93,7 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
                 const float width = component.get<float>("width");
                 const float height = component.get<float>("height");
                 entity->Add<Body>(sf::Vector2f(x, y), sf::Vector2f(width, height));
-            } 
+            }
             else if (which_component == "Sprite") {
                 const std::string which_texture = component.get<std::string>("texture");
                 const auto texture = Assets::It()->Get<sf::Texture>(which_texture);
@@ -134,12 +134,12 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
                 entity->Add<PhysicsBody>(PhysicsTypes::PHYSICS_ITEM);
             }
             else if (which_component == "PhysicsBody") {
-                entity->Add<PhysicsBody>(); 
+                entity->Add<PhysicsBody>();
             }
 
             else if (which_component == "Interaction") {
                 entity->Add<Interaction>(component.get<sol::function>("fn"));
-            } 
+            }
 
             else if (which_component == "Ai") {
                 auto which = component.get<std::string>(1);
@@ -163,7 +163,7 @@ Entity* EntityWorld::Create(const sol::table& prefab) {
 void EntityWorld::Update(const SkyTime& time) {
     // Clear the interaction grid
     //std::fill(grid.begin(), grid.end(), nullptr);
- 
+
     if (GameState::It()->CurrentState == GameState::States::COMBAT_STATE) {
         // Update combat entities
         return;
@@ -189,8 +189,8 @@ void EntityWorld::Update(const SkyTime& time) {
                 if (e->remove) f->Destroy(e);
                 else {
                     if (GameState::It()->CurrentState == GameState::States::PLAYING_STATE)
-                        f->Update(time, e);   
-                    f->ConstantUpdate(time, e);   
+                        f->Update(time, e);
+                    f->ConstantUpdate(time, e);
                 }
             }
         }
@@ -207,13 +207,13 @@ void EntityWorld::Update(const SkyTime& time) {
                         std::invoke(on_room_change, door.To);
                     } catch (std::bad_function_call& e) {}
                 }
-                door.last = curr; 
+                door.last = curr;
             }
         }
-        
+
         Entity* player = GetFirstWith<Player>().value_or(nullptr);
         if (GameState::It()->CurrentState == GameState::States::PLAYING_STATE) {
-            
+
             // We need to make this better
             if (player && e->Has<Interaction>() && e->Has<Body>()){
                 e->Get<Interaction>()->Hot = false;
@@ -228,7 +228,7 @@ void EntityWorld::Update(const SkyTime& time) {
             // If the entity has a body, place him in the interaction grid
             if (e->Has<Body>()) {
                 const auto& body = e->Get<Body>();
-                
+
                 const auto gx = static_cast<int>((body->Position.x * 8 * 4) / MAP_SIZE);
                 const auto gy = static_cast<int>((body->Position.y * 8 * 4) / MAP_SIZE);
 
@@ -247,7 +247,7 @@ void EntityWorld::Update(const SkyTime& time) {
                     return std::get<0>(a) < std::get<0>(b);
                 });
             }
-            
+
             const auto winner = std::get<1>(potential_interactions[0]);
             winner->Hot = true;
 
@@ -263,7 +263,7 @@ void EntityWorld::Update(const SkyTime& time) {
             delete entity_list[i];
             entity_list[i] = nullptr;
         }
-    } 
+    }
 }
 
 void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
@@ -297,7 +297,7 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
 
     for (auto& [key, f] : filters) {
         f->PostRender(window);
-    } 
+    }
 
     if (GameState::It()->IsDebug() == false) return;
 
@@ -308,7 +308,7 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
     for (int y = 0; y < MAP_SIZE; y++) {
         for (int x = 0; x < MAP_SIZE; x++) {
             if (grid[x + y * MAP_SIZE] != -1) {
-                shape.setSize(sf::Vector2f(grid_square, grid_square)); 
+                shape.setSize(sf::Vector2f(grid_square, grid_square));
                 shape.setFillColor(sf::Color(255, 0, 0, 25));
                 shape.setPosition(sf::Vector2f(x * grid_square, y * grid_square));
                 window->draw(shape);
@@ -330,9 +330,10 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
     }
 }
 
-void EntityWorld::AddDoor(const std::string& To, float x, float y, float width, float height) {
+void EntityWorld::AddDoor(const std::string& Uuid, const std::string& To, float x, float y, float width, float height) {
     doors.push_back(Door
-            ( To
+            ( Uuid
+            , To
             , x
             , y
             , width

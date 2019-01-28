@@ -85,8 +85,7 @@ private:
 
     sf::Vector2f cam_size;
 
-    bool HoldingBillboardToBePlaced;
-    bool HoldingEntityToBePlaced;
+    HoldingState HoldingState{HoldingState::None};
 
     bool PlaceAsForeground{false};
 

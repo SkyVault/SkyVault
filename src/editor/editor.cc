@@ -239,7 +239,7 @@ void Editor::doEntityInspector
 
             if (ImGui::Button(("spawn##"+std::to_string(i++)).c_str())) {
                 entity_prefab = Assets::It()->GetPrefab(name);
-                HoldingEntityToBePlaced = true;
+                HoldingState = HoldingState::Entity;
             }
 
             ImGui::SameLine();
@@ -286,7 +286,7 @@ void Editor::doEntityInspector
                 sprite.setScale(scale, scale);
 
                 if (ImGui::ImageButton(sprite)) {
-                    HoldingBillboardToBePlaced = true;
+                    HoldingState = HoldingState::Billboard;
                     BillboardRect = region;
                 }
 
@@ -418,8 +418,8 @@ void Editor::Draw
     }
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
-        if (HoldingBillboardToBePlaced){
-            HoldingBillboardToBePlaced = !HoldingBillboardToBePlaced;
+        if (HoldingState == HoldingState::Billboard){
+            HoldingState = HoldingState::None;
         } else {
             cursor = worldPos;
         }
@@ -428,7 +428,7 @@ void Editor::Draw
     // TODO(Dustin): use isMousePressed
     if (Input::It()->IsMouseLeftPressed(0) &&
         !Input::It()->IsKeyDown(sf::Keyboard::LControl)) {
-        if (HoldingBillboardToBePlaced) {
+        if (HoldingState == HoldingState::Billboard) {
 
             tiledMap->AddBillboard(
                     BillboardRect,
@@ -436,12 +436,12 @@ void Editor::Draw
                     (float)BillboardRect.height) * 0.5f,
                     PlaceAsForeground);
 
-            HoldingBillboardToBePlaced = false;
+            HoldingState = HoldingState::None;
         }
     }
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-        if (HoldingEntityToBePlaced) {
+        if (HoldingState == HoldingState::Entity) {
             auto e = world->Create(entity_prefab);
             if (e && e->Has<Body>()) {
                 e->Get<Body>()->Position = worldPos - (e->Get<Body>()->Size / 2.0f);
@@ -449,7 +449,7 @@ void Editor::Draw
 
             //Spawn the entity using the prefab -- worldPos
 
-            HoldingEntityToBePlaced = false;
+            HoldingState = HoldingState::None;
         }
     }
 
@@ -465,7 +465,7 @@ void Editor::Draw
 
     // Draw billboard before being placed
 
-    if (HoldingBillboardToBePlaced) {
+    if (HoldingState == HoldingState::Billboard){
         const auto [x, y] = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
         sf::Sprite sprite;
 
@@ -475,9 +475,8 @@ void Editor::Draw
         sprite.setColor(sf::Color(255, 255, 255, 100));
         sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)BillboardRect.width, (float)BillboardRect.height) * 0.5f);
         window->draw(sprite);
-    }
 
-    if (HoldingEntityToBePlaced) {
+    } else if (HoldingState == HoldingState::Entity) {
         const auto [x, y] = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
         sf::Sprite sprite;
 
@@ -573,7 +572,7 @@ void Editor::Draw
                     const auto [bx, by] = rect.getPosition();
 
                     billboard->ShouldRemove = true;
-                    HoldingBillboardToBePlaced = true;
+                    HoldingState = HoldingState::None;
                     BillboardRect = billboard->Sprite.getTextureRect();
                     Input::It()->ResetLeftMousePressed();
 

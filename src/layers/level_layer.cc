@@ -83,8 +83,9 @@ void LevelLayer::Load(){
         e->Get<Body>()->Position = sf::Vector2f(500+128 + (cursor++*16), 400);
     }
 
-    world->OnRoomChange([](const std::string& to) {
+    world->OnRoomChange([&](const std::string& to) {
         std::cout << "Changing rooms to... " << to << std::endl;
+        tiledMap->Destroy();
     });
 }
 void LevelLayer::Update(const SkyTime& time){
@@ -126,4 +127,6 @@ void LevelLayer::Render(std::unique_ptr<sf::RenderWindow>& window){
     }
 }
 
-void LevelLayer::Destroy(){}
+void LevelLayer::Destroy(){
+
+}

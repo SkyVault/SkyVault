@@ -561,13 +561,6 @@ void TiledMap::Destroy() {
     // TODO(Dustin): We are going to need to rewrite the majority of this.
     // It's very dangerous and needs to be rewritten to be safer.
 
-    if (layers.size() == 0) return;
-    for (auto* layer : layers)
-        delete layer;
-
-    billboards.clear();
-    entity_spawns.clear();
-
     // Write the meta_data back to the file
     if (!lua) return;
     // TODO(Dustin): Explicitly handle errors and
@@ -580,6 +573,7 @@ void TiledMap::Destroy() {
         std::cout << "Failed to open the meta_data_file for map: " << meta_data_file_name << std::endl;
         return;
     }
+
     if (result.valid() == false) {
         std::cout << "Result is not valid" << std::endl;
         outFile.close();
@@ -588,6 +582,17 @@ void TiledMap::Destroy() {
 
     outFile << "return " << result.get<std::string>(0);
     outFile.close();
+
+    if (layers.size() == 0) return;
+    for (auto* layer : layers)
+        delete layer;
+
+    layers.clear();
+
+    billboards.clear();
+    foreground_billboards.clear();
+
+    entity_spawns.clear();
 }
 
 std::vector<std::shared_ptr<Billboard>> TiledMap::GetBillboards(){

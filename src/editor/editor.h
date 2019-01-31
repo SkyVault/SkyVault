@@ -66,7 +66,8 @@ struct Editor {
         None,
         Entity,
         Billboard,
-        Door
+        Door,
+        DoorDragging
     };
 
 private:
@@ -84,6 +85,9 @@ private:
     sf::Vector2f placement_offset{sf::Vector2f(0, 0)};
 
     sf::Vector2f cam_size;
+
+    sf::Vector2f DoorStart, DoorEnd;
+    std::string ToString{""};
 
     HoldingState HoldingState{HoldingState::None};
 

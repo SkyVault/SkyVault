@@ -36,6 +36,7 @@ struct Door : Body{
 
     // This is the lua table address used for removing
     std::string Uuid{""};
+    bool ShouldRemove{false};
 
 private:
     bool last{false};

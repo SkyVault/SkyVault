@@ -301,12 +301,28 @@ void Editor::doEntityInspector
 
     if (ImGui::TreeNode("Doors")) {
         if (ImGui::Button("New Door")) {
-
+            ImGui::OpenPopup("NewDoor?");
+            //HoldingState = HoldingState::Door;
         }
 
         ImGui::BeginGroup();
 
         ImGui::EndGroup();
+    }
+
+    if (ImGui::BeginPopupModal("NewDoor?", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+        static char buf[100];
+
+        ImGui::InputText("To location", buf, IM_ARRAYSIZE(buf));
+        if (ImGui::Button("OK", ImVec2(120, 0))) {
+
+            HoldingState = HoldingState::Door;
+            ToString = std::string{buf};
+
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
     }
 
     ImGui::End();
@@ -418,38 +434,79 @@ void Editor::Draw
     }
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
-        if (HoldingState == HoldingState::Billboard){
+        if (HoldingState == HoldingState::Billboard
+                || HoldingState == HoldingState::Entity
+                || HoldingState == HoldingState::Door){
             HoldingState = HoldingState::None;
         } else {
             cursor = worldPos;
         }
     }
 
+    const auto [x, y] = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+
     // TODO(Dustin): use isMousePressed
     if (Input::It()->IsMouseLeftPressed(0) &&
         !Input::It()->IsKeyDown(sf::Keyboard::LControl)) {
-        if (HoldingState == HoldingState::Billboard) {
 
-            tiledMap->AddBillboard(
-                    BillboardRect,
-                    worldPos - sf::Vector2f((float)BillboardRect.width,
-                    (float)BillboardRect.height) * 0.5f,
-                    PlaceAsForeground);
+        switch (HoldingState) {
+            case HoldingState::Billboard: {
+                tiledMap->AddBillboard(
+                        BillboardRect,
+                        worldPos - sf::Vector2f((float)BillboardRect.width,
+                        (float)BillboardRect.height) * 0.5f,
+                        PlaceAsForeground);
 
-            HoldingState = HoldingState::None;
+                HoldingState = HoldingState::None;
+                break;
+            }
+
+            case HoldingState::Entity: {
+                if (HoldingState == HoldingState::Entity) {
+                    auto e = world->Create(entity_prefab);
+                    if (e && e->Has<Body>()) {
+                        e->Get<Body>()->Position = worldPos - (e->Get<Body>()->Size / 2.0f);
+                    }
+
+                    //Spawn the entity using the prefab -- worldPos
+
+                    HoldingState = HoldingState::None;
+                }
+
+                break;
+            }
+
+            case HoldingState::Door: {
+                HoldingState = HoldingState::DoorDragging;
+                DoorStart = sf::Vector2f(x, y);
+                break;
+            }
+
+            default:
+                break;
         }
     }
 
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-        if (HoldingState == HoldingState::Entity) {
-            auto e = world->Create(entity_prefab);
-            if (e && e->Has<Body>()) {
-                e->Get<Body>()->Position = worldPos - (e->Get<Body>()->Size / 2.0f);
-            }
 
-            //Spawn the entity using the prefab -- worldPos
+    // Handling door dragging release
 
+    // Set the door end values
+    if (HoldingState == HoldingState::DoorDragging) {
+        DoorEnd = sf::Vector2f(x, y);
+
+        if (Input::It()->IsMouseLeftReleased(0)){
             HoldingState = HoldingState::None;
+
+            const auto [dx, dy] = DoorStart;
+            const auto dw = DoorEnd.x - dx;
+            const auto dh = DoorEnd.y - dy;
+            tiledMap->AddDoor(
+                    world,
+                    ToString,
+                    dx,
+                    dy,
+                    dw,
+                    dh);
         }
     }
 
@@ -464,52 +521,100 @@ void Editor::Draw
     window->draw(circle);
 
     // Draw billboard before being placed
+    switch (HoldingState) {
+        case HoldingState::Billboard: {
+            sf::Sprite sprite;
 
-    if (HoldingState == HoldingState::Billboard){
-        const auto [x, y] = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-        sf::Sprite sprite;
-
-        auto ts = tiledMap->GetFirstTileset();
-        sprite.setTexture(*Assets::It()->Get<sf::Texture>(ts.name));
-        sprite.setTextureRect(BillboardRect);
-        sprite.setColor(sf::Color(255, 255, 255, 100));
-        sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)BillboardRect.width, (float)BillboardRect.height) * 0.5f);
-        window->draw(sprite);
-
-    } else if (HoldingState == HoldingState::Entity) {
-        const auto [x, y] = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-        sf::Sprite sprite;
-
-        // TODO(Dustin): Handle animated sprites
-        const sol::table components = entity_prefab.get<sol::table>("components");
-        if (const sol::table SpriteData = components.get<sol::table>("Sprite")) {
-            auto texture = SpriteData.get<std::string>("texture");
-            if (const sol::table region = SpriteData.get<sol::table>("region")) {
-                EntityRect.left = (unsigned int)(int)region[1];
-                EntityRect.top = (unsigned int)(int)region[2];
-                EntityRect.width = (unsigned int)(int)region[3];
-                EntityRect.height = (unsigned int)(int)region[4];
-                sprite.setTextureRect(EntityRect);
-            }
-            sprite.setTexture(*Assets::It()->Get<sf::Texture>(texture));
+            auto ts = tiledMap->GetFirstTileset();
+            sprite.setTexture(*Assets::It()->Get<sf::Texture>(ts.name));
+            sprite.setTextureRect(BillboardRect);
             sprite.setColor(sf::Color(255, 255, 255, 100));
-            sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)EntityRect.width, (float)EntityRect.height) * 0.5f);
+            sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)BillboardRect.width, (float)BillboardRect.height) * 0.5f);
             window->draw(sprite);
-        } else if (const sol::table SpriteData = components.get<sol::table>("Item")) {
-            auto texture = SpriteData.get<std::string>("texture");
-            if (const sol::table region = SpriteData.get<sol::table>("region")) {
-                EntityRect.left = (unsigned int)(int)region[1];
-                EntityRect.top = (unsigned int)(int)region[2];
-                EntityRect.width = (unsigned int)(int)region[3];
-                EntityRect.height = (unsigned int)(int)region[4];
-                sprite.setTextureRect(EntityRect);
-            }
-            sprite.setTexture(*Assets::It()->Get<sf::Texture>(texture));
-            sprite.setColor(sf::Color(255, 255, 255, 100));
-            sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)EntityRect.width, (float)EntityRect.height) * 0.5f);
-            window->draw(sprite);
+            break;
         }
 
+        case HoldingState::Entity: {
+            sf::Sprite sprite;
+
+            // TODO(Dustin): Handle animated sprites
+            const sol::table components = entity_prefab.get<sol::table>("components");
+            if (const sol::table SpriteData = components.get<sol::table>("Sprite")) {
+                auto texture = SpriteData.get<std::string>("texture");
+                if (const sol::table region = SpriteData.get<sol::table>("region")) {
+                    EntityRect.left = (unsigned int)(int)region[1];
+                    EntityRect.top = (unsigned int)(int)region[2];
+                    EntityRect.width = (unsigned int)(int)region[3];
+                    EntityRect.height = (unsigned int)(int)region[4];
+                    sprite.setTextureRect(EntityRect);
+                }
+                sprite.setTexture(*Assets::It()->Get<sf::Texture>(texture));
+                sprite.setColor(sf::Color(255, 255, 255, 100));
+                sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)EntityRect.width, (float)EntityRect.height) * 0.5f);
+                window->draw(sprite);
+            } else if (const sol::table SpriteData = components.get<sol::table>("Item")) {
+                auto texture = SpriteData.get<std::string>("texture");
+                if (const sol::table region = SpriteData.get<sol::table>("region")) {
+                    EntityRect.left = (unsigned int)(int)region[1];
+                    EntityRect.top = (unsigned int)(int)region[2];
+                    EntityRect.width = (unsigned int)(int)region[3];
+                    EntityRect.height = (unsigned int)(int)region[4];
+                    sprite.setTextureRect(EntityRect);
+                }
+                sprite.setTexture(*Assets::It()->Get<sf::Texture>(texture));
+                sprite.setColor(sf::Color(255, 255, 255, 100));
+                sprite.setPosition(sf::Vector2f(x, y) - sf::Vector2f((float)EntityRect.width, (float)EntityRect.height) * 0.5f);
+                window->draw(sprite);
+            }
+
+            break;
+        }
+
+        case HoldingState::Door:
+        case HoldingState::DoorDragging: {
+            constexpr float size{12};
+
+            float px = x;
+            float py = y;
+
+            if (HoldingState::DoorDragging) {
+                px = DoorStart.x;
+                py = DoorStart.y;
+
+                sf::RectangleShape doorRect;
+                doorRect.setPosition(sf::Vector2f(px, py));
+                doorRect.setSize(sf::Vector2f(
+                    DoorEnd.x - px,
+                    DoorEnd.y - py
+                        ));
+                doorRect.setFillColor(sf::Color(255, 0, 0, 100));
+                window->draw(doorRect);
+            }
+
+            sf::RectangleShape cursor_hor;
+            sf::RectangleShape cursor_ver;
+
+            cursor_hor.setPosition(sf::Vector2f(
+                    px - size / 2,
+                    py - 1
+                    ));
+
+            cursor_ver.setPosition(sf::Vector2f(
+                    px - 1,
+                    py - size / 2
+                    ));
+
+            cursor_hor.setSize(sf::Vector2f(size, 2));
+            cursor_ver.setSize(sf::Vector2f(2, size));
+
+            window->draw(cursor_hor);
+            window->draw(cursor_ver);
+
+            break;
+        }
+
+        default:
+            break;
     }
 
     const auto& billboards = tiledMap->GetBillboards();
@@ -522,6 +627,52 @@ void Editor::Draw
     rect.setOutlineThickness(1);
 
     constexpr auto BTN_SIZE{4u};
+
+    auto font = Assets::It()->Get<sf::Font>("dialog");
+    rect.setOutlineColor(sf::Color(0, 255, 255, 100));
+    sf::Text text;
+    text.setFont(*font);
+    text.setFillColor(sf::Color(0, 255, 255, 100));
+    text.setScale(0.2f, 0.2f);
+
+    // Draw Doors
+    {
+        sf::RectangleShape doorShape;
+        doorShape.setFillColor(sf::Color(0, 255, 255, 30));
+        auto doors = world->GetDoors();
+
+        for (const auto& door : doors) {
+            doorShape.setPosition(door.Position);
+            doorShape.setSize(door.Size);
+
+            text.setString(door.To);
+            text.setPosition(door.Position + sf::Vector2f(BTN_SIZE + 4, 0));
+
+            window->draw(doorShape);
+            window->draw(text);
+
+            // Delete button
+            rect.setFillColor(sf::Color(0, 0, 0, 0));
+
+            auto [bx, by] = door.Position;
+
+            if (mx > bx && mx < bx + BTN_SIZE &&
+                my > by && my < by + BTN_SIZE) {
+
+                rect.setFillColor(sf::Color(255, 0, 0));
+
+                if (Input::It()->IsMouseLeftPressed(sf::Mouse::Left)) {
+                }
+            }
+
+            rect.setSize(sf::Vector2f(BTN_SIZE, BTN_SIZE));
+            rect.setOutlineColor(sf::Color::White);
+
+            rect.setPosition(door.Position);
+
+            window->draw(rect);
+        }
+    }
 
     for (const auto& billboard : billboards) {
         rect.setFillColor(sf::Color(0, 0, 0, 0));
@@ -583,13 +734,6 @@ void Editor::Draw
             rect.setFillColor(sf::Color(0, 0, 0, 0));
         }
     }
-
-    auto font = Assets::It()->Get<sf::Font>("dialog");
-    rect.setOutlineColor(sf::Color(0, 255, 255, 100));
-    sf::Text text;
-    text.setFont(*font);
-    text.setFillColor(sf::Color(0, 255, 255, 100));
-    text.setScale(0.2f, 0.2f);
 
     //NOTE(Dustin): The use of a pointer is awful, what would be better
     // is an integer that we can use to query the entity, or maybe a shared

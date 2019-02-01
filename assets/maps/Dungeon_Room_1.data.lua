@@ -753,7 +753,22 @@ return {
       false
     }
   },
-  doors = {},
+  doors = {
+    {
+      432.89984130859375,
+      300.60009765625,
+      88,
+      36,
+      "VarianTown.tmx"
+    },
+    {
+      426.5,
+      305.5,
+      66.5,
+      29,
+      "VarianTown.tmx"
+    }
+  },
   entities = {
     {
       "Skelly",

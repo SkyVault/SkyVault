@@ -31,6 +31,8 @@ void Editor::initUI(std::unique_ptr<sf::RenderWindow> &window, std::shared_ptr<s
         GameState::It()->ToggleFullEditor();
     }
 
+    // Load tilemap names
+
     ImGui::StyleColorsLight();
 }
 
@@ -140,7 +142,7 @@ void Editor::doEntityInspector
         , 0.0f
         );
 
-    ImGui::Begin("Entity Editor");
+    ImGui::Begin("World Editor");
 
     ImGui::SetWindowPos
         ( ImVec2(windowPos.x, windowPos.y)
@@ -152,177 +154,200 @@ void Editor::doEntityInspector
         , true
         );
 
-    if (ImGui::TreeNode("Inspector")) {
-        ImGui::BeginGroup();
+    if (ImGui::CollapsingHeader("Level Inspector")) {
+        const auto& maps = Assets::It()->GetTiledMapNames();
 
-        const auto& entities = world->GetEntities();
+        int counter = 0;
+        std::string id{""};
+        for (const auto& name : maps) {
+            id = "maps:" + std::to_string(counter++);
+            if (ImGui::Button(name.c_str())) {
+                tiledMap->Destroy();
 
-        int id = 1000;
-        for(auto& entity : entities) {
-            ImGui::Spacing();
-
-            auto str = "entity id: " + std::to_string(entity->GetUUID());
-
-            if (entity->GetUUID() == CurrentlySelectedEntity) {
-                str += " <--";
+                auto* physics = world->GetFilter<PhysicsFilter>();
+                assert(physics);
+                tiledMap->loadFromFile(
+                        "assets/maps/" + name,
+                        physics,
+                        world,
+                        lua);
             }
+        }
+    }
 
-            if (ImGui::CollapsingHeader(str.c_str())){
-                if (entity->Has<Body>()) {
+    if (ImGui::CollapsingHeader("Entity Inspector")) {
+        if (ImGui::TreeNode("Inspector")) {
+            ImGui::BeginGroup();
 
-                    auto body = entity->Get<Body>();
-                    const auto btn_label = "Goto##"+std::to_string(id++);
-                    if (ImGui::Button(btn_label.c_str())) {
-                        //Move camera to location
+            const auto& entities = world->GetEntities();
 
-                        camera->View.setCenter(body->Center());
-                    }
+            int id = 1000;
+            for(auto& entity : entities) {
+                ImGui::Spacing();
 
-                    float p[] = {body->Position.x, body->Position.y};
-                    ImGui::DragFloat2(std::string{"Position##"+std::to_string(entity->GetUUID())}.c_str(), p);
-                    body->Position.x = p[0];
-                    body->Position.y = p[1];
+                auto str = "entity id: " + std::to_string(entity->GetUUID());
+
+                if (entity->GetUUID() == CurrentlySelectedEntity) {
+                    str += " <--";
                 }
 
-                auto& components = entity->GetComponents();
+                if (ImGui::CollapsingHeader(str.c_str())){
+                    if (entity->Has<Body>()) {
 
-                for (const auto& [type, _]: components) {
-                    auto name = std::string{type.name()};
-                    auto it = name.begin();
-                    while(*it >= '0' && *it <= '9' && it != name.end())
-                        it++;
+                        auto body = entity->Get<Body>();
+                        const auto btn_label = "Goto##"+std::to_string(id++);
+                        if (ImGui::Button(btn_label.c_str())) {
+                            //Move camera to location
 
-                    auto final_name = std::string(it, name.end());
-
-                    if (ImGui::TreeNode(final_name.c_str())) {
-                        if (final_name == "Laser") {
-                            static int color = 0;
-
-#if 0
-                            ImGui::RadioButton(("North##"+std::string{id++}).c_str(), &direction, 0); ImGui::SameLine();
-                            ImGui::RadioButton(("South##"+std::string{id++}).c_str(), &direction, 1); ImGui::SameLine();
-                            ImGui::RadioButton(("East##"+std::string{id++}).c_str(), &direction, 2); ImGui::SameLine();
-                            ImGui::RadioButton(("West##"+std::string{id++}).c_str(), &direction, 3);
-#endif//
-                            if (ImGui::Button("North")) { entity->Get<Laser>()->Facing = North; }
-                            ImGui::SameLine();
-                            if (ImGui::Button("South")) { entity->Get<Laser>()->Facing = South; }
-                            if (ImGui::Button("West")) { entity->Get<Laser>()->Facing = West; }
-                            ImGui::SameLine();
-                            if (ImGui::Button("East")) { entity->Get<Laser>()->Facing = East; }
-
-                            ImGui::RadioButton("Red", &color, 0); ImGui::SameLine();
-                            ImGui::RadioButton("Blue", &color, 1); ImGui::SameLine();
-                            ImGui::RadioButton("Green", &color, 2);
-
-                            entity->Get<Laser>()->Color = (LaserColor)color;
+                            camera->View.setCenter(body->Center());
                         }
 
-                        ImGui::TreePop();
+                        float p[] = {body->Position.x, body->Position.y};
+                        ImGui::DragFloat2(std::string{"Position##"+std::to_string(entity->GetUUID())}.c_str(), p);
+                        body->Position.x = p[0];
+                        body->Position.y = p[1];
+                    }
+
+                    auto& components = entity->GetComponents();
+
+                    for (const auto& [type, _]: components) {
+                        auto name = std::string{type.name()};
+                        auto it = name.begin();
+                        while(*it >= '0' && *it <= '9' && it != name.end())
+                            it++;
+
+                        auto final_name = std::string(it, name.end());
+
+                        if (ImGui::TreeNode(final_name.c_str())) {
+                            if (final_name == "Laser") {
+                                static int color = 0;
+
+#if 0
+                                ImGui::RadioButton(("North##"+std::string{id++}).c_str(), &direction, 0); ImGui::SameLine();
+                                ImGui::RadioButton(("South##"+std::string{id++}).c_str(), &direction, 1); ImGui::SameLine();
+                                ImGui::RadioButton(("East##"+std::string{id++}).c_str(), &direction, 2); ImGui::SameLine();
+                                ImGui::RadioButton(("West##"+std::string{id++}).c_str(), &direction, 3);
+#endif//
+                                if (ImGui::Button("North")) { entity->Get<Laser>()->Facing = North; }
+                                ImGui::SameLine();
+                                if (ImGui::Button("South")) { entity->Get<Laser>()->Facing = South; }
+                                if (ImGui::Button("West")) { entity->Get<Laser>()->Facing = West; }
+                                ImGui::SameLine();
+                                if (ImGui::Button("East")) { entity->Get<Laser>()->Facing = East; }
+
+                                ImGui::RadioButton("Red", &color, 0); ImGui::SameLine();
+                                ImGui::RadioButton("Blue", &color, 1); ImGui::SameLine();
+                                ImGui::RadioButton("Green", &color, 2);
+
+                                entity->Get<Laser>()->Color = (LaserColor)color;
+                            }
+
+                            ImGui::TreePop();
+                        }
                     }
                 }
             }
+
+            ImGui::EndGroup();
+
         }
 
-        ImGui::EndGroup();
+        if (ImGui::TreeNode("Prefabs")) {
+            ImGui::BeginGroup();
 
-    }
+            const auto prefabs = Assets::It()->GetPrefabs();
+            int i = 0;
+            for (auto& [name, table] : prefabs) {
+                ImGui::Text("[%-14s]", name.c_str());
+                ImGui::SameLine();
 
-    if (ImGui::TreeNode("Prefabs")) {
-        ImGui::BeginGroup();
-
-        const auto prefabs = Assets::It()->GetPrefabs();
-        int i = 0;
-        for (auto& [name, table] : prefabs) {
-            ImGui::Text("[%-14s]", name.c_str());
-            ImGui::SameLine();
-
-            if (ImGui::Button(("spawn##"+std::to_string(i++)).c_str())) {
-                entity_prefab = Assets::It()->GetPrefab(name);
-                HoldingState = HoldingState::Entity;
-            }
-
-            ImGui::SameLine();
-
-            if (ImGui::Button(("place##"+std::to_string(i++)).c_str())) {
-                tiledMap->AddEntitySpawn(name, cursor.x, cursor.y);
-            }
-        }
-
-        ImGui::EndGroup();
-    }
-
-    if (ImGui::TreeNode("Billboards")) {
-        ImGui::Checkbox("Foreground", &PlaceAsForeground);
-        ImGui::BeginGroup();
-
-        const auto meta = tiledMap->GetMetaData();
-
-        if (meta["billboard_regions"].valid()) {
-            const auto bt = meta.get<sol::table>("billboard_regions");
-
-            int i = 99;
-            bt.for_each([&](sol::object const& key, sol::object const& value) {
-                ImGui::PushID(i++);
-
-                const auto tab = value.as<sol::table>();
-                const auto x = (int)tab[1];
-                const auto y = (int)tab[2];
-                const auto w = (int)tab[3];
-                const auto h = (int)tab[4];
-
-                const auto required_width = 64;
-                const auto scale = ((float)required_width) / ((float)w);
-
-                const auto tileset = tiledMap->GetFirstTileset();
-                const auto region = sf::IntRect(x, y, w, h);
-
-                sf::Sprite sprite;
-
-                auto ts = tiledMap->GetFirstTileset();
-
-                sprite.setTexture(*Assets::It()->Get<sf::Texture>(ts.name));
-                sprite.setTextureRect(region);
-                sprite.setScale(scale, scale);
-
-                if (ImGui::ImageButton(sprite)) {
-                    HoldingState = HoldingState::Billboard;
-                    BillboardRect = region;
+                if (ImGui::Button(("spawn##"+std::to_string(i++)).c_str())) {
+                    entity_prefab = Assets::It()->GetPrefab(name);
+                    HoldingState = HoldingState::Entity;
                 }
 
-                if (i % 3 != 0) ImGui::SameLine();
+                ImGui::SameLine();
 
-                ImGui::PopID();
-            });
+                if (ImGui::Button(("place##"+std::to_string(i++)).c_str())) {
+                    tiledMap->AddEntitySpawn(name, cursor.x, cursor.y);
+                }
+            }
+
+            ImGui::EndGroup();
         }
 
-        ImGui::EndGroup();
-    }
+        if (ImGui::TreeNode("Billboards")) {
+            ImGui::Checkbox("Foreground", &PlaceAsForeground);
+            ImGui::BeginGroup();
 
-    if (ImGui::TreeNode("Doors")) {
-        if (ImGui::Button("New Door")) {
-            ImGui::OpenPopup("NewDoor?");
-            //HoldingState = HoldingState::Door;
+            const auto meta = tiledMap->GetMetaData();
+
+            if (meta["billboard_regions"].valid()) {
+                const auto bt = meta.get<sol::table>("billboard_regions");
+
+                int i = 99;
+                bt.for_each([&](sol::object const& key, sol::object const& value) {
+                    ImGui::PushID(i++);
+
+                    const auto tab = value.as<sol::table>();
+                    const auto x = (int)tab[1];
+                    const auto y = (int)tab[2];
+                    const auto w = (int)tab[3];
+                    const auto h = (int)tab[4];
+
+                    const auto required_width = 64;
+                    const auto scale = ((float)required_width) / ((float)w);
+
+                    const auto tileset = tiledMap->GetFirstTileset();
+                    const auto region = sf::IntRect(x, y, w, h);
+
+                    sf::Sprite sprite;
+
+                    auto ts = tiledMap->GetFirstTileset();
+
+                    sprite.setTexture(*Assets::It()->Get<sf::Texture>(ts.name));
+                    sprite.setTextureRect(region);
+                    sprite.setScale(scale, scale);
+
+                    if (ImGui::ImageButton(sprite)) {
+                        HoldingState = HoldingState::Billboard;
+                        BillboardRect = region;
+                    }
+
+                    if (i % 3 != 0) ImGui::SameLine();
+
+                    ImGui::PopID();
+                });
+            }
+
+            ImGui::EndGroup();
         }
 
-        ImGui::BeginGroup();
+        if (ImGui::TreeNode("Doors")) {
+            if (ImGui::Button("New Door")) {
+                ImGui::OpenPopup("NewDoor?");
+                //HoldingState = HoldingState::Door;
+            }
 
-        ImGui::EndGroup();
-    }
+            ImGui::BeginGroup();
 
-    if (ImGui::BeginPopupModal("NewDoor?", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
-        static char buf[100];
-
-        ImGui::InputText("To location", buf, IM_ARRAYSIZE(buf));
-        if (ImGui::Button("OK", ImVec2(120, 0))) {
-
-            HoldingState = HoldingState::Door;
-            ToString = std::string{buf};
-
-            ImGui::CloseCurrentPopup();
+            ImGui::EndGroup();
         }
 
-        ImGui::EndPopup();
+        if (ImGui::BeginPopupModal("NewDoor?", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+            static char buf[100];
+
+            ImGui::InputText("To location", buf, IM_ARRAYSIZE(buf));
+            if (ImGui::Button("OK", ImVec2(120, 0))) {
+
+                HoldingState = HoldingState::Door;
+                ToString = std::string{buf};
+
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
     }
 
     ImGui::End();

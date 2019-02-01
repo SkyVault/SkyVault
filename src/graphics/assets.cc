@@ -19,8 +19,12 @@ void Assets::LoadPrefabs() {
     }
 
     //for(auto& p: fs::directory_iterator(PrefabPath)) {
-        //std::cout << p << std::endl; 
+        //std::cout << p << std::endl;
     //}
+
+    for (const auto file : crefile::iter_dir("assets/maps/")) {
+        this->tiled_map_names.push_back(std::string{file.name()});
+    }
 
 }
 
@@ -45,7 +49,7 @@ void Assets::LoadAnimations() {
 
     for (auto file : crefile::iter_dir(PrefabPath)) {
         const sol::table table = lua->script_file(crefile::join(PrefabPath, file.name()));
-        
+
         table.for_each([&](sol::object const& key, sol::object const& value) {
             auto anim_name = key.as<std::string>();
             auto anim_table = value.as<sol::table>();
@@ -69,7 +73,7 @@ void Assets::LoadAnimations() {
                     }
                 } else if (property == "repeated") {
                     repeated = value.as<bool>();
-                } else if (property == "frames") { 
+                } else if (property == "frames") {
                     auto frames_table = value.as<sol::table>();
                     frames_table.for_each([&](sol::object const& key, sol::table const& frame_table) {
 

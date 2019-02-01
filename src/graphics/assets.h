@@ -94,6 +94,8 @@ public:
 
     inline std::map<std::string, sol::table>& GetPrefabs() {return entity_prefabs;}
 
+    inline auto& GetTiledMapNames() { return tiled_map_names; }
+
 private:
     std::map<std::string, sf::Texture*> images;
     std::map<std::string, sf::Font*> fonts;
@@ -104,5 +106,7 @@ private:
     std::map<std::string, Animation*> animations;
 
     std::shared_ptr<sol::state> lua;
+
+    std::vector<std::string> tiled_map_names;
 };
 #endif//SKYVAULT_ASSETS_H

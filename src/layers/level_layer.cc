@@ -85,7 +85,13 @@ void LevelLayer::Load(){
 
     world->OnRoomChange([&](const std::string& to) {
         std::cout << "Changing rooms to... " << to << std::endl;
+        // NOTE(Dustin): Were passing in nullptrs because the smart pointers go out of scope
+        // and are no longer accessable, to fix we must store the physics_filter world lua objects
+
+        auto* _physics_filter = world->GetFilter<PhysicsFilter>();
+
         tiledMap->Destroy();
+        tiledMap->loadFromFile("assets/maps/" + to, _physics_filter, world, lua);
     });
 }
 void LevelLayer::Update(const SkyTime& time){

@@ -753,6 +753,7 @@ return {
       false
     }
   },
+  doors = {},
   entities = {
     {
       "Skelly",
@@ -765,6 +766,5 @@ return {
       580.86431884765625
     }
   },
-  doors = {},
   solids = {}
 }

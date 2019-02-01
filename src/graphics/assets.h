@@ -64,6 +64,10 @@ public:
         }
     }
 
+    bool HasImage(const std::string& id) {
+        return images.find(id) != images.end();
+    }
+
     sol::table GetDialog(const std::string& name) {
         if (dialogs.find(name) == dialogs.end()) {
             std::cout << "Cannot find dialog: " << name << std::endl;

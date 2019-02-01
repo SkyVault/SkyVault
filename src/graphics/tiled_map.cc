@@ -65,12 +65,16 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
                     //TODO(Dustin): @Important check to see if the image already
                     // exists in the assets cache
 
-                    tileset.image = new sf::Texture();
-                    if (!tileset.image->loadFromFile(source)) {
-                        std::cout << "Tiled map failed to load tileset image: " << source << std::endl;
+                    if (Assets::It()->HasImage(tileset.name)) {
+                        tileset.image = Assets::It()->Get<sf::Texture>(tileset.name);
+                    } else {
+                        tileset.image = new sf::Texture();
+                        if (!tileset.image->loadFromFile(source)) {
+                            std::cout << "Tiled map failed to load tileset image: " << source << std::endl;
+                        }
+                        Assets::It()->Add(tileset.name, tileset.image);
                     }
 
-                    Assets::It()->Add(tileset.name, tileset.image);
                 }
 
                 tilesets.push_back(tileset);

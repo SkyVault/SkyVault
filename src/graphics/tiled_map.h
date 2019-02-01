@@ -20,7 +20,7 @@ struct Tileset {
     int tilewidth{8};
     int tileheight{8};
 
-    sf::Texture image;
+    sf::Texture* image;
     //std::string image_path{""};
     //int imagewidth{0};
     //int imageheight{0};

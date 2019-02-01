@@ -61,9 +61,16 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
                 let image = child->FirstChildElement("image");
                 if (image != nullptr) {
                     let source = "assets/maps/" + std::string{image->Attribute("source")};
-                    if (!tileset.image.loadFromFile(source)) {
+
+                    //TODO(Dustin): @Important check to see if the image already
+                    // exists in the assets cache
+
+                    tileset.image = new sf::Texture();
+                    if (!tileset.image->loadFromFile(source)) {
                         std::cout << "Tiled map failed to load tileset image: " << source << std::endl;
                     }
+
+                    Assets::It()->Add(tileset.name, tileset.image);
                 }
 
                 tilesets.push_back(tileset);
@@ -146,8 +153,8 @@ bool TiledMap::loadFromFile(const std::string& path, PhysicsFilter* physics, std
                     let m_tileset = tilesets[0].image;
 
                     // find its position in the tileset texture
-                    int tu = tileNumber % (m_tileset.getSize().x / tilewidth);
-                    int tv = tileNumber / (m_tileset.getSize().x / tilewidth);
+                    int tu = tileNumber % (m_tileset->getSize().x / tilewidth);
+                    int tv = tileNumber / (m_tileset->getSize().x / tilewidth);
 
                     // get a pointer to the current tile's quad
                     sf::Vertex* quad = &layer->vertices[(i + j * width) * 4];
@@ -317,7 +324,7 @@ return {
                 const auto fore = billboard_table.get<bool>(7);
 
                 sf::Sprite sprite;
-                sprite.setTexture(tilesets[0].image);
+                sprite.setTexture(*tilesets[0].image);
                 sprite.setTextureRect(sf::IntRect(rx, ry, rw, rh));
                 sprite.setPosition(sf::Vector2f(x, y));
 
@@ -353,7 +360,7 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position, bo
         t.add(b);
 
         sf::Sprite sprite;
-        sprite.setTexture(tilesets[0].image);
+        sprite.setTexture(*tilesets[0].image);
         sprite.setTextureRect(region);
         sprite.setPosition(position);
 
@@ -409,7 +416,7 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
 
     // apply the tileset texture
-    states.texture = &tilesets[0].image;
+    states.texture = tilesets[0].image;
 
     // draw the vertex array
     for (auto* layer : layers){
@@ -588,6 +595,7 @@ void TiledMap::Destroy() {
         delete layer;
 
     layers.clear();
+    tilesets.clear();
 
     billboards.clear();
     foreground_billboards.clear();

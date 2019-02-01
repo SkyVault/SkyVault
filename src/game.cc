@@ -146,6 +146,7 @@ void Game::LoadContent() {
 
     camera = std::make_shared<Camera>(window->getSize().x, window->getSize().y);
 
+    // TODO(Dustin): Move this into the tiled map
     Assets::It()->Add("tiles", texture);
 
     world->Register<PhysicsFilter>(world);

@@ -23,7 +23,8 @@ void Assets::LoadPrefabs() {
     //}
 
     for (const auto file : crefile::iter_dir("assets/maps/")) {
-        this->tiled_map_names.push_back(std::string{file.name()});
+        if (crefile::extension(file.name()) == "tmx")
+            this->tiled_map_names.push_back(std::string{file.name()});
     }
 
 }

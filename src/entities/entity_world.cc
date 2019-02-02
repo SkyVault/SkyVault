@@ -169,6 +169,15 @@ void EntityWorld::Update(const SkyTime& time) {
         return;
     }
 
+    auto it = doors.begin();
+    while(it != doors.end()) {
+        if (it->ShouldRemove) {
+            it = doors.erase(it);
+            continue;
+        }
+        ++it;
+    }
+
     for (auto& [key, filter] : filters) {
         filter->PreUpdate(time);
     }

@@ -440,6 +440,19 @@ void TiledMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
 }
 
+//TODO(Dustin): Find a better way to link the doors between the world and here
+void TiledMap::RemDoor(const std::string& address) {
+    auto d = meta_data.get<sol::table>("doors");
+    auto result = (*lua)["removeIfMatchingAddress"](d, address);
+    if (result.valid()){
+        if ((bool)result) {
+            std::cout << "Successfully removed door" << std::endl;
+        } else {
+            std::cout << "Failed to removed door" << std::endl;
+        }
+    }
+}
+
 void TiledMap::Update(const SkyTime& time) {
     auto RemoveBillboardFromMetaData = [&](sol::table& table, const auto& item) {
         auto result = (*lua)["removeIfMatchingAddress"](table, item->Uuid);

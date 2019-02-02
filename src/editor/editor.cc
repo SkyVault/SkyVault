@@ -677,9 +677,9 @@ void Editor::Draw
     {
         sf::RectangleShape doorShape;
         doorShape.setFillColor(sf::Color(0, 255, 255, 30));
-        auto doors = world->GetDoors();
+        auto& doors = world->GetDoors();
 
-        for (const auto& door : doors) {
+        for (auto& door : doors) {
             doorShape.setPosition(door.Position);
             doorShape.setSize(door.Size);
 
@@ -705,6 +705,11 @@ void Editor::Draw
                 rect.setFillColor(sf::Color(255, 0, 0));
 
                 if (Input::It()->IsMouseLeftPressed(sf::Mouse::Left)) {
+                    // Remove the door
+                    std::cout << "Removing Door" << std::endl;
+
+                    door.ShouldRemove = true;
+                    tiledMap->RemDoor(door.TableAddress);
                 }
             }
 

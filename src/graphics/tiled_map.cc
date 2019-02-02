@@ -305,11 +305,12 @@ return {
                 const auto dw = door_table.get<float>(3);
                 const auto dh = door_table.get<float>(4);
                 const auto to = door_table.get<std::string>(5);
+                const auto uu = door_table.get<std::string>(6);
 
                 const auto uuid = (*lua)["getTableAddress"](door_table);
 
                 // Create the doors entity
-                world->AddDoor(uuid, to, dx, dy, dw, dh);
+                world->AddDoor(uuid, uu, to, dx, dy, dw, dh);
             });
         }
 
@@ -379,7 +380,7 @@ void TiledMap::AddBillboard(const sf::IntRect& region, sf::Vector2f position, bo
     }
 }
 
-void TiledMap::AddDoor(std::shared_ptr<EntityWorld>& world, std::string to, float x, float y, float w, float h) {
+void TiledMap::AddDoor(std::shared_ptr<EntityWorld>& world, std::string to, std::string uuid, float x, float y, float w, float h) {
     auto t  = meta_data.get<sol::table>("doors");
     sol::table d = lua->create_table();
     d[1 + 0] = x;
@@ -387,10 +388,11 @@ void TiledMap::AddDoor(std::shared_ptr<EntityWorld>& world, std::string to, floa
     d[1 + 2] = w;
     d[1 + 3] = h;
     d[1 + 4] = to;
+    d[1 + 5] = uuid;
     t.add(d);
 
-    const std::string uuid = (*lua)["getTableAddress"](d);
-    world->AddDoor(uuid, to, x, y, w, h);
+    const std::string address = (*lua)["getTableAddress"](d);
+    world->AddDoor(address, uuid, to, x, y, w, h);
 }
 
 void TiledMap::AddEntitySpawn(const std::string& which, float x, float y) {

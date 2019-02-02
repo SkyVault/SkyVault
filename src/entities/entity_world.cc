@@ -333,9 +333,10 @@ void EntityWorld::Render(std::unique_ptr<sf::RenderWindow>& window) {
     }
 }
 
-void EntityWorld::AddDoor(const std::string& Uuid, const std::string& To, float x, float y, float width, float height) {
+void EntityWorld::AddDoor(const std::string& tableAddress, const std::string& Uuid, const std::string& To, float x, float y, float width, float height) {
     doors.push_back(Door
-            ( Uuid
+            ( tableAddress
+            , Uuid
             , To
             , x
             , y

@@ -27,15 +27,20 @@ struct EntityWorld;
 struct Door : Body{
     friend EntityWorld;
 
-    inline Door(std::string _uuid, std::string _to, float x, float y, float w, float h):
+    inline Door(std::string _table_address, std::string _uuid, std::string _to, float x, float y, float w, float h):
         Body(x, y, w, h),
         To(_to),
-        TableAddress(_uuid)
+        TableAddress(_table_address),
+        Uuid(_uuid)
     {}
     std::string To{""};
 
     // This is the lua table address used for removing
     std::string TableAddress{""};
+
+    // Used for linking doors
+    std::string Uuid{""};
+
     bool ShouldRemove{false};
 
 private:
@@ -129,7 +134,7 @@ struct EntityWorld {
         return result;
     }
 
-    void AddDoor(const std::string& Uuid, const std::string& To, float x, float y, float width, float height);
+    void AddDoor(const std::string& tableAddress, const std::string& Uuid, const std::string& To, float x, float y, float width, float height);
     inline auto& GetDoors() {
         return doors;
     }

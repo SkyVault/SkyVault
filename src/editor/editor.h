@@ -87,7 +87,7 @@ private:
     sf::Vector2f cam_size;
 
     sf::Vector2f DoorStart, DoorEnd;
-    std::string ToString{""};
+    std::string ToString{""}, UuidString{""};
 
     HoldingState HoldingState{HoldingState::None};
 

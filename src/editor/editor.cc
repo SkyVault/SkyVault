@@ -353,6 +353,7 @@ void Editor::doEntityInspector
 
                 HoldingState = HoldingState::Door;
                 ToString = std::string{items[item]};
+                UuidString = std::string{buf};
 
                 ImGui::CloseCurrentPopup();
             }
@@ -539,6 +540,7 @@ void Editor::Draw
             tiledMap->AddDoor(
                     world,
                     ToString,
+                    UuidString,
                     dx,
                     dy,
                     dw,
@@ -681,10 +683,15 @@ void Editor::Draw
             doorShape.setPosition(door.Position);
             doorShape.setSize(door.Size);
 
-            text.setString(door.To);
-            text.setPosition(door.Position + sf::Vector2f(BTN_SIZE + 4, 0));
 
             window->draw(doorShape);
+
+            text.setString(door.To);
+            text.setPosition(door.Position + sf::Vector2f(BTN_SIZE + 4, 0));
+            window->draw(text);
+
+            text.setString(door.Uuid);
+            text.setPosition(door.Position + sf::Vector2f(BTN_SIZE + 4, 14));
             window->draw(text);
 
             // Delete button

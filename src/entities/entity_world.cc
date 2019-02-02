@@ -215,7 +215,6 @@ void EntityWorld::Update(const SkyTime& time) {
                 if (curr && !door.last) {
                     try {
                         std::invoke(on_room_change, door.To);
-                        doors.clear();
                         return;
                     } catch (std::bad_function_call& e) {}
                 }

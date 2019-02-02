@@ -163,6 +163,7 @@ void Editor::doEntityInspector
             id = "maps:" + std::to_string(counter++);
             if (ImGui::Button(name.c_str())) {
                 tiledMap->Destroy();
+                world->ClearDoors();
 
                 auto* physics = world->GetFilter<PhysicsFilter>();
                 assert(physics);

@@ -139,6 +139,8 @@ struct EntityWorld {
         return doors;
     }
 
+    inline void ClearDoors() { doors.clear(); }
+
     void ClearAll();
 
     void OnRoomChange(std::function<void(std::string)> fn);

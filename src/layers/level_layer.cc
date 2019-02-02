@@ -91,6 +91,8 @@ void LevelLayer::Load(){
         auto* _physics_filter = world->GetFilter<PhysicsFilter>();
 
         tiledMap->Destroy();
+        world->ClearDoors();
+
         tiledMap->loadFromFile("assets/maps/" + to, _physics_filter, world, lua);
     });
 }

@@ -43,6 +43,8 @@ struct Door : Body{
 
     bool ShouldRemove{false};
 
+    inline void LastToTrue() { last = true; }
+
 private:
     bool last{false};
 };
@@ -143,7 +145,7 @@ struct EntityWorld {
 
     void ClearAll();
 
-    void OnRoomChange(std::function<void(std::string)> fn);
+    void OnRoomChange(std::function<void(std::string, std::string)> fn);
 
 private:
     int add_entity(Entity* entity); // Returns the index of the entity
@@ -157,7 +159,9 @@ private:
     std::vector<Entity*> combat_entities;
 
     std::vector<Door> doors;
-    std::function<void(std::string)> on_room_change;
+
+                    // to,          uuid
+    std::function<void(std::string, std::string)> on_room_change;
 
     // Interaction grid
     std::array<EntityID, MAP_SIZE*MAP_SIZE> grid;

@@ -83,7 +83,7 @@ void LevelLayer::Load(){
         e->Get<Body>()->Position = sf::Vector2f(500+128 + (cursor++*16), 400);
     }
 
-    world->OnRoomChange([&](const std::string& to) {
+    world->OnRoomChange([&](const std::string& to, const std::string& uuid) {
         std::cout << "Changing rooms to... " << to << std::endl;
         // NOTE(Dustin): Were passing in nullptrs because the smart pointers go out of scope
         // and are no longer accessable, to fix we must store the physics_filter world lua objects
@@ -94,6 +94,27 @@ void LevelLayer::Load(){
         world->ClearDoors();
 
         tiledMap->loadFromFile("assets/maps/" + to, _physics_filter, world, lua);
+
+        // Move the player to the door that matches the uuid
+        auto& doors = world->GetDoors();
+
+        for (auto& door : doors) {
+            if (door.Uuid == uuid) {
+
+                // Ensures that when we spawn inside the door
+                // it doesn't send us back to the prevous room
+
+                door.LastToTrue();
+
+                const auto player_opt = world->GetFirstWith<Player>();
+
+                if (!player_opt) { return; }
+
+                auto player = player_opt.value();
+                auto body = player->Get<Body>();
+                body->Position = door.Position + door.Size / 2.0f - body->Size / 2.0f;
+            }
+        }
     });
 }
 void LevelLayer::Update(const SkyTime& time){

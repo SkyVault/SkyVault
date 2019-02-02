@@ -67,7 +67,7 @@ int EntityWorld::add_entity(Entity* entity) {
     return -1;
 }
 
-void EntityWorld::OnRoomChange(std::function<void(std::string)> fn) {
+void EntityWorld::OnRoomChange(std::function<void(std::string, std::string)> fn) {
     this->on_room_change = fn;
 }
 
@@ -214,7 +214,7 @@ void EntityWorld::Update(const SkyTime& time) {
                 const auto curr = door.Contains(*body);
                 if (curr && !door.last) {
                     try {
-                        std::invoke(on_room_change, door.To);
+                        std::invoke(on_room_change, door.To, door.Uuid);
                         return;
                     } catch (std::bad_function_call& e) {}
                 }

@@ -337,11 +337,22 @@ void Editor::doEntityInspector
         if (ImGui::BeginPopupModal("NewDoor?", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
             static char buf[100];
 
-            ImGui::InputText("To location", buf, IM_ARRAYSIZE(buf));
+            const auto& tiled_map_names = Assets::It()->GetTiledMapNames();
+            const char* items[tiled_map_names.size()];
+            static int item = -1;
+
+            for (int i = 0; i < tiled_map_names.size(); i++) {
+                items[i] = tiled_map_names[i].c_str();
+            }
+
+            ImGui::Combo("To", &item, items, IM_ARRAYSIZE(items));
+
+            ImGui::InputText("Unique ID", buf, IM_ARRAYSIZE(buf));
+
             if (ImGui::Button("OK", ImVec2(120, 0))) {
 
                 HoldingState = HoldingState::Door;
-                ToString = std::string{buf};
+                ToString = std::string{items[item]};
 
                 ImGui::CloseCurrentPopup();
             }

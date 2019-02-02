@@ -30,12 +30,12 @@ struct Door : Body{
     inline Door(std::string _uuid, std::string _to, float x, float y, float w, float h):
         Body(x, y, w, h),
         To(_to),
-        Uuid(_uuid)
+        TableAddress(_uuid)
     {}
     std::string To{""};
 
     // This is the lua table address used for removing
-    std::string Uuid{""};
+    std::string TableAddress{""};
     bool ShouldRemove{false};
 
 private:

@@ -66,7 +66,8 @@ void PlayerFilter::Update(const SkyTime& time, Entity* self) {
             }
         }
 
-        if (Input::It()->IsKeyPressed(sf::Keyboard::LShift)) {
+        if ( !GameState::It()->FullEditor() &&
+                Input::It()->IsKeyPressed(sf::Keyboard::LShift)) {
             if (player->DashTimer <= 0.0f) {
                 auto v = physics->Velocity;
                 float len = sqrtf((v.x*v.x) + (v.y*v.y));

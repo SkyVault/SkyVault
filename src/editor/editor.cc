@@ -165,6 +165,8 @@ void Editor::doEntityInspector
                 tiledMap->Destroy();
                 world->ClearDoors();
 
+                CurrMapName = name;
+
                 auto* physics = world->GetFilter<PhysicsFilter>();
                 assert(physics);
                 tiledMap->loadFromFile(

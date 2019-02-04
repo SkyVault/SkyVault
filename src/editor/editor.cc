@@ -363,6 +363,14 @@ void Editor::doEntityInspector
 
             ImGui::EndPopup();
         }
+
+        if (ImGui::TreeNode("Solids")) {
+            if (ImGui::Button("New Solid")) {
+                HoldingState = HoldingState::Solid;
+            }
+
+        }
+
     }
 
     ImGui::End();
@@ -476,7 +484,8 @@ void Editor::Draw
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)){
         if (HoldingState == HoldingState::Billboard
                 || HoldingState == HoldingState::Entity
-                || HoldingState == HoldingState::Door){
+                || HoldingState == HoldingState::Door
+                || HoldingState == HoldingState::Solid){
             HoldingState = HoldingState::None;
         } else {
             cursor = worldPos;
@@ -518,7 +527,13 @@ void Editor::Draw
 
             case HoldingState::Door: {
                 HoldingState = HoldingState::DoorDragging;
-                DoorStart = sf::Vector2f(x, y);
+                DragStart = sf::Vector2f(x, y);
+                break;
+            }
+
+            case HoldingState::Solid: {
+                HoldingState = HoldingState::SolidDragging;
+                DragStart = sf::Vector2f(x, y);
                 break;
             }
 
@@ -531,23 +546,36 @@ void Editor::Draw
     // Handling door dragging release
 
     // Set the door end values
-    if (HoldingState == HoldingState::DoorDragging) {
-        DoorEnd = sf::Vector2f(x, y);
+    if (HoldingState == HoldingState::DoorDragging
+            || HoldingState == HoldingState::SolidDragging) {
+        DragEnd = sf::Vector2f(x, y);
 
         if (Input::It()->IsMouseLeftReleased(0)){
-            HoldingState = HoldingState::None;
+            const auto [dx, dy] = DragStart;
+            const auto dw = DragEnd.x - dx;
+            const auto dh = DragEnd.y - dy;
 
-            const auto [dx, dy] = DoorStart;
-            const auto dw = DoorEnd.x - dx;
-            const auto dh = DoorEnd.y - dy;
-            tiledMap->AddDoor(
-                    world,
-                    ToString,
-                    UuidString,
-                    dx,
-                    dy,
-                    dw,
-                    dh);
+            if (HoldingState == HoldingState::SolidDragging) {
+                // TODO(Dustin): Add solid
+                auto* physics_filter = world->GetFilter<PhysicsFilter>();
+                if (physics_filter) {
+                    physics_filter->AddSolid(
+                            dx, dy,
+                            dw, dh
+                            );
+                }
+            }
+            else {
+                tiledMap->AddDoor(
+                        world,
+                        ToString,
+                        UuidString,
+                        dx,
+                        dy,
+                        dw,
+                        dh);
+            }
+            HoldingState = HoldingState::None;
         }
     }
 
@@ -612,21 +640,25 @@ void Editor::Draw
         }
 
         case HoldingState::Door:
-        case HoldingState::DoorDragging: {
+        case HoldingState::DoorDragging:
+        case HoldingState::Solid:
+        case HoldingState::SolidDragging: {
             constexpr float size{12};
 
             float px = x;
             float py = y;
 
-            if (HoldingState::DoorDragging) {
-                px = DoorStart.x;
-                py = DoorStart.y;
+            if (HoldingState == HoldingState::DoorDragging
+                    || HoldingState == HoldingState::SolidDragging) {
+
+                px = DragStart.x;
+                py = DragStart.y;
 
                 sf::RectangleShape doorRect;
                 doorRect.setPosition(sf::Vector2f(px, py));
                 doorRect.setSize(sf::Vector2f(
-                    DoorEnd.x - px,
-                    DoorEnd.y - py
+                    DragEnd.x - px,
+                    DragEnd.y - py
                         ));
                 doorRect.setFillColor(sf::Color(255, 0, 0, 100));
                 window->draw(doorRect);
@@ -656,6 +688,25 @@ void Editor::Draw
 
         default:
             break;
+    }
+
+    // Draw solids
+    {
+        auto* physics_filter = world->GetFilter<PhysicsFilter>();
+        if (physics_filter) {
+            const auto& solids = physics_filter->GetSolids();
+            sf::RectangleShape solid_rect;
+            solid_rect.setOutlineColor(sf::Color(0,0,255,100));
+            solid_rect.setFillColor(sf::Color(0,0,0,0));
+            solid_rect.setOutlineThickness(1);
+
+            for (const auto& solid : solids) {
+                solid_rect.setPosition(solid->Position);
+                solid_rect.setSize(solid->Size);
+
+                window->draw(solid_rect);
+            }
+        }
     }
 
     const auto& billboards = tiledMap->GetBillboards();

@@ -9,7 +9,7 @@
 #include <memory>
 #include <vector>
 
-struct Solid : public Body{
+struct Solid : public Body {
     Solid(float x, float y, float width, float height):
         Body(sf::Vector2f(x, y), sf::Vector2f(width, height)){}
 };
@@ -19,7 +19,7 @@ struct PhysicsFilter : public Filter {
     //friend EntityWorld;
 
     PhysicsFilter(std::shared_ptr<EntityWorld>& world) : Filter({
-            typeid(Body), 
+            typeid(Body),
             typeid(PhysicsBody)
             }), world(world) {}
 
@@ -28,6 +28,8 @@ struct PhysicsFilter : public Filter {
     void PostRender(std::unique_ptr<sf::RenderWindow>& window) override;
 
     void AddSolid(float x, float y, float width, float height);
+    inline auto& GetSolids() { return solids; }
+
     void ClearSolids();
 
 private:

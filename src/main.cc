@@ -28,8 +28,8 @@ TODO(Dustin): Global todos that we need to get done before release
         + [ ] List
         + [ ] Grid
 - [ ] Gameplay
-    * [ ] Draggable blocks
-    * [ ] Trigger zones (for the blocks and player)
+    * [X] Draggable blocks
+    * [X] Trigger zones (for the blocks and player)
     * [ ] Combat
         + [ ] Figure out what type of combat were going to use...
 

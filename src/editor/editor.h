@@ -67,7 +67,9 @@ struct Editor {
         Entity,
         Billboard,
         Door,
-        DoorDragging
+        DoorDragging,
+        Solid,
+        SolidDragging
     };
 
 private:
@@ -86,7 +88,7 @@ private:
 
     sf::Vector2f cam_size;
 
-    sf::Vector2f DoorStart, DoorEnd;
+    sf::Vector2f DragStart, DragEnd;
     std::string ToString{""}, UuidString{""}, CurrMapName{""};
 
     HoldingState HoldingState{HoldingState::None};

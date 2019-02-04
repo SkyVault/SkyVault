@@ -294,6 +294,8 @@ return {
             std::cout << "Error::TiledMap::loadTiledMap:: Failed to load the entities from the data script, entities table entry is invalid, map: " << path << std::endl;
         }
 
+        // Load the solids
+
         // Load the doors
         if (meta_data["doors"].valid()) {
             auto doors_table = meta_data.get<sol::table>("doors");

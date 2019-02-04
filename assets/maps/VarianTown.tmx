@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="2018.12.22" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="9" nextobjectid="1">
+<map version="1.2" tiledversion="2018.12.22" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="10" nextobjectid="2">
  <tileset firstgid="1" name="town-tiles" tilewidth="8" tileheight="8" tilecount="4096" columns="64">
   <image source="../images/town-tiles.png" width="512" height="512"/>
  </tileset>
@@ -33,6 +33,9 @@
    H4sIAAAAAAAAA+3YUW7aQBQFUId+Q6D7wqTeV9t0YW2irqjPaqe1Rp5gHDtMwznSE0aAZflyQTNNU4enu6b5dnftq6D3GDlsN01zjPkpk6vqe9H+yaKf/lhPriP1Yrf5/ZiO9eTtDXuR9yP9dunJ28h7MdaPdKwn6+p7sct6UepHqyer6nsxvOdT+qEn60j/F8N7PuzHKaYr9ENPltdmOQy///vNv/cdCv1Ijywjz2HYi1xX6Ecrj8XkOeS9yB30YxVPcQ+fR36nhr3Yxuxi7mP2g8+O9YR5SjkcR3pxjGljTjEP2XnynnCZl3Io/V98jvkS8zXmceScnX5c7FwO20IWve8xP/pzxDwXzn/Qj0mm5JCel2z7NXvMfcz+hTVGJ4+iS3JIz1nenBzO9YP55uSgH+uZk4N+rGduP04frn3l79OcHB5ksRo51KWmHEr7Xrekhhz+XktT3ve6FTXkkJzb97oFNeSQTNn3eu9qyCGZuu/FeYeYj694nWV9iule8Tr8b6wH6mI9UBfrgbpYD9TFegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBb8wvwqhfQQJwAAA==
   </data>
  </layer>
+ <objectgroup id="9" name="solids">
+  <object id="1" x="360" y="336" width="56" height="40"/>
+ </objectgroup>
  <layer id="6" name="RoofFront" width="100" height="100">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAA+3UQQrCMBRF0dCZ1Y3ZujHdma7KdFAIHxELNgn0HPjzksdtSgAAAMdxGlK65rvluwytv+bYli3GfFO+Od/ZJs2sXUzF+886aaLsItJJXZ+6iHRSx7cuIp3s65cuIp3sY0sXkU7+b2sX0doJAMdy9+/vwrLDI9/THk2VO7xs0Ywd+mCHPtihD3bogx36YgcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACo7w1j9y3uQJwAAA==
